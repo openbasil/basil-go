@@ -1,0 +1,22 @@
+# Compiled binaries / plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/basil-sign
+
+# Test & coverage output
+*.test
+*.out
+coverage.*
+
+# Go workspace files
+go.work
+go.work.sum
+
+# Editor / OS cruft
+.DS_Store
+*~
+.idea/
+.vscode/
