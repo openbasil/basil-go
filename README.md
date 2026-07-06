@@ -2,7 +2,7 @@
 
 A Go client for the [Basil](https://github.com/openbasil/basil) secrets-and-identity broker.
 
-Documentationn site **[docs.openbasil.org](https://docs.openbasil.org)**
+Documentation site **[docs.openbasil.org](https://docs.openbasil.org)**
 
 Basil brokers cryptographic *operations* over key material that never leaves the
 vault. The broker listens on a local Unix-domain socket and attests the caller
