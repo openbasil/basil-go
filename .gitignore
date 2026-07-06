@@ -6,6 +6,9 @@
 *.dylib
 /basil-sign
 
+.beads/
+.bv/
+
 # Test & coverage output
 *.test
 *.out
