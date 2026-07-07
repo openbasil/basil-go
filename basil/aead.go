@@ -2,6 +2,7 @@ package basil
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/openbasil/basil-go/internal/pb"
 )
@@ -10,13 +11,14 @@ import (
 // the nonce in every case, so a caller can neither choose nor misuse it.
 //
 // It mirrors basil.broker.v1.AeadAlgorithm. The broker rejects
-// [AeadAlgorithmUnspecified] on encrypt; choose the suite the encryption key
-// was provisioned for.
+// [AeadAlgorithmUnspecified] on both encrypt and decrypt; choose the suite the
+// encryption key was provisioned for, and round-trip [Ciphertext] unchanged so
+// the envelope keeps naming its algorithm explicitly.
 type AeadAlgorithm int32
 
 const (
 	// AeadAlgorithmUnspecified is the zero value; rejected by the broker on
-	// encrypt.
+	// both encrypt and decrypt.
 	AeadAlgorithmUnspecified AeadAlgorithm = 0
 	// AeadAlgorithmChaCha20Poly1305 is ChaCha20-Poly1305 (12-byte nonce,
 	// 16-byte tag).
@@ -120,7 +122,16 @@ func (c *Client) Encrypt(ctx context.Context, keyID string, alg AeadAlgorithm, p
 	if err != nil {
 		return nil, statusError(err)
 	}
-	return ciphertextFromProto(resp.GetEnvelope()), nil
+	env := resp.GetEnvelope()
+	if env == nil {
+		return nil, fmt.Errorf("basil: encrypt succeeded but the response carried no ciphertext envelope")
+	}
+	return &Ciphertext{
+		Algorithm:  AeadAlgorithm(env.GetAlg()),
+		KeyVersion: env.GetKeyVersion(),
+		Nonce:      env.GetNonce(),
+		Bytes:      env.GetCiphertext(),
+	}, nil
 }
 
 // Decrypt recovers the plaintext from ct under the catalog encryption key named
@@ -159,7 +170,18 @@ func (c *Client) WrapEnvelope(ctx context.Context, keyID string, kem KemAlgorith
 	if err != nil {
 		return nil, statusError(err)
 	}
-	return kemEnvelopeFromProto(resp.GetEnvelope()), nil
+	envelope := resp.GetEnvelope()
+	if envelope == nil {
+		return nil, fmt.Errorf("basil: wrap envelope succeeded but the response carried no KEM envelope")
+	}
+	return &KemEnvelope{
+		KemAlgorithm:      KemAlgorithm(envelope.GetKemAlgorithm()),
+		EnvelopeAlgorithm: EnvelopeAlgorithm(envelope.GetEnvelopeAlgorithm()),
+		KeyVersion:        envelope.GetKeyVersion(),
+		EncapsulatedKey:   envelope.GetEncapsulatedKey(),
+		Nonce:             envelope.GetNonce(),
+		Bytes:             envelope.GetCiphertext(),
+	}, nil
 }
 
 // UnwrapEnvelope recovers the plaintext from a [KemEnvelope] using the catalog
@@ -197,18 +219,6 @@ func (c *Client) UnsealCose(ctx context.Context, keyID string, coseEncrypt, exte
 	return resp.GetPlaintext(), nil
 }
 
-func ciphertextFromProto(e *pb.CiphertextEnvelope) *Ciphertext {
-	if e == nil {
-		return nil
-	}
-	return &Ciphertext{
-		Algorithm:  AeadAlgorithm(e.GetAlg()),
-		KeyVersion: e.GetKeyVersion(),
-		Nonce:      e.GetNonce(),
-		Bytes:      e.GetCiphertext(),
-	}
-}
-
 func ciphertextToProto(c *Ciphertext) *pb.CiphertextEnvelope {
 	if c == nil {
 		return nil
@@ -218,20 +228,6 @@ func ciphertextToProto(c *Ciphertext) *pb.CiphertextEnvelope {
 		KeyVersion: c.KeyVersion,
 		Nonce:      c.Nonce,
 		Ciphertext: c.Bytes,
-	}
-}
-
-func kemEnvelopeFromProto(e *pb.KemEnvelope) *KemEnvelope {
-	if e == nil {
-		return nil
-	}
-	return &KemEnvelope{
-		KemAlgorithm:      KemAlgorithm(e.GetKemAlgorithm()),
-		EnvelopeAlgorithm: EnvelopeAlgorithm(e.GetEnvelopeAlgorithm()),
-		KeyVersion:        e.GetKeyVersion(),
-		EncapsulatedKey:   e.GetEncapsulatedKey(),
-		Nonce:             e.GetNonce(),
-		Bytes:             e.GetCiphertext(),
 	}
 }
 

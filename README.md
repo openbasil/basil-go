@@ -47,8 +47,10 @@ unreachable socket surfaces as an error on first use, not at `Dial`. Options:
 - `basil.WithTimeout(d)` sets the per-RPC timeout applied when the caller's
   context has no deadline (default `basil.DefaultTimeout`, 30s; pass `0` to
   disable and rely solely on your own context deadlines).
-- `basil.WithDialOptions(...)` appends extra `grpc.DialOption`s (interceptors,
-  message-size limits). The transport credentials and Unix dialer are fixed.
+- `basil.WithDialOptions(...)` adds extra `grpc.DialOption`s (interceptors,
+  message-size limits). They are applied before the options `Dial` fixes, so
+  the transport credentials, the pinned `:authority`, and the Unix dialer
+  cannot be overridden.
 
 ## Sign, verify, get public key
 

@@ -80,7 +80,9 @@ type Readiness struct {
 }
 
 // Status reports the broker's backend, build version, and wire protocol
-// version. It is broker introspection and touches no backend.
+// version. It is broker introspection and touches no backend. The broker
+// answers only callers that resolve to a policy subject (no further grant is
+// needed); an unattested or unconfigured peer is denied.
 func (c *Client) Status(ctx context.Context) (*Status, error) {
 	ctx, cancel := c.withTimeout(ctx)
 	defer cancel()
@@ -431,11 +433,16 @@ func (s *WatchStream) Close() error {
 }
 
 // Watch opens a server-stream of broker change events (key rotations, bundle
-// changes, revocations). Pass zero kinds to receive every kind, or one or more
-// [EventKind] values to filter. The returned [WatchStream] stays open until the
-// broker ends it, the passed context is cancelled, or [WatchStream.Close] is
-// called; unlike the unary RPCs it is NOT subject to the client's default
-// per-RPC timeout. The caller owns the stream and must Close it.
+// changes, revocations). The subscription requires an explicit op:watch policy
+// grant over the reserved broker.watch admin target. Pass zero kinds to
+// receive every kind, or one or more [EventKind] values to filter. The
+// returned [WatchStream] stays open until the broker ends it, the passed
+// context is cancelled, or [WatchStream.Close] is called; unlike the unary
+// RPCs it is NOT subject to the client's default per-RPC timeout. The caller
+// owns the stream and must Close it. Delivery is at-most-once over a bounded
+// buffer: a stream that falls too far behind is closed with the DataLoss gRPC
+// code instead of silently skipping events, and the watcher should reconnect
+// and re-fetch the state it mirrors.
 func (c *Client) Watch(ctx context.Context, kinds ...EventKind) (*WatchStream, error) {
 	streamCtx, cancel := context.WithCancel(ctx)
 	pbKinds := make([]pb.EventKind, len(kinds))

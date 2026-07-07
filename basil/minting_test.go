@@ -565,3 +565,19 @@ func TestValidateNatsJwtMapsStatusError(t *testing.T) {
 		t.Errorf("unexpected status error: %+v", se)
 	}
 }
+
+func TestMintJwtPreservesRawIntegerClaims(t *testing.T) {
+	f := &fakeMinting{credResp: &pb.CredentialResponse{Token: "t"}}
+	c := dialMinting(t, f)
+
+	raw := json.RawMessage(`{"big":9007199254740993}`)
+	if _, err := c.MintJwt(context.Background(), basil.JwtRequest{KeyID: "k", Claims: raw}); err != nil {
+		t.Fatalf("MintJwt rejected raw integer claims: %v", err)
+	}
+	f.mu.Lock()
+	got := f.lastJwt
+	f.mu.Unlock()
+	if string(got.GetExtraClaimsJson()) != string(raw) {
+		t.Errorf("extra_claims_json = %s, want %s", got.GetExtraClaimsJson(), raw)
+	}
+}

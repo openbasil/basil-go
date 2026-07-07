@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 OpenBasil Contributors
+//
+// SPDX-License-Identifier: Apache-2.0
+
 syntax = "proto3";
 
 // Basil broker API, version 1.
@@ -119,8 +123,8 @@ enum NatsJwtValidationReason {
 
 // AEAD suite for `Encrypt`/`Decrypt`. Basil owns the nonce in every case.
 enum AeadAlgorithm {
-  // Unset; the broker rejects it on encrypt and treats it as the default on
-  // decrypt for forward compatibility.
+  // Unset; the broker rejects it on both encrypt and decrypt. A ciphertext
+  // envelope must name its algorithm explicitly.
   AEAD_ALGORITHM_UNSPECIFIED = 0;
   // ChaCha20-Poly1305 (12-byte nonce, 16-byte tag).
   AEAD_ALGORITHM_CHACHA20_POLY1305 = 1;

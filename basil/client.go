@@ -47,9 +47,10 @@ func WithTimeout(d time.Duration) Option {
 	return func(c *config) { c.timeout = d }
 }
 
-// WithDialOptions appends extra gRPC dial options, such as interceptors or
-// message-size limits. The transport credentials and the Unix-socket dialer
-// are fixed by [Dial] and cannot be overridden through this option.
+// WithDialOptions adds extra gRPC dial options, such as interceptors or
+// message-size limits. They are applied before the options [Dial] fixes, so
+// the transport credentials, the pinned :authority, and the Unix-socket
+// dialer cannot be overridden through this option.
 func WithDialOptions(opts ...grpc.DialOption) Option {
 	return func(c *config) { c.dialOptions = append(c.dialOptions, opts...) }
 }
@@ -70,7 +71,10 @@ func Dial(socketPath string, opts ...Option) (*Client, error) {
 		opt(&cfg)
 	}
 
-	dialOpts := []grpc.DialOption{
+	// User-supplied options go first: grpc-go resolves conflicting options
+	// last-wins, so the fixed options below always take precedence, as
+	// documented on [WithDialOptions].
+	dialOpts := append(cfg.dialOptions,
 		// The broker speaks plaintext gRPC over a local Unix socket and
 		// attests the caller via SO_PEERCRED; there is no TLS to negotiate.
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
@@ -83,8 +87,7 @@ func Dial(socketPath string, opts ...Option) (*Client, error) {
 			var d net.Dialer
 			return d.DialContext(ctx, "unix", socketPath)
 		}),
-	}
-	dialOpts = append(dialOpts, cfg.dialOptions...)
+	)
 
 	// "passthrough:///" hands the target to the context dialer untouched,
 	// sidestepping the resolver's own parsing of unix paths (which differs for

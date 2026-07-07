@@ -37,10 +37,10 @@ func WithTimeout(d time.Duration) Option {
 	return func(c *config) { c.timeout = d }
 }
 
-// WithClientOptions appends extra go-spiffe [workloadapi.ClientOption]s, such
-// as a logger or a custom backoff strategy. The Workload API endpoint address
-// and the pinned HTTP/2 :authority are fixed by [Dial] and cannot be
-// overridden through this option.
+// WithClientOptions adds extra go-spiffe [workloadapi.ClientOption]s, such
+// as a logger or a custom backoff strategy. They are applied before the
+// options [Dial] fixes, so the Workload API endpoint address and the pinned
+// HTTP/2 :authority cannot be overridden through this option.
 func WithClientOptions(opts ...workloadapi.ClientOption) Option {
 	return func(c *config) { c.clientOpts = append(c.clientOpts, opts...) }
 }
@@ -214,7 +214,11 @@ func NewJWTSource(ctx context.Context, socketPath string, extra ...workloadapi.C
 // clientOptions builds the go-spiffe client options that bind a Workload API
 // client to a Basil socket: the endpoint address plus a pinned :authority.
 func clientOptions(socketPath string, extra []workloadapi.ClientOption) []workloadapi.ClientOption {
-	opts := []workloadapi.ClientOption{
+	// User-supplied options go first: a later WithAddr overwrites an earlier
+	// one, and dial options accumulate with grpc-go resolving conflicts
+	// last-wins, so the fixed options below always take precedence, as
+	// documented on [WithClientOptions].
+	return append(extra,
 		workloadapi.WithAddr(socketAddr(socketPath)),
 		// Pin a syntactically valid HTTP/2 :authority. The Unix-socket target
 		// would otherwise leak the socket path into the :authority
@@ -222,8 +226,7 @@ func clientOptions(socketPath string, extra []workloadapi.ClientOption) []worklo
 		// PROTOCOL_ERROR. The broker attests the caller by SO_PEERCRED, so the
 		// value is otherwise unused.
 		workloadapi.WithDialOptions(grpc.WithAuthority("localhost")),
-	}
-	return append(opts, extra...)
+	)
 }
 
 // socketAddr turns a bare filesystem path into a go-spiffe Workload API

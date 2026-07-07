@@ -15,6 +15,8 @@ import (
 	"io"
 	"time"
 
+	"slices"
+
 	"github.com/fxamacker/cbor/v2"
 	"golang.org/x/crypto/hkdf"
 )
@@ -591,6 +593,25 @@ func parseEncryptProtected(raw []byte) (*parsedProtected, error) {
 	}
 	if value, ok := m[labelResponseSubject].(string); ok {
 		parsed.responseSubject = value
+	}
+	// RFC 9052 §3.1: a recipient must reject a message whose crit lists a
+	// label it does not understand. Mirror the broker's decoder: crit must be
+	// present and list exactly the profile labels for the claims this header
+	// carries, in canonical order.
+	rawCrit, ok := m[labelCrit].([]any)
+	if !ok || len(rawCrit) == 0 {
+		return nil, fmt.Errorf("sealed invocation: missing crit")
+	}
+	crit := make([]int64, len(rawCrit))
+	for i, entry := range rawCrit {
+		label, ok := int64Value(entry)
+		if !ok {
+			return nil, fmt.Errorf("sealed invocation: non-integer crit label")
+		}
+		crit[i] = label
+	}
+	if expected := critLabels(parsed); !slices.Equal(crit, expected) {
+		return nil, fmt.Errorf("sealed invocation: crit %v does not match the understood labels %v", crit, expected)
 	}
 	return &parsedProtected{contentType: contentType, claims: parsed}, nil
 }

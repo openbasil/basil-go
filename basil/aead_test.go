@@ -274,3 +274,19 @@ func TestEncryptMapsStatusError(t *testing.T) {
 		t.Errorf("unexpected status error: %+v", se)
 	}
 }
+
+func TestEncryptRejectsSuccessWithoutEnvelope(t *testing.T) {
+	c := dialAead(t, &fakeAead{encryptResp: &pb.EncryptResponse{}})
+	ct, err := c.Encrypt(context.Background(), "app.aead", basil.AeadAlgorithmAES256GCM, []byte("secret"), nil)
+	if err == nil {
+		t.Fatalf("Encrypt succeeded with no envelope: %+v", ct)
+	}
+}
+
+func TestWrapEnvelopeRejectsSuccessWithoutEnvelope(t *testing.T) {
+	c := dialAead(t, &fakeAead{wrapResp: &pb.WrapEnvelopeResponse{}})
+	env, err := c.WrapEnvelope(context.Background(), "app.kem", basil.KemAlgorithmMLKEM768, basil.EnvelopeAlgorithmAES256GCM, []byte("secret"), nil)
+	if err == nil {
+		t.Fatalf("WrapEnvelope succeeded with no envelope: %+v", env)
+	}
+}
