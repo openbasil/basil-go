@@ -1,6 +1,7 @@
 package basil_test
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"sync"
@@ -125,7 +126,7 @@ func TestMintJwtBuildsRequestAndMapsExpiry(t *testing.T) {
 		KeyID:   "app.signing",
 		Subject: "svc-a",
 		TTL:     15 * time.Minute,
-		Claims:  map[string]any{"env": "prod", "scope": float64(2)},
+		Claims:  map[string]any{"env": "prod", "large": uint64(1)<<53 + 1},
 	})
 	if err != nil {
 		t.Fatalf("mint jwt: %v", err)
@@ -149,8 +150,18 @@ func TestMintJwtBuildsRequestAndMapsExpiry(t *testing.T) {
 	if got.GetTtl().AsDuration() != 15*time.Minute {
 		t.Errorf("ttl = %v, want 15m", got.GetTtl().AsDuration())
 	}
-	if got.GetClaims().GetFields()["env"].GetStringValue() != "prod" {
-		t.Errorf("claims.env = %v, want prod", got.GetClaims().GetFields()["env"])
+	var claims map[string]any
+	dec := json.NewDecoder(bytes.NewReader(got.GetExtraClaimsJson()))
+	dec.UseNumber()
+	if err := dec.Decode(&claims); err != nil {
+		t.Fatalf("extra_claims_json is not JSON: %v", err)
+	}
+	if claims["env"] != "prod" {
+		t.Errorf("claims.env = %v, want prod", claims["env"])
+	}
+	large, ok := claims["large"].(json.Number)
+	if !ok || large.String() != "9007199254740993" {
+		t.Errorf("claims.large = %v, want 9007199254740993", claims["large"])
 	}
 }
 
@@ -174,8 +185,8 @@ func TestMintJwtNonExpiringOmitsTTLAndSubject(t *testing.T) {
 	if got.Subject != nil {
 		t.Errorf("subject = %v, want nil (omitted)", got.Subject)
 	}
-	if got.Claims != nil {
-		t.Errorf("claims = %v, want nil (omitted)", got.Claims)
+	if len(got.GetExtraClaimsJson()) != 0 {
+		t.Errorf("extra_claims_json = %s, want empty (omitted)", got.GetExtraClaimsJson())
 	}
 }
 
@@ -382,6 +393,24 @@ func TestValidateNatsJwtBuildsRequestAndMapsValidResponse(t *testing.T) {
 	}
 	if signers[1].GetNatsPublicKey() != "AISSUER" {
 		t.Errorf("signer[1].nats_public_key = %q", signers[1].GetNatsPublicKey())
+	}
+}
+
+func TestValidateNatsJwtRejectsEmptyAllowedSigner(t *testing.T) {
+	f := &fakeMinting{validateResp: &pb.ValidateNatsJwtResponse{Valid: true}}
+	c := dialMinting(t, f)
+
+	_, err := c.Nats().ValidateNatsJwt(context.Background(), basil.ValidateNatsJwtRequest{
+		JWT:            "header.payload.sig",
+		AllowedSigners: []basil.AllowedSigner{{}},
+	})
+	if err == nil {
+		t.Fatal("ValidateNatsJwt succeeded with an empty AllowedSigner")
+	}
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.lastVal != nil {
+		t.Fatal("ValidateNatsJwt sent RPC despite invalid local AllowedSigner")
 	}
 }
 

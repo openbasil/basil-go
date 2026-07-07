@@ -187,9 +187,10 @@ presented token against catalog keys or raw public NKeys, and
 `EncryptNatsCurve` / `DecryptNatsCurve` use custodied xkeys for NATS `xkv1`
 boxes.
 
-`SignNatsJwt` sends the full claim object as raw JSON bytes so integer-valued
-claims are not converted through protobuf doubles. `NatsJwtRequest.Claims` may
-be a map, struct, `json.RawMessage`, `[]byte`, or JSON string. If you decode
+`JwtRequest.Claims` sends additional generic JWT claims as raw UTF-8 JSON object
+bytes (`extra_claims_json`). `SignNatsJwt` uses the same raw JSON pattern for
+the full NATS claim object, sent as `claims_json`. Both claim inputs may be a
+map, struct, `json.RawMessage`, `[]byte`, or JSON string. If you decode
 arbitrary claim JSON into `map[string]any` first, use `json.Decoder.UseNumber`
 to avoid converting large integers to `float64` before the client sees them.
 

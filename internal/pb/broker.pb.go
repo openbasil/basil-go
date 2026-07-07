@@ -21,7 +21,6 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	durationpb "google.golang.org/protobuf/types/known/durationpb"
-	structpb "google.golang.org/protobuf/types/known/structpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
@@ -2849,10 +2848,11 @@ type MintJwtRequest struct {
 	Subject *string `protobuf:"bytes,2,opt,name=subject,proto3,oneof" json:"subject,omitempty"`
 	// Time-to-live; sets `exp` relative to issue time. Absent = non-expiring.
 	Ttl *durationpb.Duration `protobuf:"bytes,3,opt,name=ttl,proto3" json:"ttl,omitempty"`
-	// Additional, non-reserved claims to embed.
-	Claims        *structpb.Struct `protobuf:"bytes,4,opt,name=claims,proto3" json:"claims,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	// Additional, non-reserved claims as UTF-8 JSON object bytes. Empty = no
+	// extra claims.
+	ExtraClaimsJson []byte `protobuf:"bytes,4,opt,name=extra_claims_json,json=extraClaimsJson,proto3" json:"extra_claims_json,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *MintJwtRequest) Reset() {
@@ -2906,9 +2906,9 @@ func (x *MintJwtRequest) GetTtl() *durationpb.Duration {
 	return nil
 }
 
-func (x *MintJwtRequest) GetClaims() *structpb.Struct {
+func (x *MintJwtRequest) GetExtraClaimsJson() []byte {
 	if x != nil {
-		return x.Claims
+		return x.ExtraClaimsJson
 	}
 	return nil
 }
@@ -4583,7 +4583,7 @@ func (x *MatchedRule) GetSubject() string {
 	return ""
 }
 
-// Live policy explanation. Its shape mirrors `basil config explain --json` for
+// Live policy explanation. Its shape mirrors `basil explain --json` for
 // the single-tuple path.
 type ExplainResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -5543,7 +5543,7 @@ var File_basil_broker_v1_broker_proto protoreflect.FileDescriptor
 
 const file_basil_broker_v1_broker_proto_rawDesc = "" +
 	"\n" +
-	"\x1cbasil/broker/v1/broker.proto\x12\x0fbasil.broker.v1\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1cgoogle/protobuf/struct.proto\"]\n" +
+	"\x1cbasil/broker/v1/broker.proto\x12\x0fbasil.broker.v1\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"]\n" +
 	"\vKeyMaterial\x12#\n" +
 	"\fed25519_seed\x18\x01 \x01(\fH\x00R\ved25519Seed\x12\x1d\n" +
 	"\tpkcs8_der\x18\x02 \x01(\fH\x00R\bpkcs8DerB\n" +
@@ -5683,12 +5683,12 @@ const file_basil_broker_v1_broker_proto_rawDesc = "" +
 	"\aversion\x18\x01 \x01(\rR\aversion\"<\n" +
 	"\x12ListCatalogRequest\x12\x1b\n" +
 	"\x06prefix\x18\x01 \x01(\tH\x00R\x06prefix\x88\x01\x01B\t\n" +
-	"\a_prefix\"\xb0\x01\n" +
+	"\a_prefix\"\xab\x01\n" +
 	"\x0eMintJwtRequest\x12\x15\n" +
 	"\x06key_id\x18\x01 \x01(\tR\x05keyId\x12\x1d\n" +
 	"\asubject\x18\x02 \x01(\tH\x00R\asubject\x88\x01\x01\x12+\n" +
-	"\x03ttl\x18\x03 \x01(\v2\x19.google.protobuf.DurationR\x03ttl\x12/\n" +
-	"\x06claims\x18\x04 \x01(\v2\x17.google.protobuf.StructR\x06claimsB\n" +
+	"\x03ttl\x18\x03 \x01(\v2\x19.google.protobuf.DurationR\x03ttl\x12*\n" +
+	"\x11extra_claims_json\x18\x04 \x01(\fR\x0fextraClaimsJsonB\n" +
 	"\n" +
 	"\b_subject\"\xc8\x02\n" +
 	"\x13MintNatsUserRequest\x12\x15\n" +
@@ -6097,8 +6097,7 @@ var file_basil_broker_v1_broker_proto_goTypes = []any{
 	(*Revoked)(nil),                  // 83: basil.broker.v1.Revoked
 	(*BrokerErrorInfo)(nil),          // 84: basil.broker.v1.BrokerErrorInfo
 	(*durationpb.Duration)(nil),      // 85: google.protobuf.Duration
-	(*structpb.Struct)(nil),          // 86: google.protobuf.Struct
-	(*timestamppb.Timestamp)(nil),    // 87: google.protobuf.Timestamp
+	(*timestamppb.Timestamp)(nil),    // 86: google.protobuf.Timestamp
 }
 var file_basil_broker_v1_broker_proto_depIdxs = []int32{
 	5,  // 0: basil.broker.v1.CiphertextEnvelope.alg:type_name -> basil.broker.v1.AeadAlgorithm
@@ -6124,108 +6123,107 @@ var file_basil_broker_v1_broker_proto_depIdxs = []int32{
 	13, // 20: basil.broker.v1.WrapEnvelopeResponse.envelope:type_name -> basil.broker.v1.KemEnvelope
 	13, // 21: basil.broker.v1.UnwrapEnvelopeRequest.envelope:type_name -> basil.broker.v1.KemEnvelope
 	85, // 22: basil.broker.v1.MintJwtRequest.ttl:type_name -> google.protobuf.Duration
-	86, // 23: basil.broker.v1.MintJwtRequest.claims:type_name -> google.protobuf.Struct
-	85, // 24: basil.broker.v1.MintNatsUserRequest.ttl:type_name -> google.protobuf.Duration
-	85, // 25: basil.broker.v1.MintNatsAccountRequest.ttl:type_name -> google.protobuf.Duration
-	85, // 26: basil.broker.v1.MintNatsOperatorRequest.ttl:type_name -> google.protobuf.Duration
-	85, // 27: basil.broker.v1.MintNatsSignerRequest.ttl:type_name -> google.protobuf.Duration
-	85, // 28: basil.broker.v1.MintNatsServerRequest.ttl:type_name -> google.protobuf.Duration
-	85, // 29: basil.broker.v1.MintNatsCurveRequest.ttl:type_name -> google.protobuf.Duration
-	2,  // 30: basil.broker.v1.SignNatsJwtRequest.expected_type:type_name -> basil.broker.v1.NatsJwtType
-	85, // 31: basil.broker.v1.SignNatsJwtRequest.ttl:type_name -> google.protobuf.Duration
-	87, // 32: basil.broker.v1.SignNatsJwtRequest.expires_at:type_name -> google.protobuf.Timestamp
-	87, // 33: basil.broker.v1.SignNatsJwtRequest.issued_at:type_name -> google.protobuf.Timestamp
-	3,  // 34: basil.broker.v1.SignNatsJwtRequest.jti_mode:type_name -> basil.broker.v1.NatsJtiMode
-	59, // 35: basil.broker.v1.ValidateNatsJwtRequest.allowed_signers:type_name -> basil.broker.v1.AllowedNatsSigner
-	2,  // 36: basil.broker.v1.ValidateNatsJwtRequest.expected_type:type_name -> basil.broker.v1.NatsJwtType
-	4,  // 37: basil.broker.v1.ValidateNatsJwtResponse.reason:type_name -> basil.broker.v1.NatsJwtValidationReason
-	2,  // 38: basil.broker.v1.ValidateNatsJwtResponse.jwt_type:type_name -> basil.broker.v1.NatsJwtType
-	87, // 39: basil.broker.v1.CredentialResponse.expires_at:type_name -> google.protobuf.Timestamp
-	85, // 40: basil.broker.v1.IssueCertificateRequest.ttl:type_name -> google.protobuf.Duration
-	67, // 41: basil.broker.v1.ReloadResponse.rejection:type_name -> basil.broker.v1.ReloadRejection
-	69, // 42: basil.broker.v1.ExplainResponse.matched_rule:type_name -> basil.broker.v1.MatchedRule
-	9,  // 43: basil.broker.v1.ReadinessResponse.reason:type_name -> basil.broker.v1.ReadinessReason
-	10, // 44: basil.broker.v1.WatchRequest.kinds:type_name -> basil.broker.v1.EventKind
-	10, // 45: basil.broker.v1.Event.kind:type_name -> basil.broker.v1.EventKind
-	87, // 46: basil.broker.v1.Event.at:type_name -> google.protobuf.Timestamp
-	81, // 47: basil.broker.v1.Event.key_rotated:type_name -> basil.broker.v1.KeyRotated
-	82, // 48: basil.broker.v1.Event.bundle_changed:type_name -> basil.broker.v1.BundleChanged
-	83, // 49: basil.broker.v1.Event.revoked:type_name -> basil.broker.v1.Revoked
-	15, // 50: basil.broker.v1.InvocationService.Invoke:input_type -> basil.broker.v1.SealedRequest
-	17, // 51: basil.broker.v1.SigningService.NewKey:input_type -> basil.broker.v1.NewKeyRequest
-	19, // 52: basil.broker.v1.SigningService.Import:input_type -> basil.broker.v1.ImportRequest
-	21, // 53: basil.broker.v1.SigningService.ImportSet:input_type -> basil.broker.v1.ImportSetRequest
-	24, // 54: basil.broker.v1.SigningService.Sign:input_type -> basil.broker.v1.SignRequest
-	26, // 55: basil.broker.v1.SigningService.Verify:input_type -> basil.broker.v1.VerifyRequest
-	28, // 56: basil.broker.v1.SigningService.GetPublicKey:input_type -> basil.broker.v1.GetPublicKeyRequest
-	30, // 57: basil.broker.v1.AeadService.Encrypt:input_type -> basil.broker.v1.EncryptRequest
-	32, // 58: basil.broker.v1.AeadService.Decrypt:input_type -> basil.broker.v1.DecryptRequest
-	34, // 59: basil.broker.v1.AeadService.WrapEnvelope:input_type -> basil.broker.v1.WrapEnvelopeRequest
-	36, // 60: basil.broker.v1.AeadService.UnwrapEnvelope:input_type -> basil.broker.v1.UnwrapEnvelopeRequest
-	38, // 61: basil.broker.v1.AeadService.UnsealCose:input_type -> basil.broker.v1.UnsealCoseRequest
-	40, // 62: basil.broker.v1.SecretService.GetSecret:input_type -> basil.broker.v1.GetSecretRequest
-	42, // 63: basil.broker.v1.SecretService.SetSecret:input_type -> basil.broker.v1.SetSecretRequest
-	44, // 64: basil.broker.v1.SecretService.RotateSecret:input_type -> basil.broker.v1.RotateSecretRequest
-	46, // 65: basil.broker.v1.SecretService.ListCatalog:input_type -> basil.broker.v1.ListCatalogRequest
-	47, // 66: basil.broker.v1.MintingService.MintJwt:input_type -> basil.broker.v1.MintJwtRequest
-	63, // 67: basil.broker.v1.MintingService.IssueCertificate:input_type -> basil.broker.v1.IssueCertificateRequest
-	48, // 68: basil.broker.v1.NatsService.MintNatsUser:input_type -> basil.broker.v1.MintNatsUserRequest
-	49, // 69: basil.broker.v1.NatsService.MintNatsAccount:input_type -> basil.broker.v1.MintNatsAccountRequest
-	50, // 70: basil.broker.v1.NatsService.MintNatsOperator:input_type -> basil.broker.v1.MintNatsOperatorRequest
-	51, // 71: basil.broker.v1.NatsService.MintNatsSigner:input_type -> basil.broker.v1.MintNatsSignerRequest
-	52, // 72: basil.broker.v1.NatsService.MintNatsServer:input_type -> basil.broker.v1.MintNatsServerRequest
-	53, // 73: basil.broker.v1.NatsService.MintNatsCurve:input_type -> basil.broker.v1.MintNatsCurveRequest
-	54, // 74: basil.broker.v1.NatsService.EncryptNatsCurve:input_type -> basil.broker.v1.EncryptNatsCurveRequest
-	56, // 75: basil.broker.v1.NatsService.DecryptNatsCurve:input_type -> basil.broker.v1.DecryptNatsCurveRequest
-	58, // 76: basil.broker.v1.NatsService.SignNatsJwt:input_type -> basil.broker.v1.SignNatsJwtRequest
-	60, // 77: basil.broker.v1.NatsService.ValidateNatsJwt:input_type -> basil.broker.v1.ValidateNatsJwtRequest
-	77, // 78: basil.broker.v1.AdminService.Status:input_type -> basil.broker.v1.StatusRequest
-	73, // 79: basil.broker.v1.AdminService.Health:input_type -> basil.broker.v1.HealthRequest
-	75, // 80: basil.broker.v1.AdminService.Readiness:input_type -> basil.broker.v1.ReadinessRequest
-	79, // 81: basil.broker.v1.AdminService.Watch:input_type -> basil.broker.v1.WatchRequest
-	65, // 82: basil.broker.v1.AdminService.Reload:input_type -> basil.broker.v1.ReloadRequest
-	68, // 83: basil.broker.v1.AdminService.Explain:input_type -> basil.broker.v1.ExplainRequest
-	71, // 84: basil.broker.v1.AdminService.Revoke:input_type -> basil.broker.v1.RevokeRequest
-	16, // 85: basil.broker.v1.InvocationService.Invoke:output_type -> basil.broker.v1.SealedResponse
-	18, // 86: basil.broker.v1.SigningService.NewKey:output_type -> basil.broker.v1.NewKeyResponse
-	18, // 87: basil.broker.v1.SigningService.Import:output_type -> basil.broker.v1.NewKeyResponse
-	23, // 88: basil.broker.v1.SigningService.ImportSet:output_type -> basil.broker.v1.ImportSetResponse
-	25, // 89: basil.broker.v1.SigningService.Sign:output_type -> basil.broker.v1.SignResponse
-	27, // 90: basil.broker.v1.SigningService.Verify:output_type -> basil.broker.v1.VerifyResponse
-	29, // 91: basil.broker.v1.SigningService.GetPublicKey:output_type -> basil.broker.v1.GetPublicKeyResponse
-	31, // 92: basil.broker.v1.AeadService.Encrypt:output_type -> basil.broker.v1.EncryptResponse
-	33, // 93: basil.broker.v1.AeadService.Decrypt:output_type -> basil.broker.v1.DecryptResponse
-	35, // 94: basil.broker.v1.AeadService.WrapEnvelope:output_type -> basil.broker.v1.WrapEnvelopeResponse
-	37, // 95: basil.broker.v1.AeadService.UnwrapEnvelope:output_type -> basil.broker.v1.UnwrapEnvelopeResponse
-	39, // 96: basil.broker.v1.AeadService.UnsealCose:output_type -> basil.broker.v1.UnsealCoseResponse
-	41, // 97: basil.broker.v1.SecretService.GetSecret:output_type -> basil.broker.v1.GetSecretResponse
-	43, // 98: basil.broker.v1.SecretService.SetSecret:output_type -> basil.broker.v1.SetSecretResponse
-	45, // 99: basil.broker.v1.SecretService.RotateSecret:output_type -> basil.broker.v1.RotateSecretResponse
-	14, // 100: basil.broker.v1.SecretService.ListCatalog:output_type -> basil.broker.v1.CatalogEntry
-	62, // 101: basil.broker.v1.MintingService.MintJwt:output_type -> basil.broker.v1.CredentialResponse
-	64, // 102: basil.broker.v1.MintingService.IssueCertificate:output_type -> basil.broker.v1.IssueCertificateResponse
-	62, // 103: basil.broker.v1.NatsService.MintNatsUser:output_type -> basil.broker.v1.CredentialResponse
-	62, // 104: basil.broker.v1.NatsService.MintNatsAccount:output_type -> basil.broker.v1.CredentialResponse
-	62, // 105: basil.broker.v1.NatsService.MintNatsOperator:output_type -> basil.broker.v1.CredentialResponse
-	62, // 106: basil.broker.v1.NatsService.MintNatsSigner:output_type -> basil.broker.v1.CredentialResponse
-	62, // 107: basil.broker.v1.NatsService.MintNatsServer:output_type -> basil.broker.v1.CredentialResponse
-	62, // 108: basil.broker.v1.NatsService.MintNatsCurve:output_type -> basil.broker.v1.CredentialResponse
-	55, // 109: basil.broker.v1.NatsService.EncryptNatsCurve:output_type -> basil.broker.v1.EncryptNatsCurveResponse
-	57, // 110: basil.broker.v1.NatsService.DecryptNatsCurve:output_type -> basil.broker.v1.DecryptNatsCurveResponse
-	62, // 111: basil.broker.v1.NatsService.SignNatsJwt:output_type -> basil.broker.v1.CredentialResponse
-	61, // 112: basil.broker.v1.NatsService.ValidateNatsJwt:output_type -> basil.broker.v1.ValidateNatsJwtResponse
-	78, // 113: basil.broker.v1.AdminService.Status:output_type -> basil.broker.v1.StatusResponse
-	74, // 114: basil.broker.v1.AdminService.Health:output_type -> basil.broker.v1.HealthResponse
-	76, // 115: basil.broker.v1.AdminService.Readiness:output_type -> basil.broker.v1.ReadinessResponse
-	80, // 116: basil.broker.v1.AdminService.Watch:output_type -> basil.broker.v1.Event
-	66, // 117: basil.broker.v1.AdminService.Reload:output_type -> basil.broker.v1.ReloadResponse
-	70, // 118: basil.broker.v1.AdminService.Explain:output_type -> basil.broker.v1.ExplainResponse
-	72, // 119: basil.broker.v1.AdminService.Revoke:output_type -> basil.broker.v1.RevokeResponse
-	85, // [85:120] is the sub-list for method output_type
-	50, // [50:85] is the sub-list for method input_type
-	50, // [50:50] is the sub-list for extension type_name
-	50, // [50:50] is the sub-list for extension extendee
-	0,  // [0:50] is the sub-list for field type_name
+	85, // 23: basil.broker.v1.MintNatsUserRequest.ttl:type_name -> google.protobuf.Duration
+	85, // 24: basil.broker.v1.MintNatsAccountRequest.ttl:type_name -> google.protobuf.Duration
+	85, // 25: basil.broker.v1.MintNatsOperatorRequest.ttl:type_name -> google.protobuf.Duration
+	85, // 26: basil.broker.v1.MintNatsSignerRequest.ttl:type_name -> google.protobuf.Duration
+	85, // 27: basil.broker.v1.MintNatsServerRequest.ttl:type_name -> google.protobuf.Duration
+	85, // 28: basil.broker.v1.MintNatsCurveRequest.ttl:type_name -> google.protobuf.Duration
+	2,  // 29: basil.broker.v1.SignNatsJwtRequest.expected_type:type_name -> basil.broker.v1.NatsJwtType
+	85, // 30: basil.broker.v1.SignNatsJwtRequest.ttl:type_name -> google.protobuf.Duration
+	86, // 31: basil.broker.v1.SignNatsJwtRequest.expires_at:type_name -> google.protobuf.Timestamp
+	86, // 32: basil.broker.v1.SignNatsJwtRequest.issued_at:type_name -> google.protobuf.Timestamp
+	3,  // 33: basil.broker.v1.SignNatsJwtRequest.jti_mode:type_name -> basil.broker.v1.NatsJtiMode
+	59, // 34: basil.broker.v1.ValidateNatsJwtRequest.allowed_signers:type_name -> basil.broker.v1.AllowedNatsSigner
+	2,  // 35: basil.broker.v1.ValidateNatsJwtRequest.expected_type:type_name -> basil.broker.v1.NatsJwtType
+	4,  // 36: basil.broker.v1.ValidateNatsJwtResponse.reason:type_name -> basil.broker.v1.NatsJwtValidationReason
+	2,  // 37: basil.broker.v1.ValidateNatsJwtResponse.jwt_type:type_name -> basil.broker.v1.NatsJwtType
+	86, // 38: basil.broker.v1.CredentialResponse.expires_at:type_name -> google.protobuf.Timestamp
+	85, // 39: basil.broker.v1.IssueCertificateRequest.ttl:type_name -> google.protobuf.Duration
+	67, // 40: basil.broker.v1.ReloadResponse.rejection:type_name -> basil.broker.v1.ReloadRejection
+	69, // 41: basil.broker.v1.ExplainResponse.matched_rule:type_name -> basil.broker.v1.MatchedRule
+	9,  // 42: basil.broker.v1.ReadinessResponse.reason:type_name -> basil.broker.v1.ReadinessReason
+	10, // 43: basil.broker.v1.WatchRequest.kinds:type_name -> basil.broker.v1.EventKind
+	10, // 44: basil.broker.v1.Event.kind:type_name -> basil.broker.v1.EventKind
+	86, // 45: basil.broker.v1.Event.at:type_name -> google.protobuf.Timestamp
+	81, // 46: basil.broker.v1.Event.key_rotated:type_name -> basil.broker.v1.KeyRotated
+	82, // 47: basil.broker.v1.Event.bundle_changed:type_name -> basil.broker.v1.BundleChanged
+	83, // 48: basil.broker.v1.Event.revoked:type_name -> basil.broker.v1.Revoked
+	15, // 49: basil.broker.v1.InvocationService.Invoke:input_type -> basil.broker.v1.SealedRequest
+	17, // 50: basil.broker.v1.SigningService.NewKey:input_type -> basil.broker.v1.NewKeyRequest
+	19, // 51: basil.broker.v1.SigningService.Import:input_type -> basil.broker.v1.ImportRequest
+	21, // 52: basil.broker.v1.SigningService.ImportSet:input_type -> basil.broker.v1.ImportSetRequest
+	24, // 53: basil.broker.v1.SigningService.Sign:input_type -> basil.broker.v1.SignRequest
+	26, // 54: basil.broker.v1.SigningService.Verify:input_type -> basil.broker.v1.VerifyRequest
+	28, // 55: basil.broker.v1.SigningService.GetPublicKey:input_type -> basil.broker.v1.GetPublicKeyRequest
+	30, // 56: basil.broker.v1.AeadService.Encrypt:input_type -> basil.broker.v1.EncryptRequest
+	32, // 57: basil.broker.v1.AeadService.Decrypt:input_type -> basil.broker.v1.DecryptRequest
+	34, // 58: basil.broker.v1.AeadService.WrapEnvelope:input_type -> basil.broker.v1.WrapEnvelopeRequest
+	36, // 59: basil.broker.v1.AeadService.UnwrapEnvelope:input_type -> basil.broker.v1.UnwrapEnvelopeRequest
+	38, // 60: basil.broker.v1.AeadService.UnsealCose:input_type -> basil.broker.v1.UnsealCoseRequest
+	40, // 61: basil.broker.v1.SecretService.GetSecret:input_type -> basil.broker.v1.GetSecretRequest
+	42, // 62: basil.broker.v1.SecretService.SetSecret:input_type -> basil.broker.v1.SetSecretRequest
+	44, // 63: basil.broker.v1.SecretService.RotateSecret:input_type -> basil.broker.v1.RotateSecretRequest
+	46, // 64: basil.broker.v1.SecretService.ListCatalog:input_type -> basil.broker.v1.ListCatalogRequest
+	47, // 65: basil.broker.v1.MintingService.MintJwt:input_type -> basil.broker.v1.MintJwtRequest
+	63, // 66: basil.broker.v1.MintingService.IssueCertificate:input_type -> basil.broker.v1.IssueCertificateRequest
+	48, // 67: basil.broker.v1.NatsService.MintNatsUser:input_type -> basil.broker.v1.MintNatsUserRequest
+	49, // 68: basil.broker.v1.NatsService.MintNatsAccount:input_type -> basil.broker.v1.MintNatsAccountRequest
+	50, // 69: basil.broker.v1.NatsService.MintNatsOperator:input_type -> basil.broker.v1.MintNatsOperatorRequest
+	51, // 70: basil.broker.v1.NatsService.MintNatsSigner:input_type -> basil.broker.v1.MintNatsSignerRequest
+	52, // 71: basil.broker.v1.NatsService.MintNatsServer:input_type -> basil.broker.v1.MintNatsServerRequest
+	53, // 72: basil.broker.v1.NatsService.MintNatsCurve:input_type -> basil.broker.v1.MintNatsCurveRequest
+	54, // 73: basil.broker.v1.NatsService.EncryptNatsCurve:input_type -> basil.broker.v1.EncryptNatsCurveRequest
+	56, // 74: basil.broker.v1.NatsService.DecryptNatsCurve:input_type -> basil.broker.v1.DecryptNatsCurveRequest
+	58, // 75: basil.broker.v1.NatsService.SignNatsJwt:input_type -> basil.broker.v1.SignNatsJwtRequest
+	60, // 76: basil.broker.v1.NatsService.ValidateNatsJwt:input_type -> basil.broker.v1.ValidateNatsJwtRequest
+	77, // 77: basil.broker.v1.AdminService.Status:input_type -> basil.broker.v1.StatusRequest
+	73, // 78: basil.broker.v1.AdminService.Health:input_type -> basil.broker.v1.HealthRequest
+	75, // 79: basil.broker.v1.AdminService.Readiness:input_type -> basil.broker.v1.ReadinessRequest
+	79, // 80: basil.broker.v1.AdminService.Watch:input_type -> basil.broker.v1.WatchRequest
+	65, // 81: basil.broker.v1.AdminService.Reload:input_type -> basil.broker.v1.ReloadRequest
+	68, // 82: basil.broker.v1.AdminService.Explain:input_type -> basil.broker.v1.ExplainRequest
+	71, // 83: basil.broker.v1.AdminService.Revoke:input_type -> basil.broker.v1.RevokeRequest
+	16, // 84: basil.broker.v1.InvocationService.Invoke:output_type -> basil.broker.v1.SealedResponse
+	18, // 85: basil.broker.v1.SigningService.NewKey:output_type -> basil.broker.v1.NewKeyResponse
+	18, // 86: basil.broker.v1.SigningService.Import:output_type -> basil.broker.v1.NewKeyResponse
+	23, // 87: basil.broker.v1.SigningService.ImportSet:output_type -> basil.broker.v1.ImportSetResponse
+	25, // 88: basil.broker.v1.SigningService.Sign:output_type -> basil.broker.v1.SignResponse
+	27, // 89: basil.broker.v1.SigningService.Verify:output_type -> basil.broker.v1.VerifyResponse
+	29, // 90: basil.broker.v1.SigningService.GetPublicKey:output_type -> basil.broker.v1.GetPublicKeyResponse
+	31, // 91: basil.broker.v1.AeadService.Encrypt:output_type -> basil.broker.v1.EncryptResponse
+	33, // 92: basil.broker.v1.AeadService.Decrypt:output_type -> basil.broker.v1.DecryptResponse
+	35, // 93: basil.broker.v1.AeadService.WrapEnvelope:output_type -> basil.broker.v1.WrapEnvelopeResponse
+	37, // 94: basil.broker.v1.AeadService.UnwrapEnvelope:output_type -> basil.broker.v1.UnwrapEnvelopeResponse
+	39, // 95: basil.broker.v1.AeadService.UnsealCose:output_type -> basil.broker.v1.UnsealCoseResponse
+	41, // 96: basil.broker.v1.SecretService.GetSecret:output_type -> basil.broker.v1.GetSecretResponse
+	43, // 97: basil.broker.v1.SecretService.SetSecret:output_type -> basil.broker.v1.SetSecretResponse
+	45, // 98: basil.broker.v1.SecretService.RotateSecret:output_type -> basil.broker.v1.RotateSecretResponse
+	14, // 99: basil.broker.v1.SecretService.ListCatalog:output_type -> basil.broker.v1.CatalogEntry
+	62, // 100: basil.broker.v1.MintingService.MintJwt:output_type -> basil.broker.v1.CredentialResponse
+	64, // 101: basil.broker.v1.MintingService.IssueCertificate:output_type -> basil.broker.v1.IssueCertificateResponse
+	62, // 102: basil.broker.v1.NatsService.MintNatsUser:output_type -> basil.broker.v1.CredentialResponse
+	62, // 103: basil.broker.v1.NatsService.MintNatsAccount:output_type -> basil.broker.v1.CredentialResponse
+	62, // 104: basil.broker.v1.NatsService.MintNatsOperator:output_type -> basil.broker.v1.CredentialResponse
+	62, // 105: basil.broker.v1.NatsService.MintNatsSigner:output_type -> basil.broker.v1.CredentialResponse
+	62, // 106: basil.broker.v1.NatsService.MintNatsServer:output_type -> basil.broker.v1.CredentialResponse
+	62, // 107: basil.broker.v1.NatsService.MintNatsCurve:output_type -> basil.broker.v1.CredentialResponse
+	55, // 108: basil.broker.v1.NatsService.EncryptNatsCurve:output_type -> basil.broker.v1.EncryptNatsCurveResponse
+	57, // 109: basil.broker.v1.NatsService.DecryptNatsCurve:output_type -> basil.broker.v1.DecryptNatsCurveResponse
+	62, // 110: basil.broker.v1.NatsService.SignNatsJwt:output_type -> basil.broker.v1.CredentialResponse
+	61, // 111: basil.broker.v1.NatsService.ValidateNatsJwt:output_type -> basil.broker.v1.ValidateNatsJwtResponse
+	78, // 112: basil.broker.v1.AdminService.Status:output_type -> basil.broker.v1.StatusResponse
+	74, // 113: basil.broker.v1.AdminService.Health:output_type -> basil.broker.v1.HealthResponse
+	76, // 114: basil.broker.v1.AdminService.Readiness:output_type -> basil.broker.v1.ReadinessResponse
+	80, // 115: basil.broker.v1.AdminService.Watch:output_type -> basil.broker.v1.Event
+	66, // 116: basil.broker.v1.AdminService.Reload:output_type -> basil.broker.v1.ReloadResponse
+	70, // 117: basil.broker.v1.AdminService.Explain:output_type -> basil.broker.v1.ExplainResponse
+	72, // 118: basil.broker.v1.AdminService.Revoke:output_type -> basil.broker.v1.RevokeResponse
+	84, // [84:119] is the sub-list for method output_type
+	49, // [49:84] is the sub-list for method input_type
+	49, // [49:49] is the sub-list for extension type_name
+	49, // [49:49] is the sub-list for extension extendee
+	0,  // [0:49] is the sub-list for field type_name
 }
 
 func init() { file_basil_broker_v1_broker_proto_init() }

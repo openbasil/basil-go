@@ -213,7 +213,7 @@ type MatchedRule struct {
 
 // ExplainResult is a live policy explanation against the broker's serving
 // generation, as returned by [Client.Explain]. Its shape mirrors
-// `basil config explain --json` for the single-tuple path.
+// `basil explain --json` for the single-tuple path.
 type ExplainResult struct {
 	// Subject is the subject evaluated.
 	Subject string

@@ -9,7 +9,6 @@ import (
 
 	"github.com/openbasil/basil-go/internal/pb"
 	"google.golang.org/protobuf/types/known/durationpb"
-	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -107,9 +106,12 @@ type JwtRequest struct {
 	Subject string
 	// TTL sets exp relative to issue time; zero mints a non-expiring token.
 	TTL time.Duration
-	// Claims are additional, non-reserved claims to embed. Values must be
-	// JSON-representable (see [structpb.NewStruct]).
-	Claims map[string]any
+	// Claims are additional, non-reserved claims to embed. They may be a
+	// JSON-marshaled map/struct, json.RawMessage, []byte, or string containing a
+	// JSON object. When decoding claim JSON into maps, use
+	// json.Decoder.UseNumber so large integers are not converted to float64
+	// before Basil sees them.
+	Claims any
 }
 
 // NatsUserRequest is the input to [Client.MintNatsUser].
@@ -347,14 +349,14 @@ func (c *Client) Nats() NatsClient {
 // MintJwt mints a generic JWT with caller-supplied claims, signed in place by
 // the catalog key named req.KeyID.
 func (c *Client) MintJwt(ctx context.Context, req JwtRequest) (*Credential, error) {
-	claims, err := structOrNil(req.Claims)
+	claimsJSON, err := optionalObjectJSON(req.Claims, "jwt claims")
 	if err != nil {
 		return nil, err
 	}
 	pbReq := &pb.MintJwtRequest{
-		KeyId:  req.KeyID,
-		Ttl:    durationOrNil(req.TTL),
-		Claims: claims,
+		KeyId:           req.KeyID,
+		Ttl:             durationOrNil(req.TTL),
+		ExtraClaimsJson: claimsJSON,
 	}
 	if req.Subject != "" {
 		pbReq.Subject = &req.Subject
@@ -574,7 +576,11 @@ func (c *Client) ValidateNatsJwt(ctx context.Context, req ValidateNatsJwtRequest
 func (n NatsClient) ValidateNatsJwt(ctx context.Context, req ValidateNatsJwtRequest) (*NatsJwtValidation, error) {
 	allowed := make([]*pb.AllowedNatsSigner, len(req.AllowedSigners))
 	for i, signer := range req.AllowedSigners {
-		allowed[i] = signer.toProto()
+		protoSigner, err := signer.toProto()
+		if err != nil {
+			return nil, err
+		}
+		allowed[i] = protoSigner
 	}
 	ctx, cancel := n.c.withTimeout(ctx)
 	defer cancel()
@@ -632,18 +638,18 @@ func credentialFromProto(r *pb.CredentialResponse) *Credential {
 	return out
 }
 
-func (s AllowedSigner) toProto() *pb.AllowedNatsSigner {
+func (s AllowedSigner) toProto() (*pb.AllowedNatsSigner, error) {
 	if s.keyID != "" {
 		return &pb.AllowedNatsSigner{
 			Signer: &pb.AllowedNatsSigner_KeyId{KeyId: s.keyID},
-		}
+		}, nil
 	}
 	if s.natsPublicKey == "" {
-		return &pb.AllowedNatsSigner{}
+		return nil, fmt.Errorf("allowed signer must be constructed with AllowedSignerKeyID or AllowedSignerNatsPublicKey")
 	}
 	return &pb.AllowedNatsSigner{
 		Signer: &pb.AllowedNatsSigner_NatsPublicKey{NatsPublicKey: s.natsPublicKey},
-	}
+	}, nil
 }
 
 func natsJwtValidationFromProto(r *pb.ValidateNatsJwtResponse) *NatsJwtValidation {
@@ -682,18 +688,11 @@ func timestampOrNil(t time.Time) *timestamppb.Timestamp {
 	return timestamppb.New(t)
 }
 
-// structOrNil converts a claims map into a protobuf Struct, returning nil for
-// an empty map. A value that is not JSON-representable yields an error before
-// the call reaches the wire.
-func structOrNil(m map[string]any) (*structpb.Struct, error) {
-	if len(m) == 0 {
+func optionalObjectJSON(value any, label string) ([]byte, error) {
+	if value == nil {
 		return nil, nil
 	}
-	s, err := structpb.NewStruct(m)
-	if err != nil {
-		return nil, fmt.Errorf("basil: invalid claims: %w", err)
-	}
-	return s, nil
+	return objectJSON(value, label)
 }
 
 func objectJSON(value any, label string) ([]byte, error) {
