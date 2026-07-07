@@ -49,15 +49,15 @@ against the Rust CLI.
 
 ## Prerequisites
 
-- [`bao`](https://openbao.org) (OpenBao) on `PATH`.
+- [`bao`](https://openbao.org) (OpenBao) or [`vault`](https://developer.hashicorp.com/vault) on `PATH`.
 - `go` on `PATH`.
-- A `basil` broker binary with the `pqc` feature (`$BASIL_BIN` when set;
-  otherwise `run.sh` builds one with `cargo build -p basil-bin --features pqc`).
+- `basil` on `PATH` (or `BASIL_BIN` pointing at a prebuilt binary). If it is missing, `run.sh` points to the latest release at
+  <https://github.com/openbasil/basil/releases>.
 
 ## Run it
 
 ```bash
-BASIL_BIN=/path/to/basil ./run.sh   # or just ./run.sh to build from source
+./run.sh
 ```
 
 `run.sh` boots an OpenBao dev server (default port `8231`, override with

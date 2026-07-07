@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: 2026 OpenBasil Contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
+# typos (spell checker) configuration
+
+[files]
+# ignore these files
+
+[default]
+extend-ignore-identifiers-re = [
+  ".*(cose|Cose|COSE).*",
+]
+
+[default.extend-identifiers]
+# overrides: if right side of equals is same as left side, no change is made
+AOTHER = "AOTHER"
+HashiCorp = "HashiCorp"

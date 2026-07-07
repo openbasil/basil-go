@@ -42,18 +42,14 @@ key, nothing else.
 
 ## Prerequisites
 
-- [`bao`](https://openbao.org) (OpenBao) on `PATH`: the storage backend.
+- [`bao`](https://openbao.org) (OpenBao) or [`vault`](https://developer.hashicorp.com/vault) on `PATH`: the storage backend.
 - `go` on `PATH`: to build and run the example.
-- A `basil` broker binary. `run.sh` uses `$BASIL_BIN` when set (a prebuilt
-  binary); otherwise it builds one with `cargo` from the repo root.
+- `basil` on `PATH` (or `BASIL_BIN` pointing at a prebuilt binary). If it is missing, `run.sh` points to the latest release at
+  <https://github.com/openbasil/basil/releases>.
 
 ## Run it
 
 ```bash
-# With a prebuilt broker:
-BASIL_BIN=/path/to/basil ./run.sh
-
-# Or let it build basil from source:
 ./run.sh
 ```
 

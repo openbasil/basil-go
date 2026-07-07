@@ -61,16 +61,16 @@ configured from the minted JWTs before any client can connect:
 
 ## Prerequisites
 
-- [`bao`](https://openbao.org) (OpenBao) and
+- [`bao`](https://openbao.org) (OpenBao) or [`vault`](https://developer.hashicorp.com/vault), and
   [`nats-server`](https://nats.io) on `PATH`.
 - `go` on `PATH`.
-- A `basil` broker binary (`$BASIL_BIN` when set; otherwise `run.sh` builds one
-  with `cargo`).
+- `basil` on `PATH` (or `BASIL_BIN` pointing at a prebuilt binary). If it is missing, `run.sh` points to the latest release at
+  <https://github.com/openbasil/basil/releases>.
 
 ## Run it
 
 ```bash
-BASIL_BIN=/path/to/basil ./run.sh   # or just ./run.sh to build from source
+./run.sh
 ```
 
 Default ports: OpenBao `8232` (`BAO_PORT`), `nats-server` `4250` (`NATS_PORT`).

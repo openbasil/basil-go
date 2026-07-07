@@ -2,18 +2,17 @@
 # run.sh boots OpenBao + a Basil agent with a custodied ML-KEM-768 sealing key,
 # then run the stream-file-encryption example and assert every proven property.
 #
-# Exit 0 only when all assertions pass. Honors BASIL_BIN (a prebuilt `basil`);
-# falls back to `cargo build` from the repo root when it is unset.
+# Exit 0 only when all assertions pass. Honors BASIL_BIN (a prebuilt `basil`),
+# then `basil` on PATH; fails with install guidance when neither is present.
 #
 # Env overrides (all optional):
 #   STREAM_FILE_WORKDIR   scratch dir           (default /tmp/basil-stream-file)
-#   BASIL_BIN             prebuilt basil binary (default: cargo build)
+#   BASIL_BIN             prebuilt basil binary (default: basil on PATH)
 #   BAO_PORT              OpenBao dev port      (default 8231)
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-GO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
-REPO_ROOT="$(cd "${GO_ROOT}/../.." && pwd)"
+INSTALL_URL="https://github.com/openbasil/basil/releases"
 
 WORKDIR="${STREAM_FILE_WORKDIR:-/tmp/basil-stream-file}"
 BAO_PORT="${BAO_PORT:-8231}"
@@ -38,6 +37,27 @@ AGENT_PID=""
 
 need() { command -v "$1" >/dev/null 2>&1 || { echo "missing required command: $1" >&2; exit 1; }; }
 
+need_basil() {
+  if [ -n "${BASIL_BIN:-}" ]; then
+    [ -x "${BASIL_BIN}" ] || { echo "BASIL_BIN=${BASIL_BIN} is not executable" >&2; exit 1; }
+    echo "== using prebuilt basil: ${BASIL_BIN}"
+    return
+  fi
+  if ! command -v basil >/dev/null 2>&1; then
+    cat >&2 <<EOF
+missing required Basil binary: basil
+
+Install the latest Basil release from:
+  ${INSTALL_URL}
+
+Then set BASIL_BIN or make sure 'basil' is on PATH and rerun this script.
+EOF
+    exit 1
+  fi
+  BASIL_BIN="$(command -v basil)"
+  echo "== using basil: ${BASIL_BIN}"
+}
+
 cleanup() {
   local pids="${AGENT_PID} ${BAO_PID}"
   # Dev servers (bao) ignore a plain SIGTERM; SIGINT stops them cleanly.
@@ -46,18 +66,6 @@ cleanup() {
   for pid in ${pids}; do [ -n "${pid}" ] && kill -KILL "${pid}" 2>/dev/null || true; done
 }
 trap cleanup EXIT
-
-resolve_basil_bin() {
-  if [ -n "${BASIL_BIN:-}" ]; then
-    [ -x "${BASIL_BIN}" ] || { echo "BASIL_BIN=${BASIL_BIN} is not executable" >&2; exit 1; }
-    echo "== using prebuilt basil: ${BASIL_BIN}"
-    return
-  fi
-  echo "== BASIL_BIN unset; building basil via cargo (repo root ${REPO_ROOT})"
-  ( cd "${REPO_ROOT}" && cargo build -p basil-bin --features pqc )
-  BASIL_BIN="${REPO_ROOT}/target/debug/basil"
-  [ -x "${BASIL_BIN}" ] || { echo "cargo build did not produce ${BASIL_BIN}" >&2; exit 1; }
-}
 
 write_catalog() {
   cat >"${CATALOG}" <<JSON
@@ -109,32 +117,33 @@ JSON
 }
 
 main() {
-  need bao
+  BAO="$(command -v bao || command -v vault || true)"
+  [ -n "${BAO}" ] || { echo "missing required command: bao (or vault)" >&2; exit 1; }
   need go
-  resolve_basil_bin
+  need_basil
 
   rm -rf "${WORKDIR}"
   mkdir -p "${FIXTURES}" "${DATA_DIR}"
   chmod 700 "${WORKDIR}"
 
-  echo "== starting OpenBao dev server at ${ADDR}"
-  bao server -dev -dev-root-token-id="${TOKEN}" -dev-listen-address="127.0.0.1:${BAO_PORT}" >"${BAO_LOG}" 2>&1 &
+  echo "== starting ${BAO##*/} dev server at ${ADDR}"
+  "$BAO" server -dev -dev-root-token-id="${TOKEN}" -dev-listen-address="127.0.0.1:${BAO_PORT}" >"${BAO_LOG}" 2>&1 &
   BAO_PID="$!"
   for _ in $(seq 1 80); do
-    VAULT_ADDR="${ADDR}" bao status >/dev/null 2>&1 && break
-    kill -0 "${BAO_PID}" 2>/dev/null || { echo "OpenBao exited early:" >&2; cat "${BAO_LOG}" >&2; exit 1; }
+    VAULT_ADDR="${ADDR}" "$BAO" status >/dev/null 2>&1 && break
+    kill -0 "${BAO_PID}" 2>/dev/null || { echo "bao/vault server exited early:" >&2; cat "${BAO_LOG}" >&2; exit 1; }
     sleep 0.1
   done
   export VAULT_ADDR="${ADDR}" VAULT_TOKEN="${TOKEN}"
-  bao status >/dev/null
+  "$BAO" status >/dev/null
 
   echo "== enabling transit + kv-v2 and provisioning ML-KEM custody prerequisites"
-  bao secrets enable transit >/dev/null 2>&1 || true
-  bao secrets enable -path=secret -version=2 kv >/dev/null 2>&1 || true
+  "$BAO" secrets enable transit >/dev/null 2>&1 || true
+  "$BAO" secrets enable -path=secret -version=2 kv >/dev/null 2>&1 || true
   # transit AES key that wraps every custodied PQC seed at rest.
-  bao write -f transit/keys/stream-aead type=aes256-gcm96 >/dev/null
+  "$BAO" write -f transit/keys/stream-aead type=aes256-gcm96 >/dev/null
   # publicPath marker so the sealing reconcile probe is non-fatal before NewKey.
-  bao kv put secret/example/ml-kem-768-public "value=$(printf 'unused' | base64 | tr -d '\n')" >/dev/null
+  "$BAO" kv put secret/example/ml-kem-768-public "value=$(printf 'unused' | base64 | tr -d '\n')" >/dev/null
 
   umask 077
   printf '%s\n' "${TOKEN}" >"${TOKEN_FILE}"
