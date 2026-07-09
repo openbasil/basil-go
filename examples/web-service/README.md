@@ -4,7 +4,7 @@
 > calling, a default-deny policy decides, the key is used where it lives (OpenBao/Vault, KMS, or a
 > sealed local store), and every operation is audited.
 
-A minimal `net/http` token service that issues signed JWTs — **your app can't
+A minimal `net/http` token service that issues signed JWTs. **Your app can't
 leak a key it never held**.
 
 ## Why
@@ -15,7 +15,7 @@ moment every dependency, log line, and memory dump in the service is one hop
 from the key. Basil inverts this: the Ed25519 key stays in the broker's
 backend and the service asks Basil to **mint** the token via
 `Client.MintJwt`. The service holds a socket path, nothing else. Compromise
-the whole web process and there is still no key material to steal — the only
+the whole web process and there is still no key material to steal: the only
 standing authority is "mint short-lived tokens under policy".
 
 ## What it demonstrates
@@ -30,7 +30,7 @@ standing authority is "mint short-lived tokens under policy".
 3. **Least privilege, proven**: policy grants exactly `mint` +
    `get_public_key` on `web.signing_key`. `run.sh` then runs
    `basil get --key-id web.signing_key` under the **same uid** and asserts it
-   fails with a typed `PermissionDenied` — minting under a key never implies
+   fails with a typed `PermissionDenied`. Minting under a key never implies
    reading it.
 
 ## Basil pillars
@@ -38,7 +38,7 @@ standing authority is "mint short-lived tokens under policy".
 - **Attestation**: the policy subject matches the caller's `SO_PEERCRED` uid.
 - **Secrets**: the signing operation is brokered; the key never crosses the
   socket.
-- **Leases**: each token carries a 5-minute TTL — authority that expires on
+- **Leases**: each token carries a 5-minute TTL, authority that expires on
   its own instead of a standing secret.
 - **Least privilege**: `mint` and `get` are distinct grants; the deny half of
   the run proves an ungranted read fails closed.
@@ -49,8 +49,8 @@ standing authority is "mint short-lived tokens under policy".
 - `basil` on `PATH` (or `BASIL_BIN` pointing at a prebuilt binary). If it is
   missing, `run.sh` points to the latest release at
   <https://github.com/openbasil/basil/releases>. Default builds include the
-  zero-dependency `db-keystore` backend this example runs on — no OpenBao
-  required.
+  zero-dependency `db-keystore` backend this example runs on. Vault/OpenBao
+  are not required.
 
 ## How to run
 

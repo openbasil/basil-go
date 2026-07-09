@@ -46,7 +46,7 @@ func main() {
 	})
 
 	// POST /token: the broker builds and signs the JWT in place and returns
-	// only the compact token. Policy — not application code — decides whether
+	// only the compact token. Policy, not application code, decides whether
 	// this process may mint under keyID.
 	mux.HandleFunc("POST /token", func(w http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(r.Context(), 10*time.Second)
