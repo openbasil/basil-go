@@ -1,5 +1,9 @@
 # basil-go
 
+> **Basil is a host-local secrets broker: your app never touches the key.** The kernel attests who's
+> calling, a default-deny policy decides, the key is used where it lives (OpenBao/Vault, KMS, or a
+> sealed local store), and every operation is audited.
+
 A Go client for the [Basil](https://github.com/openbasil/basil) secrets-and-identity broker.
 
 Documentation site **[docs.openbasil.org](https://docs.openbasil.org)**

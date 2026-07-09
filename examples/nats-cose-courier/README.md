@@ -1,5 +1,9 @@
 # nats-cose-courier (Go)
 
+> **Basil is a host-local secrets broker: your app never touches the key.** The kernel attests who's
+> calling, a default-deny policy decides, the key is used where it lives (OpenBao/Vault, KMS, or a
+> sealed local store), and every operation is audited.
+
 Send a Basil sealed invocation over NATS through `basil-nats-bridge`. The Go
 client builds a signed and sealed `application/basil.sign-request`, publishes it
 to the bridge subject, opens the broker's sealed response, and verifies the

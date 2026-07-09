@@ -1,5 +1,9 @@
 # stream-file-encryption (Go)
 
+> **Basil is a host-local secrets broker: your app never touches the key.** The kernel attests who's
+> calling, a default-deny policy decides, the key is used where it lives (OpenBao/Vault, KMS, or a
+> sealed local store), and every operation is audited.
+
 Encrypt a large file with Basil's streaming, chunked AEAD (`basil/stream`) and
 prove it round-trips byte-for-byte: first with symmetric AES-256-GCM, then with
 post-quantum ML-KEM-768 whose key stays custodied in the vault.

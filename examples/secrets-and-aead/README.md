@@ -1,5 +1,9 @@
 # secrets-and-aead (Go)
 
+> **Basil is a host-local secrets broker: your app never touches the key.** The kernel attests who's
+> calling, a default-deny policy decides, the key is used where it lives (OpenBao/Vault, KMS, or a
+> sealed local store), and every operation is audited.
+
 A guided tour of Basil's **KV + AEAD data plane** from the Go client: version a
 KV-v2 secret and encrypt/decrypt a payload under a broker-owned key, without
 the calling process ever holding the key.
