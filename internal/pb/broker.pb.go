@@ -623,6 +623,59 @@ func (CatalogKind) EnumDescriptor() ([]byte, []int) {
 	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{8}
 }
 
+// Policy decision result for `ExplainResponse`.
+type ExplainDecision int32
+
+const (
+	// Unset; not returned by the broker.
+	ExplainDecision_EXPLAIN_DECISION_UNSPECIFIED ExplainDecision = 0
+	// The tuple is authorized.
+	ExplainDecision_EXPLAIN_DECISION_ALLOW ExplainDecision = 1
+	// The tuple is denied.
+	ExplainDecision_EXPLAIN_DECISION_DENY ExplainDecision = 2
+)
+
+// Enum value maps for ExplainDecision.
+var (
+	ExplainDecision_name = map[int32]string{
+		0: "EXPLAIN_DECISION_UNSPECIFIED",
+		1: "EXPLAIN_DECISION_ALLOW",
+		2: "EXPLAIN_DECISION_DENY",
+	}
+	ExplainDecision_value = map[string]int32{
+		"EXPLAIN_DECISION_UNSPECIFIED": 0,
+		"EXPLAIN_DECISION_ALLOW":       1,
+		"EXPLAIN_DECISION_DENY":        2,
+	}
+)
+
+func (x ExplainDecision) Enum() *ExplainDecision {
+	p := new(ExplainDecision)
+	*p = x
+	return p
+}
+
+func (x ExplainDecision) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (ExplainDecision) Descriptor() protoreflect.EnumDescriptor {
+	return file_basil_broker_v1_broker_proto_enumTypes[9].Descriptor()
+}
+
+func (ExplainDecision) Type() protoreflect.EnumType {
+	return &file_basil_broker_v1_broker_proto_enumTypes[9]
+}
+
+func (x ExplainDecision) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use ExplainDecision.Descriptor instead.
+func (ExplainDecision) EnumDescriptor() ([]byte, []int) {
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{9}
+}
+
 // Why the broker is not ready to serve (coarse, non-secret category). `READY`
 // when serving would not fail closed; otherwise the dominant blocking reason.
 type ReadinessReason int32
@@ -667,11 +720,11 @@ func (x ReadinessReason) String() string {
 }
 
 func (ReadinessReason) Descriptor() protoreflect.EnumDescriptor {
-	return file_basil_broker_v1_broker_proto_enumTypes[9].Descriptor()
+	return file_basil_broker_v1_broker_proto_enumTypes[10].Descriptor()
 }
 
 func (ReadinessReason) Type() protoreflect.EnumType {
-	return &file_basil_broker_v1_broker_proto_enumTypes[9]
+	return &file_basil_broker_v1_broker_proto_enumTypes[10]
 }
 
 func (x ReadinessReason) Number() protoreflect.EnumNumber {
@@ -680,7 +733,246 @@ func (x ReadinessReason) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use ReadinessReason.Descriptor instead.
 func (ReadinessReason) EnumDescriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{9}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{10}
+}
+
+// Closed attestor provider set.
+type RealmProvider int32
+
+const (
+	RealmProvider_REALM_PROVIDER_UNSPECIFIED RealmProvider = 0
+	RealmProvider_REALM_PROVIDER_DOCKER      RealmProvider = 1
+	RealmProvider_REALM_PROVIDER_PODMAN      RealmProvider = 2
+)
+
+// Enum value maps for RealmProvider.
+var (
+	RealmProvider_name = map[int32]string{
+		0: "REALM_PROVIDER_UNSPECIFIED",
+		1: "REALM_PROVIDER_DOCKER",
+		2: "REALM_PROVIDER_PODMAN",
+	}
+	RealmProvider_value = map[string]int32{
+		"REALM_PROVIDER_UNSPECIFIED": 0,
+		"REALM_PROVIDER_DOCKER":      1,
+		"REALM_PROVIDER_PODMAN":      2,
+	}
+)
+
+func (x RealmProvider) Enum() *RealmProvider {
+	p := new(RealmProvider)
+	*p = x
+	return p
+}
+
+func (x RealmProvider) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (RealmProvider) Descriptor() protoreflect.EnumDescriptor {
+	return file_basil_broker_v1_broker_proto_enumTypes[11].Descriptor()
+}
+
+func (RealmProvider) Type() protoreflect.EnumType {
+	return &file_basil_broker_v1_broker_proto_enumTypes[11]
+}
+
+func (x RealmProvider) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use RealmProvider.Descriptor instead.
+func (RealmProvider) EnumDescriptor() ([]byte, []int) {
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{11}
+}
+
+// Closed attestor account/runtime scope.
+type RealmMode int32
+
+const (
+	RealmMode_REALM_MODE_UNSPECIFIED    RealmMode = 0
+	RealmMode_REALM_MODE_ROOTFUL_HOST   RealmMode = 1
+	RealmMode_REALM_MODE_ROOTLESS_OWNER RealmMode = 2
+)
+
+// Enum value maps for RealmMode.
+var (
+	RealmMode_name = map[int32]string{
+		0: "REALM_MODE_UNSPECIFIED",
+		1: "REALM_MODE_ROOTFUL_HOST",
+		2: "REALM_MODE_ROOTLESS_OWNER",
+	}
+	RealmMode_value = map[string]int32{
+		"REALM_MODE_UNSPECIFIED":    0,
+		"REALM_MODE_ROOTFUL_HOST":   1,
+		"REALM_MODE_ROOTLESS_OWNER": 2,
+	}
+)
+
+func (x RealmMode) Enum() *RealmMode {
+	p := new(RealmMode)
+	*p = x
+	return p
+}
+
+func (x RealmMode) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (RealmMode) Descriptor() protoreflect.EnumDescriptor {
+	return file_basil_broker_v1_broker_proto_enumTypes[12].Descriptor()
+}
+
+func (RealmMode) Type() protoreflect.EnumType {
+	return &file_basil_broker_v1_broker_proto_enumTypes[12]
+}
+
+func (x RealmMode) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use RealmMode.Descriptor instead.
+func (RealmMode) EnumDescriptor() ([]byte, []int) {
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{12}
+}
+
+// Disclosure-safe accepted realm state.
+type RealmState int32
+
+const (
+	RealmState_REALM_STATE_UNSPECIFIED     RealmState = 0
+	RealmState_REALM_STATE_ABSENT          RealmState = 1
+	RealmState_REALM_STATE_CONNECTING      RealmState = 2
+	RealmState_REALM_STATE_AUTHENTICATING  RealmState = 3
+	RealmState_REALM_STATE_HANDSHAKING     RealmState = 4
+	RealmState_REALM_STATE_HEALTH_CHECKING RealmState = 5
+	RealmState_REALM_STATE_READY           RealmState = 6
+	RealmState_REALM_STATE_DEGRADED        RealmState = 7
+	RealmState_REALM_STATE_STAGING         RealmState = 8
+	RealmState_REALM_STATE_DRAINING        RealmState = 9
+)
+
+// Enum value maps for RealmState.
+var (
+	RealmState_name = map[int32]string{
+		0: "REALM_STATE_UNSPECIFIED",
+		1: "REALM_STATE_ABSENT",
+		2: "REALM_STATE_CONNECTING",
+		3: "REALM_STATE_AUTHENTICATING",
+		4: "REALM_STATE_HANDSHAKING",
+		5: "REALM_STATE_HEALTH_CHECKING",
+		6: "REALM_STATE_READY",
+		7: "REALM_STATE_DEGRADED",
+		8: "REALM_STATE_STAGING",
+		9: "REALM_STATE_DRAINING",
+	}
+	RealmState_value = map[string]int32{
+		"REALM_STATE_UNSPECIFIED":     0,
+		"REALM_STATE_ABSENT":          1,
+		"REALM_STATE_CONNECTING":      2,
+		"REALM_STATE_AUTHENTICATING":  3,
+		"REALM_STATE_HANDSHAKING":     4,
+		"REALM_STATE_HEALTH_CHECKING": 5,
+		"REALM_STATE_READY":           6,
+		"REALM_STATE_DEGRADED":        7,
+		"REALM_STATE_STAGING":         8,
+		"REALM_STATE_DRAINING":        9,
+	}
+)
+
+func (x RealmState) Enum() *RealmState {
+	p := new(RealmState)
+	*p = x
+	return p
+}
+
+func (x RealmState) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (RealmState) Descriptor() protoreflect.EnumDescriptor {
+	return file_basil_broker_v1_broker_proto_enumTypes[13].Descriptor()
+}
+
+func (RealmState) Type() protoreflect.EnumType {
+	return &file_basil_broker_v1_broker_proto_enumTypes[13]
+}
+
+func (x RealmState) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use RealmState.Descriptor instead.
+func (RealmState) EnumDescriptor() ([]byte, []int) {
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{13}
+}
+
+// Coarse disclosure-safe reason for a realm state.
+type RealmReason int32
+
+const (
+	RealmReason_REALM_REASON_UNSPECIFIED           RealmReason = 0
+	RealmReason_REALM_REASON_NONE                  RealmReason = 1
+	RealmReason_REALM_REASON_SOCKET_ABSENT         RealmReason = 2
+	RealmReason_REALM_REASON_CONNECTING            RealmReason = 3
+	RealmReason_REALM_REASON_AUTHENTICATION_FAILED RealmReason = 4
+	RealmReason_REALM_REASON_ADMISSION_FAILED      RealmReason = 5
+	RealmReason_REALM_REASON_PROTOCOL_FAILED       RealmReason = 6
+	RealmReason_REALM_REASON_HEALTH_FAILED         RealmReason = 7
+	RealmReason_REALM_REASON_DRAINING              RealmReason = 8
+)
+
+// Enum value maps for RealmReason.
+var (
+	RealmReason_name = map[int32]string{
+		0: "REALM_REASON_UNSPECIFIED",
+		1: "REALM_REASON_NONE",
+		2: "REALM_REASON_SOCKET_ABSENT",
+		3: "REALM_REASON_CONNECTING",
+		4: "REALM_REASON_AUTHENTICATION_FAILED",
+		5: "REALM_REASON_ADMISSION_FAILED",
+		6: "REALM_REASON_PROTOCOL_FAILED",
+		7: "REALM_REASON_HEALTH_FAILED",
+		8: "REALM_REASON_DRAINING",
+	}
+	RealmReason_value = map[string]int32{
+		"REALM_REASON_UNSPECIFIED":           0,
+		"REALM_REASON_NONE":                  1,
+		"REALM_REASON_SOCKET_ABSENT":         2,
+		"REALM_REASON_CONNECTING":            3,
+		"REALM_REASON_AUTHENTICATION_FAILED": 4,
+		"REALM_REASON_ADMISSION_FAILED":      5,
+		"REALM_REASON_PROTOCOL_FAILED":       6,
+		"REALM_REASON_HEALTH_FAILED":         7,
+		"REALM_REASON_DRAINING":              8,
+	}
+)
+
+func (x RealmReason) Enum() *RealmReason {
+	p := new(RealmReason)
+	*p = x
+	return p
+}
+
+func (x RealmReason) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (RealmReason) Descriptor() protoreflect.EnumDescriptor {
+	return file_basil_broker_v1_broker_proto_enumTypes[14].Descriptor()
+}
+
+func (RealmReason) Type() protoreflect.EnumType {
+	return &file_basil_broker_v1_broker_proto_enumTypes[14]
+}
+
+func (x RealmReason) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use RealmReason.Descriptor instead.
+func (RealmReason) EnumDescriptor() ([]byte, []int) {
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{14}
 }
 
 // The kind of a change `Event`.
@@ -724,11 +1016,11 @@ func (x EventKind) String() string {
 }
 
 func (EventKind) Descriptor() protoreflect.EnumDescriptor {
-	return file_basil_broker_v1_broker_proto_enumTypes[10].Descriptor()
+	return file_basil_broker_v1_broker_proto_enumTypes[15].Descriptor()
 }
 
 func (EventKind) Type() protoreflect.EnumType {
-	return &file_basil_broker_v1_broker_proto_enumTypes[10]
+	return &file_basil_broker_v1_broker_proto_enumTypes[15]
 }
 
 func (x EventKind) Number() protoreflect.EnumNumber {
@@ -737,7 +1029,7 @@ func (x EventKind) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use EventKind.Descriptor instead.
 func (EventKind) EnumDescriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{10}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{15}
 }
 
 // BYOK key material for `Import`/`ImportSet`. Write-only: it is accepted into
@@ -4597,8 +4889,8 @@ type ExplainResponse struct {
 	Op string `protobuf:"bytes,2,opt,name=op,proto3" json:"op,omitempty"`
 	// Catalog key/target evaluated.
 	Key string `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty"`
-	// `allow` or `deny`.
-	Decision string `protobuf:"bytes,4,opt,name=decision,proto3" json:"decision,omitempty"`
+	// Authorization decision.
+	Decision ExplainDecision `protobuf:"varint,4,opt,name=decision,proto3,enum=basil.broker.v1.ExplainDecision" json:"decision,omitempty"`
 	// Allow scope (`subject:<name>` or `public_class`); empty on deny.
 	Via string `protobuf:"bytes,5,opt,name=via,proto3" json:"via,omitempty"`
 	// Deny reason token (`unknown_key`, `not_writable`, `not_permitted`); empty on allow.
@@ -4660,11 +4952,11 @@ func (x *ExplainResponse) GetKey() string {
 	return ""
 }
 
-func (x *ExplainResponse) GetDecision() string {
+func (x *ExplainResponse) GetDecision() ExplainDecision {
 	if x != nil {
 		return x.Decision
 	}
-	return ""
+	return ExplainDecision_EXPLAIN_DECISION_UNSPECIFIED
 }
 
 func (x *ExplainResponse) GetVia() string {
@@ -4979,8 +5271,16 @@ type ReadinessResponse struct {
 	// Absent keys whose `missing` policy is `warn` or `generate` (reported for
 	// visibility; they do not by themselves make the broker not ready).
 	KeysOptionalMissing uint32 `protobuf:"varint,7,opt,name=keys_optional_missing,json=keysOptionalMissing,proto3" json:"keys_optional_missing,omitempty"`
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
+	// Accepted attestor realms in this generation.
+	RealmsTotal uint32 `protobuf:"varint,8,opt,name=realms_total,json=realmsTotal,proto3" json:"realms_total,omitempty"`
+	// Accepted realms with one authoritative ready session.
+	RealmsReady uint32 `protobuf:"varint,9,opt,name=realms_ready,json=realmsReady,proto3" json:"realms_ready,omitempty"`
+	// Accepted non-ready, non-absent realms.
+	RealmsDegraded uint32 `protobuf:"varint,10,opt,name=realms_degraded,json=realmsDegraded,proto3" json:"realms_degraded,omitempty"`
+	// Accepted realms whose configured socket is absent.
+	RealmsAbsent  uint32 `protobuf:"varint,11,opt,name=realms_absent,json=realmsAbsent,proto3" json:"realms_absent,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ReadinessResponse) Reset() {
@@ -5062,9 +5362,40 @@ func (x *ReadinessResponse) GetKeysOptionalMissing() uint32 {
 	return 0
 }
 
+func (x *ReadinessResponse) GetRealmsTotal() uint32 {
+	if x != nil {
+		return x.RealmsTotal
+	}
+	return 0
+}
+
+func (x *ReadinessResponse) GetRealmsReady() uint32 {
+	if x != nil {
+		return x.RealmsReady
+	}
+	return 0
+}
+
+func (x *ReadinessResponse) GetRealmsDegraded() uint32 {
+	if x != nil {
+		return x.RealmsDegraded
+	}
+	return 0
+}
+
+func (x *ReadinessResponse) GetRealmsAbsent() uint32 {
+	if x != nil {
+		return x.RealmsAbsent
+	}
+	return 0
+}
+
 // Request for broker status.
 type StatusRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Include named realm status. Requires the dedicated `realm_status` admin
+	// grant over `broker.realms`; admin wildcards do not imply it.
+	IncludeRealms bool `protobuf:"varint,1,opt,name=include_realms,json=includeRealms,proto3" json:"include_realms,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -5099,6 +5430,114 @@ func (*StatusRequest) Descriptor() ([]byte, []int) {
 	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{66}
 }
 
+func (x *StatusRequest) GetIncludeRealms() bool {
+	if x != nil {
+		return x.IncludeRealms
+	}
+	return false
+}
+
+// Named realm inventory available only through the dedicated admin grant.
+type RealmStatus struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Provider      RealmProvider          `protobuf:"varint,2,opt,name=provider,proto3,enum=basil.broker.v1.RealmProvider" json:"provider,omitempty"`
+	Mode          RealmMode              `protobuf:"varint,3,opt,name=mode,proto3,enum=basil.broker.v1.RealmMode" json:"mode,omitempty"`
+	State         RealmState             `protobuf:"varint,4,opt,name=state,proto3,enum=basil.broker.v1.RealmState" json:"state,omitempty"`
+	Generation    uint64                 `protobuf:"varint,5,opt,name=generation,proto3" json:"generation,omitempty"`
+	SessionEpoch  uint64                 `protobuf:"varint,6,opt,name=session_epoch,json=sessionEpoch,proto3" json:"session_epoch,omitempty"`
+	Protocol      uint32                 `protobuf:"varint,7,opt,name=protocol,proto3" json:"protocol,omitempty"`
+	Reason        RealmReason            `protobuf:"varint,8,opt,name=reason,proto3,enum=basil.broker.v1.RealmReason" json:"reason,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RealmStatus) Reset() {
+	*x = RealmStatus{}
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[67]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RealmStatus) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RealmStatus) ProtoMessage() {}
+
+func (x *RealmStatus) ProtoReflect() protoreflect.Message {
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[67]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RealmStatus.ProtoReflect.Descriptor instead.
+func (*RealmStatus) Descriptor() ([]byte, []int) {
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{67}
+}
+
+func (x *RealmStatus) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *RealmStatus) GetProvider() RealmProvider {
+	if x != nil {
+		return x.Provider
+	}
+	return RealmProvider_REALM_PROVIDER_UNSPECIFIED
+}
+
+func (x *RealmStatus) GetMode() RealmMode {
+	if x != nil {
+		return x.Mode
+	}
+	return RealmMode_REALM_MODE_UNSPECIFIED
+}
+
+func (x *RealmStatus) GetState() RealmState {
+	if x != nil {
+		return x.State
+	}
+	return RealmState_REALM_STATE_UNSPECIFIED
+}
+
+func (x *RealmStatus) GetGeneration() uint64 {
+	if x != nil {
+		return x.Generation
+	}
+	return 0
+}
+
+func (x *RealmStatus) GetSessionEpoch() uint64 {
+	if x != nil {
+		return x.SessionEpoch
+	}
+	return 0
+}
+
+func (x *RealmStatus) GetProtocol() uint32 {
+	if x != nil {
+		return x.Protocol
+	}
+	return 0
+}
+
+func (x *RealmStatus) GetReason() RealmReason {
+	if x != nil {
+		return x.Reason
+	}
+	return RealmReason_REALM_REASON_UNSPECIFIED
+}
+
 // Broker identity and protocol info.
 type StatusResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -5107,14 +5546,17 @@ type StatusResponse struct {
 	// Broker build version string.
 	Version string `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"`
 	// Wire protocol version number.
-	Protocol      uint32 `protobuf:"varint,3,opt,name=protocol,proto3" json:"protocol,omitempty"`
+	Protocol uint32 `protobuf:"varint,3,opt,name=protocol,proto3" json:"protocol,omitempty"`
+	// Accepted-generation realms plus removed realms still draining. Empty
+	// unless the request opted in and passed its dedicated authorization check.
+	Realms        []*RealmStatus `protobuf:"bytes,4,rep,name=realms,proto3" json:"realms,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *StatusResponse) Reset() {
 	*x = StatusResponse{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[67]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[68]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5126,7 +5568,7 @@ func (x *StatusResponse) String() string {
 func (*StatusResponse) ProtoMessage() {}
 
 func (x *StatusResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[67]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[68]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5139,7 +5581,7 @@ func (x *StatusResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StatusResponse.ProtoReflect.Descriptor instead.
 func (*StatusResponse) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{67}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{68}
 }
 
 func (x *StatusResponse) GetBackend() string {
@@ -5163,6 +5605,13 @@ func (x *StatusResponse) GetProtocol() uint32 {
 	return 0
 }
 
+func (x *StatusResponse) GetRealms() []*RealmStatus {
+	if x != nil {
+		return x.Realms
+	}
+	return nil
+}
+
 // Request to watch for change events, optionally filtered by kind.
 type WatchRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -5174,7 +5623,7 @@ type WatchRequest struct {
 
 func (x *WatchRequest) Reset() {
 	*x = WatchRequest{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[68]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[69]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5186,7 +5635,7 @@ func (x *WatchRequest) String() string {
 func (*WatchRequest) ProtoMessage() {}
 
 func (x *WatchRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[68]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[69]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5199,7 +5648,7 @@ func (x *WatchRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WatchRequest.ProtoReflect.Descriptor instead.
 func (*WatchRequest) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{68}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{69}
 }
 
 func (x *WatchRequest) GetKinds() []EventKind {
@@ -5230,7 +5679,7 @@ type Event struct {
 
 func (x *Event) Reset() {
 	*x = Event{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[69]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[70]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5242,7 +5691,7 @@ func (x *Event) String() string {
 func (*Event) ProtoMessage() {}
 
 func (x *Event) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[69]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[70]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5255,7 +5704,7 @@ func (x *Event) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Event.ProtoReflect.Descriptor instead.
 func (*Event) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{69}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{70}
 }
 
 func (x *Event) GetKind() EventKind {
@@ -5344,7 +5793,7 @@ type KeyRotated struct {
 
 func (x *KeyRotated) Reset() {
 	*x = KeyRotated{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[70]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[71]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5356,7 +5805,7 @@ func (x *KeyRotated) String() string {
 func (*KeyRotated) ProtoMessage() {}
 
 func (x *KeyRotated) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[70]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[71]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5369,7 +5818,7 @@ func (x *KeyRotated) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KeyRotated.ProtoReflect.Descriptor instead.
 func (*KeyRotated) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{70}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{71}
 }
 
 func (x *KeyRotated) GetKeyId() string {
@@ -5397,7 +5846,7 @@ type BundleChanged struct {
 
 func (x *BundleChanged) Reset() {
 	*x = BundleChanged{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[71]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[72]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5409,7 +5858,7 @@ func (x *BundleChanged) String() string {
 func (*BundleChanged) ProtoMessage() {}
 
 func (x *BundleChanged) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[71]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[72]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5422,7 +5871,7 @@ func (x *BundleChanged) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BundleChanged.ProtoReflect.Descriptor instead.
 func (*BundleChanged) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{71}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{72}
 }
 
 func (x *BundleChanged) GetTrustDomain() string {
@@ -5445,7 +5894,7 @@ type Revoked struct {
 
 func (x *Revoked) Reset() {
 	*x = Revoked{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[72]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[73]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5457,7 +5906,7 @@ func (x *Revoked) String() string {
 func (*Revoked) ProtoMessage() {}
 
 func (x *Revoked) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[72]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[73]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5470,7 +5919,7 @@ func (x *Revoked) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Revoked.ProtoReflect.Descriptor instead.
 func (*Revoked) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{72}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{73}
 }
 
 func (x *Revoked) GetTrustDomain() string {
@@ -5501,7 +5950,7 @@ type BrokerErrorInfo struct {
 
 func (x *BrokerErrorInfo) Reset() {
 	*x = BrokerErrorInfo{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[73]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[74]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5513,7 +5962,7 @@ func (x *BrokerErrorInfo) String() string {
 func (*BrokerErrorInfo) ProtoMessage() {}
 
 func (x *BrokerErrorInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[73]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[74]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5526,7 +5975,7 @@ func (x *BrokerErrorInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BrokerErrorInfo.ProtoReflect.Descriptor instead.
 func (*BrokerErrorInfo) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{73}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{74}
 }
 
 func (x *BrokerErrorInfo) GetReason() string {
@@ -5821,12 +6270,12 @@ const file_basil_broker_v1_broker_proto_rawDesc = "" +
 	"\x03via\x18\x02 \x01(\tR\x03via\x12\x16\n" +
 	"\x06action\x18\x03 \x01(\tR\x06action\x12\x16\n" +
 	"\x06target\x18\x04 \x01(\tR\x06target\x12\x18\n" +
-	"\asubject\x18\x05 \x01(\tR\asubject\"\xd4\x01\n" +
+	"\asubject\x18\x05 \x01(\tR\asubject\"\xf6\x01\n" +
 	"\x0fExplainResponse\x12\x18\n" +
 	"\asubject\x18\x01 \x01(\tR\asubject\x12\x0e\n" +
 	"\x02op\x18\x02 \x01(\tR\x02op\x12\x10\n" +
-	"\x03key\x18\x03 \x01(\tR\x03key\x12\x1a\n" +
-	"\bdecision\x18\x04 \x01(\tR\bdecision\x12\x10\n" +
+	"\x03key\x18\x03 \x01(\tR\x03key\x12<\n" +
+	"\bdecision\x18\x04 \x01(\x0e2 .basil.broker.v1.ExplainDecisionR\bdecision\x12\x10\n" +
 	"\x03via\x18\x05 \x01(\tR\x03via\x12\x16\n" +
 	"\x06reason\x18\x06 \x01(\tR\x06reason\x12?\n" +
 	"\fmatched_rule\x18\a \x01(\v2\x1c.basil.broker.v1.MatchedRuleR\vmatchedRule\"l\n" +
@@ -5843,7 +6292,7 @@ const file_basil_broker_v1_broker_proto_rawDesc = "" +
 	"\x0eHealthResponse\x12\x14\n" +
 	"\x05alive\x18\x01 \x01(\bR\x05alive\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\tR\aversion\"\x12\n" +
-	"\x10ReadinessRequest\"\xad\x02\n" +
+	"\x10ReadinessRequest\"\xc1\x03\n" +
 	"\x11ReadinessResponse\x12\x14\n" +
 	"\x05ready\x18\x01 \x01(\bR\x05ready\x128\n" +
 	"\x06reason\x18\x02 \x01(\x0e2 .basil.broker.v1.ReadinessReasonR\x06reason\x12\x1e\n" +
@@ -5854,12 +6303,30 @@ const file_basil_broker_v1_broker_proto_rawDesc = "" +
 	"keys_total\x18\x04 \x01(\rR\tkeysTotal\x12!\n" +
 	"\fkeys_present\x18\x05 \x01(\rR\vkeysPresent\x122\n" +
 	"\x15keys_required_missing\x18\x06 \x01(\rR\x13keysRequiredMissing\x122\n" +
-	"\x15keys_optional_missing\x18\a \x01(\rR\x13keysOptionalMissing\"\x0f\n" +
-	"\rStatusRequest\"`\n" +
+	"\x15keys_optional_missing\x18\a \x01(\rR\x13keysOptionalMissing\x12!\n" +
+	"\frealms_total\x18\b \x01(\rR\vrealmsTotal\x12!\n" +
+	"\frealms_ready\x18\t \x01(\rR\vrealmsReady\x12'\n" +
+	"\x0frealms_degraded\x18\n" +
+	" \x01(\rR\x0erealmsDegraded\x12#\n" +
+	"\rrealms_absent\x18\v \x01(\rR\frealmsAbsent\"6\n" +
+	"\rStatusRequest\x12%\n" +
+	"\x0einclude_realms\x18\x01 \x01(\bR\rincludeRealms\"\xd7\x02\n" +
+	"\vRealmStatus\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12:\n" +
+	"\bprovider\x18\x02 \x01(\x0e2\x1e.basil.broker.v1.RealmProviderR\bprovider\x12.\n" +
+	"\x04mode\x18\x03 \x01(\x0e2\x1a.basil.broker.v1.RealmModeR\x04mode\x121\n" +
+	"\x05state\x18\x04 \x01(\x0e2\x1b.basil.broker.v1.RealmStateR\x05state\x12\x1e\n" +
+	"\n" +
+	"generation\x18\x05 \x01(\x04R\n" +
+	"generation\x12#\n" +
+	"\rsession_epoch\x18\x06 \x01(\x04R\fsessionEpoch\x12\x1a\n" +
+	"\bprotocol\x18\a \x01(\rR\bprotocol\x124\n" +
+	"\x06reason\x18\b \x01(\x0e2\x1c.basil.broker.v1.RealmReasonR\x06reason\"\x96\x01\n" +
 	"\x0eStatusResponse\x12\x18\n" +
 	"\abackend\x18\x01 \x01(\tR\abackend\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\tR\aversion\x12\x1a\n" +
-	"\bprotocol\x18\x03 \x01(\rR\bprotocol\"@\n" +
+	"\bprotocol\x18\x03 \x01(\rR\bprotocol\x124\n" +
+	"\x06realms\x18\x04 \x03(\v2\x1c.basil.broker.v1.RealmStatusR\x06realms\"@\n" +
 	"\fWatchRequest\x120\n" +
 	"\x05kinds\x18\x01 \x03(\x0e2\x1a.basil.broker.v1.EventKindR\x05kinds\"\xac\x02\n" +
 	"\x05Event\x12.\n" +
@@ -5940,17 +6407,51 @@ const file_basil_broker_v1_broker_proto_rawDesc = "" +
 	"\x11EnvelopeAlgorithm\x12\"\n" +
 	"\x1eENVELOPE_ALGORITHM_UNSPECIFIED\x10\x00\x12\"\n" +
 	"\x1eENVELOPE_ALGORITHM_AES_256_GCM\x10\x01\x12(\n" +
-	"$ENVELOPE_ALGORITHM_CHACHA20_POLY1305\x10\x02\"\x04\b\x03\x10\x1f*z\n" +
+	"$ENVELOPE_ALGORITHM_CHACHA20_POLY1305\x10\x02\"\x04\b\x03\x10\x1f*\x80\x01\n" +
 	"\vCatalogKind\x12\x1c\n" +
 	"\x18CATALOG_KIND_UNSPECIFIED\x10\x00\x12\x18\n" +
 	"\x14CATALOG_KIND_SIGNING\x10\x01\x12\x16\n" +
 	"\x12CATALOG_KIND_VALUE\x10\x02\x12\x1b\n" +
-	"\x17CATALOG_KIND_ENCRYPTION\x10\x03*\xa4\x01\n" +
+	"\x17CATALOG_KIND_ENCRYPTION\x10\x03\"\x04\b\x04\x10\x1f*p\n" +
+	"\x0fExplainDecision\x12 \n" +
+	"\x1cEXPLAIN_DECISION_UNSPECIFIED\x10\x00\x12\x1a\n" +
+	"\x16EXPLAIN_DECISION_ALLOW\x10\x01\x12\x19\n" +
+	"\x15EXPLAIN_DECISION_DENY\x10\x02\"\x04\b\x03\x10\x1f*\xa4\x01\n" +
 	"\x0fReadinessReason\x12 \n" +
 	"\x1cREADINESS_REASON_UNSPECIFIED\x10\x00\x12\x1a\n" +
 	"\x16READINESS_REASON_READY\x10\x01\x12(\n" +
 	"$READINESS_REASON_BACKEND_UNREACHABLE\x10\x02\x12)\n" +
-	"%READINESS_REASON_REQUIRED_KEY_MISSING\x10\x03*\x80\x01\n" +
+	"%READINESS_REASON_REQUIRED_KEY_MISSING\x10\x03*e\n" +
+	"\rRealmProvider\x12\x1e\n" +
+	"\x1aREALM_PROVIDER_UNSPECIFIED\x10\x00\x12\x19\n" +
+	"\x15REALM_PROVIDER_DOCKER\x10\x01\x12\x19\n" +
+	"\x15REALM_PROVIDER_PODMAN\x10\x02*c\n" +
+	"\tRealmMode\x12\x1a\n" +
+	"\x16REALM_MODE_UNSPECIFIED\x10\x00\x12\x1b\n" +
+	"\x17REALM_MODE_ROOTFUL_HOST\x10\x01\x12\x1d\n" +
+	"\x19REALM_MODE_ROOTLESS_OWNER\x10\x02*\x9f\x02\n" +
+	"\n" +
+	"RealmState\x12\x1b\n" +
+	"\x17REALM_STATE_UNSPECIFIED\x10\x00\x12\x16\n" +
+	"\x12REALM_STATE_ABSENT\x10\x01\x12\x1a\n" +
+	"\x16REALM_STATE_CONNECTING\x10\x02\x12\x1e\n" +
+	"\x1aREALM_STATE_AUTHENTICATING\x10\x03\x12\x1b\n" +
+	"\x17REALM_STATE_HANDSHAKING\x10\x04\x12\x1f\n" +
+	"\x1bREALM_STATE_HEALTH_CHECKING\x10\x05\x12\x15\n" +
+	"\x11REALM_STATE_READY\x10\x06\x12\x18\n" +
+	"\x14REALM_STATE_DEGRADED\x10\a\x12\x17\n" +
+	"\x13REALM_STATE_STAGING\x10\b\x12\x18\n" +
+	"\x14REALM_STATE_DRAINING\x10\t*\xa7\x02\n" +
+	"\vRealmReason\x12\x1c\n" +
+	"\x18REALM_REASON_UNSPECIFIED\x10\x00\x12\x15\n" +
+	"\x11REALM_REASON_NONE\x10\x01\x12\x1e\n" +
+	"\x1aREALM_REASON_SOCKET_ABSENT\x10\x02\x12\x1b\n" +
+	"\x17REALM_REASON_CONNECTING\x10\x03\x12&\n" +
+	"\"REALM_REASON_AUTHENTICATION_FAILED\x10\x04\x12!\n" +
+	"\x1dREALM_REASON_ADMISSION_FAILED\x10\x05\x12 \n" +
+	"\x1cREALM_REASON_PROTOCOL_FAILED\x10\x06\x12\x1e\n" +
+	"\x1aREALM_REASON_HEALTH_FAILED\x10\a\x12\x19\n" +
+	"\x15REALM_REASON_DRAINING\x10\b*\x80\x01\n" +
 	"\tEventKind\x12\x1a\n" +
 	"\x16EVENT_KIND_UNSPECIFIED\x10\x00\x12\x1a\n" +
 	"\x16EVENT_KIND_KEY_ROTATED\x10\x01\x12\x1d\n" +
@@ -6012,8 +6513,8 @@ func file_basil_broker_v1_broker_proto_rawDescGZIP() []byte {
 	return file_basil_broker_v1_broker_proto_rawDescData
 }
 
-var file_basil_broker_v1_broker_proto_enumTypes = make([]protoimpl.EnumInfo, 11)
-var file_basil_broker_v1_broker_proto_msgTypes = make([]protoimpl.MessageInfo, 74)
+var file_basil_broker_v1_broker_proto_enumTypes = make([]protoimpl.EnumInfo, 16)
+var file_basil_broker_v1_broker_proto_msgTypes = make([]protoimpl.MessageInfo, 75)
 var file_basil_broker_v1_broker_proto_goTypes = []any{
 	(KeyType)(0),                     // 0: basil.broker.v1.KeyType
 	(SigningAlgorithm)(0),            // 1: basil.broker.v1.SigningAlgorithm
@@ -6024,84 +6525,90 @@ var file_basil_broker_v1_broker_proto_goTypes = []any{
 	(KemAlgorithm)(0),                // 6: basil.broker.v1.KemAlgorithm
 	(EnvelopeAlgorithm)(0),           // 7: basil.broker.v1.EnvelopeAlgorithm
 	(CatalogKind)(0),                 // 8: basil.broker.v1.CatalogKind
-	(ReadinessReason)(0),             // 9: basil.broker.v1.ReadinessReason
-	(EventKind)(0),                   // 10: basil.broker.v1.EventKind
-	(*KeyMaterial)(nil),              // 11: basil.broker.v1.KeyMaterial
-	(*CiphertextEnvelope)(nil),       // 12: basil.broker.v1.CiphertextEnvelope
-	(*KemEnvelope)(nil),              // 13: basil.broker.v1.KemEnvelope
-	(*CatalogEntry)(nil),             // 14: basil.broker.v1.CatalogEntry
-	(*SealedRequest)(nil),            // 15: basil.broker.v1.SealedRequest
-	(*SealedResponse)(nil),           // 16: basil.broker.v1.SealedResponse
-	(*NewKeyRequest)(nil),            // 17: basil.broker.v1.NewKeyRequest
-	(*NewKeyResponse)(nil),           // 18: basil.broker.v1.NewKeyResponse
-	(*ImportRequest)(nil),            // 19: basil.broker.v1.ImportRequest
-	(*ImportEntry)(nil),              // 20: basil.broker.v1.ImportEntry
-	(*ImportSetRequest)(nil),         // 21: basil.broker.v1.ImportSetRequest
-	(*ImportedKey)(nil),              // 22: basil.broker.v1.ImportedKey
-	(*ImportSetResponse)(nil),        // 23: basil.broker.v1.ImportSetResponse
-	(*SignRequest)(nil),              // 24: basil.broker.v1.SignRequest
-	(*SignResponse)(nil),             // 25: basil.broker.v1.SignResponse
-	(*VerifyRequest)(nil),            // 26: basil.broker.v1.VerifyRequest
-	(*VerifyResponse)(nil),           // 27: basil.broker.v1.VerifyResponse
-	(*GetPublicKeyRequest)(nil),      // 28: basil.broker.v1.GetPublicKeyRequest
-	(*GetPublicKeyResponse)(nil),     // 29: basil.broker.v1.GetPublicKeyResponse
-	(*EncryptRequest)(nil),           // 30: basil.broker.v1.EncryptRequest
-	(*EncryptResponse)(nil),          // 31: basil.broker.v1.EncryptResponse
-	(*DecryptRequest)(nil),           // 32: basil.broker.v1.DecryptRequest
-	(*DecryptResponse)(nil),          // 33: basil.broker.v1.DecryptResponse
-	(*WrapEnvelopeRequest)(nil),      // 34: basil.broker.v1.WrapEnvelopeRequest
-	(*WrapEnvelopeResponse)(nil),     // 35: basil.broker.v1.WrapEnvelopeResponse
-	(*UnwrapEnvelopeRequest)(nil),    // 36: basil.broker.v1.UnwrapEnvelopeRequest
-	(*UnwrapEnvelopeResponse)(nil),   // 37: basil.broker.v1.UnwrapEnvelopeResponse
-	(*UnsealCoseRequest)(nil),        // 38: basil.broker.v1.UnsealCoseRequest
-	(*UnsealCoseResponse)(nil),       // 39: basil.broker.v1.UnsealCoseResponse
-	(*GetSecretRequest)(nil),         // 40: basil.broker.v1.GetSecretRequest
-	(*GetSecretResponse)(nil),        // 41: basil.broker.v1.GetSecretResponse
-	(*SetSecretRequest)(nil),         // 42: basil.broker.v1.SetSecretRequest
-	(*SetSecretResponse)(nil),        // 43: basil.broker.v1.SetSecretResponse
-	(*RotateSecretRequest)(nil),      // 44: basil.broker.v1.RotateSecretRequest
-	(*RotateSecretResponse)(nil),     // 45: basil.broker.v1.RotateSecretResponse
-	(*ListCatalogRequest)(nil),       // 46: basil.broker.v1.ListCatalogRequest
-	(*MintJwtRequest)(nil),           // 47: basil.broker.v1.MintJwtRequest
-	(*MintNatsUserRequest)(nil),      // 48: basil.broker.v1.MintNatsUserRequest
-	(*MintNatsAccountRequest)(nil),   // 49: basil.broker.v1.MintNatsAccountRequest
-	(*MintNatsOperatorRequest)(nil),  // 50: basil.broker.v1.MintNatsOperatorRequest
-	(*MintNatsSignerRequest)(nil),    // 51: basil.broker.v1.MintNatsSignerRequest
-	(*MintNatsServerRequest)(nil),    // 52: basil.broker.v1.MintNatsServerRequest
-	(*MintNatsCurveRequest)(nil),     // 53: basil.broker.v1.MintNatsCurveRequest
-	(*EncryptNatsCurveRequest)(nil),  // 54: basil.broker.v1.EncryptNatsCurveRequest
-	(*EncryptNatsCurveResponse)(nil), // 55: basil.broker.v1.EncryptNatsCurveResponse
-	(*DecryptNatsCurveRequest)(nil),  // 56: basil.broker.v1.DecryptNatsCurveRequest
-	(*DecryptNatsCurveResponse)(nil), // 57: basil.broker.v1.DecryptNatsCurveResponse
-	(*SignNatsJwtRequest)(nil),       // 58: basil.broker.v1.SignNatsJwtRequest
-	(*AllowedNatsSigner)(nil),        // 59: basil.broker.v1.AllowedNatsSigner
-	(*ValidateNatsJwtRequest)(nil),   // 60: basil.broker.v1.ValidateNatsJwtRequest
-	(*ValidateNatsJwtResponse)(nil),  // 61: basil.broker.v1.ValidateNatsJwtResponse
-	(*CredentialResponse)(nil),       // 62: basil.broker.v1.CredentialResponse
-	(*IssueCertificateRequest)(nil),  // 63: basil.broker.v1.IssueCertificateRequest
-	(*IssueCertificateResponse)(nil), // 64: basil.broker.v1.IssueCertificateResponse
-	(*ReloadRequest)(nil),            // 65: basil.broker.v1.ReloadRequest
-	(*ReloadResponse)(nil),           // 66: basil.broker.v1.ReloadResponse
-	(*ReloadRejection)(nil),          // 67: basil.broker.v1.ReloadRejection
-	(*ExplainRequest)(nil),           // 68: basil.broker.v1.ExplainRequest
-	(*MatchedRule)(nil),              // 69: basil.broker.v1.MatchedRule
-	(*ExplainResponse)(nil),          // 70: basil.broker.v1.ExplainResponse
-	(*RevokeRequest)(nil),            // 71: basil.broker.v1.RevokeRequest
-	(*RevokeResponse)(nil),           // 72: basil.broker.v1.RevokeResponse
-	(*HealthRequest)(nil),            // 73: basil.broker.v1.HealthRequest
-	(*HealthResponse)(nil),           // 74: basil.broker.v1.HealthResponse
-	(*ReadinessRequest)(nil),         // 75: basil.broker.v1.ReadinessRequest
-	(*ReadinessResponse)(nil),        // 76: basil.broker.v1.ReadinessResponse
-	(*StatusRequest)(nil),            // 77: basil.broker.v1.StatusRequest
-	(*StatusResponse)(nil),           // 78: basil.broker.v1.StatusResponse
-	(*WatchRequest)(nil),             // 79: basil.broker.v1.WatchRequest
-	(*Event)(nil),                    // 80: basil.broker.v1.Event
-	(*KeyRotated)(nil),               // 81: basil.broker.v1.KeyRotated
-	(*BundleChanged)(nil),            // 82: basil.broker.v1.BundleChanged
-	(*Revoked)(nil),                  // 83: basil.broker.v1.Revoked
-	(*BrokerErrorInfo)(nil),          // 84: basil.broker.v1.BrokerErrorInfo
-	(*durationpb.Duration)(nil),      // 85: google.protobuf.Duration
-	(*timestamppb.Timestamp)(nil),    // 86: google.protobuf.Timestamp
+	(ExplainDecision)(0),             // 9: basil.broker.v1.ExplainDecision
+	(ReadinessReason)(0),             // 10: basil.broker.v1.ReadinessReason
+	(RealmProvider)(0),               // 11: basil.broker.v1.RealmProvider
+	(RealmMode)(0),                   // 12: basil.broker.v1.RealmMode
+	(RealmState)(0),                  // 13: basil.broker.v1.RealmState
+	(RealmReason)(0),                 // 14: basil.broker.v1.RealmReason
+	(EventKind)(0),                   // 15: basil.broker.v1.EventKind
+	(*KeyMaterial)(nil),              // 16: basil.broker.v1.KeyMaterial
+	(*CiphertextEnvelope)(nil),       // 17: basil.broker.v1.CiphertextEnvelope
+	(*KemEnvelope)(nil),              // 18: basil.broker.v1.KemEnvelope
+	(*CatalogEntry)(nil),             // 19: basil.broker.v1.CatalogEntry
+	(*SealedRequest)(nil),            // 20: basil.broker.v1.SealedRequest
+	(*SealedResponse)(nil),           // 21: basil.broker.v1.SealedResponse
+	(*NewKeyRequest)(nil),            // 22: basil.broker.v1.NewKeyRequest
+	(*NewKeyResponse)(nil),           // 23: basil.broker.v1.NewKeyResponse
+	(*ImportRequest)(nil),            // 24: basil.broker.v1.ImportRequest
+	(*ImportEntry)(nil),              // 25: basil.broker.v1.ImportEntry
+	(*ImportSetRequest)(nil),         // 26: basil.broker.v1.ImportSetRequest
+	(*ImportedKey)(nil),              // 27: basil.broker.v1.ImportedKey
+	(*ImportSetResponse)(nil),        // 28: basil.broker.v1.ImportSetResponse
+	(*SignRequest)(nil),              // 29: basil.broker.v1.SignRequest
+	(*SignResponse)(nil),             // 30: basil.broker.v1.SignResponse
+	(*VerifyRequest)(nil),            // 31: basil.broker.v1.VerifyRequest
+	(*VerifyResponse)(nil),           // 32: basil.broker.v1.VerifyResponse
+	(*GetPublicKeyRequest)(nil),      // 33: basil.broker.v1.GetPublicKeyRequest
+	(*GetPublicKeyResponse)(nil),     // 34: basil.broker.v1.GetPublicKeyResponse
+	(*EncryptRequest)(nil),           // 35: basil.broker.v1.EncryptRequest
+	(*EncryptResponse)(nil),          // 36: basil.broker.v1.EncryptResponse
+	(*DecryptRequest)(nil),           // 37: basil.broker.v1.DecryptRequest
+	(*DecryptResponse)(nil),          // 38: basil.broker.v1.DecryptResponse
+	(*WrapEnvelopeRequest)(nil),      // 39: basil.broker.v1.WrapEnvelopeRequest
+	(*WrapEnvelopeResponse)(nil),     // 40: basil.broker.v1.WrapEnvelopeResponse
+	(*UnwrapEnvelopeRequest)(nil),    // 41: basil.broker.v1.UnwrapEnvelopeRequest
+	(*UnwrapEnvelopeResponse)(nil),   // 42: basil.broker.v1.UnwrapEnvelopeResponse
+	(*UnsealCoseRequest)(nil),        // 43: basil.broker.v1.UnsealCoseRequest
+	(*UnsealCoseResponse)(nil),       // 44: basil.broker.v1.UnsealCoseResponse
+	(*GetSecretRequest)(nil),         // 45: basil.broker.v1.GetSecretRequest
+	(*GetSecretResponse)(nil),        // 46: basil.broker.v1.GetSecretResponse
+	(*SetSecretRequest)(nil),         // 47: basil.broker.v1.SetSecretRequest
+	(*SetSecretResponse)(nil),        // 48: basil.broker.v1.SetSecretResponse
+	(*RotateSecretRequest)(nil),      // 49: basil.broker.v1.RotateSecretRequest
+	(*RotateSecretResponse)(nil),     // 50: basil.broker.v1.RotateSecretResponse
+	(*ListCatalogRequest)(nil),       // 51: basil.broker.v1.ListCatalogRequest
+	(*MintJwtRequest)(nil),           // 52: basil.broker.v1.MintJwtRequest
+	(*MintNatsUserRequest)(nil),      // 53: basil.broker.v1.MintNatsUserRequest
+	(*MintNatsAccountRequest)(nil),   // 54: basil.broker.v1.MintNatsAccountRequest
+	(*MintNatsOperatorRequest)(nil),  // 55: basil.broker.v1.MintNatsOperatorRequest
+	(*MintNatsSignerRequest)(nil),    // 56: basil.broker.v1.MintNatsSignerRequest
+	(*MintNatsServerRequest)(nil),    // 57: basil.broker.v1.MintNatsServerRequest
+	(*MintNatsCurveRequest)(nil),     // 58: basil.broker.v1.MintNatsCurveRequest
+	(*EncryptNatsCurveRequest)(nil),  // 59: basil.broker.v1.EncryptNatsCurveRequest
+	(*EncryptNatsCurveResponse)(nil), // 60: basil.broker.v1.EncryptNatsCurveResponse
+	(*DecryptNatsCurveRequest)(nil),  // 61: basil.broker.v1.DecryptNatsCurveRequest
+	(*DecryptNatsCurveResponse)(nil), // 62: basil.broker.v1.DecryptNatsCurveResponse
+	(*SignNatsJwtRequest)(nil),       // 63: basil.broker.v1.SignNatsJwtRequest
+	(*AllowedNatsSigner)(nil),        // 64: basil.broker.v1.AllowedNatsSigner
+	(*ValidateNatsJwtRequest)(nil),   // 65: basil.broker.v1.ValidateNatsJwtRequest
+	(*ValidateNatsJwtResponse)(nil),  // 66: basil.broker.v1.ValidateNatsJwtResponse
+	(*CredentialResponse)(nil),       // 67: basil.broker.v1.CredentialResponse
+	(*IssueCertificateRequest)(nil),  // 68: basil.broker.v1.IssueCertificateRequest
+	(*IssueCertificateResponse)(nil), // 69: basil.broker.v1.IssueCertificateResponse
+	(*ReloadRequest)(nil),            // 70: basil.broker.v1.ReloadRequest
+	(*ReloadResponse)(nil),           // 71: basil.broker.v1.ReloadResponse
+	(*ReloadRejection)(nil),          // 72: basil.broker.v1.ReloadRejection
+	(*ExplainRequest)(nil),           // 73: basil.broker.v1.ExplainRequest
+	(*MatchedRule)(nil),              // 74: basil.broker.v1.MatchedRule
+	(*ExplainResponse)(nil),          // 75: basil.broker.v1.ExplainResponse
+	(*RevokeRequest)(nil),            // 76: basil.broker.v1.RevokeRequest
+	(*RevokeResponse)(nil),           // 77: basil.broker.v1.RevokeResponse
+	(*HealthRequest)(nil),            // 78: basil.broker.v1.HealthRequest
+	(*HealthResponse)(nil),           // 79: basil.broker.v1.HealthResponse
+	(*ReadinessRequest)(nil),         // 80: basil.broker.v1.ReadinessRequest
+	(*ReadinessResponse)(nil),        // 81: basil.broker.v1.ReadinessResponse
+	(*StatusRequest)(nil),            // 82: basil.broker.v1.StatusRequest
+	(*RealmStatus)(nil),              // 83: basil.broker.v1.RealmStatus
+	(*StatusResponse)(nil),           // 84: basil.broker.v1.StatusResponse
+	(*WatchRequest)(nil),             // 85: basil.broker.v1.WatchRequest
+	(*Event)(nil),                    // 86: basil.broker.v1.Event
+	(*KeyRotated)(nil),               // 87: basil.broker.v1.KeyRotated
+	(*BundleChanged)(nil),            // 88: basil.broker.v1.BundleChanged
+	(*Revoked)(nil),                  // 89: basil.broker.v1.Revoked
+	(*BrokerErrorInfo)(nil),          // 90: basil.broker.v1.BrokerErrorInfo
+	(*durationpb.Duration)(nil),      // 91: google.protobuf.Duration
+	(*timestamppb.Timestamp)(nil),    // 92: google.protobuf.Timestamp
 }
 var file_basil_broker_v1_broker_proto_depIdxs = []int32{
 	5,  // 0: basil.broker.v1.CiphertextEnvelope.alg:type_name -> basil.broker.v1.AeadAlgorithm
@@ -6111,123 +6618,129 @@ var file_basil_broker_v1_broker_proto_depIdxs = []int32{
 	0,  // 4: basil.broker.v1.CatalogEntry.key_type:type_name -> basil.broker.v1.KeyType
 	0,  // 5: basil.broker.v1.NewKeyRequest.key_type:type_name -> basil.broker.v1.KeyType
 	0,  // 6: basil.broker.v1.ImportRequest.key_type:type_name -> basil.broker.v1.KeyType
-	11, // 7: basil.broker.v1.ImportRequest.material:type_name -> basil.broker.v1.KeyMaterial
+	16, // 7: basil.broker.v1.ImportRequest.material:type_name -> basil.broker.v1.KeyMaterial
 	0,  // 8: basil.broker.v1.ImportEntry.key_type:type_name -> basil.broker.v1.KeyType
-	11, // 9: basil.broker.v1.ImportEntry.material:type_name -> basil.broker.v1.KeyMaterial
-	20, // 10: basil.broker.v1.ImportSetRequest.entries:type_name -> basil.broker.v1.ImportEntry
-	22, // 11: basil.broker.v1.ImportSetResponse.keys:type_name -> basil.broker.v1.ImportedKey
+	16, // 9: basil.broker.v1.ImportEntry.material:type_name -> basil.broker.v1.KeyMaterial
+	25, // 10: basil.broker.v1.ImportSetRequest.entries:type_name -> basil.broker.v1.ImportEntry
+	27, // 11: basil.broker.v1.ImportSetResponse.keys:type_name -> basil.broker.v1.ImportedKey
 	1,  // 12: basil.broker.v1.SignRequest.algorithm:type_name -> basil.broker.v1.SigningAlgorithm
 	1,  // 13: basil.broker.v1.VerifyRequest.algorithm:type_name -> basil.broker.v1.SigningAlgorithm
 	0,  // 14: basil.broker.v1.GetPublicKeyResponse.key_type:type_name -> basil.broker.v1.KeyType
 	5,  // 15: basil.broker.v1.EncryptRequest.algorithm:type_name -> basil.broker.v1.AeadAlgorithm
-	12, // 16: basil.broker.v1.EncryptResponse.envelope:type_name -> basil.broker.v1.CiphertextEnvelope
-	12, // 17: basil.broker.v1.DecryptRequest.envelope:type_name -> basil.broker.v1.CiphertextEnvelope
+	17, // 16: basil.broker.v1.EncryptResponse.envelope:type_name -> basil.broker.v1.CiphertextEnvelope
+	17, // 17: basil.broker.v1.DecryptRequest.envelope:type_name -> basil.broker.v1.CiphertextEnvelope
 	6,  // 18: basil.broker.v1.WrapEnvelopeRequest.kem_algorithm:type_name -> basil.broker.v1.KemAlgorithm
 	7,  // 19: basil.broker.v1.WrapEnvelopeRequest.envelope_algorithm:type_name -> basil.broker.v1.EnvelopeAlgorithm
-	13, // 20: basil.broker.v1.WrapEnvelopeResponse.envelope:type_name -> basil.broker.v1.KemEnvelope
-	13, // 21: basil.broker.v1.UnwrapEnvelopeRequest.envelope:type_name -> basil.broker.v1.KemEnvelope
-	85, // 22: basil.broker.v1.MintJwtRequest.ttl:type_name -> google.protobuf.Duration
-	85, // 23: basil.broker.v1.MintNatsUserRequest.ttl:type_name -> google.protobuf.Duration
-	85, // 24: basil.broker.v1.MintNatsAccountRequest.ttl:type_name -> google.protobuf.Duration
-	85, // 25: basil.broker.v1.MintNatsOperatorRequest.ttl:type_name -> google.protobuf.Duration
-	85, // 26: basil.broker.v1.MintNatsSignerRequest.ttl:type_name -> google.protobuf.Duration
-	85, // 27: basil.broker.v1.MintNatsServerRequest.ttl:type_name -> google.protobuf.Duration
-	85, // 28: basil.broker.v1.MintNatsCurveRequest.ttl:type_name -> google.protobuf.Duration
+	18, // 20: basil.broker.v1.WrapEnvelopeResponse.envelope:type_name -> basil.broker.v1.KemEnvelope
+	18, // 21: basil.broker.v1.UnwrapEnvelopeRequest.envelope:type_name -> basil.broker.v1.KemEnvelope
+	91, // 22: basil.broker.v1.MintJwtRequest.ttl:type_name -> google.protobuf.Duration
+	91, // 23: basil.broker.v1.MintNatsUserRequest.ttl:type_name -> google.protobuf.Duration
+	91, // 24: basil.broker.v1.MintNatsAccountRequest.ttl:type_name -> google.protobuf.Duration
+	91, // 25: basil.broker.v1.MintNatsOperatorRequest.ttl:type_name -> google.protobuf.Duration
+	91, // 26: basil.broker.v1.MintNatsSignerRequest.ttl:type_name -> google.protobuf.Duration
+	91, // 27: basil.broker.v1.MintNatsServerRequest.ttl:type_name -> google.protobuf.Duration
+	91, // 28: basil.broker.v1.MintNatsCurveRequest.ttl:type_name -> google.protobuf.Duration
 	2,  // 29: basil.broker.v1.SignNatsJwtRequest.expected_type:type_name -> basil.broker.v1.NatsJwtType
-	85, // 30: basil.broker.v1.SignNatsJwtRequest.ttl:type_name -> google.protobuf.Duration
-	86, // 31: basil.broker.v1.SignNatsJwtRequest.expires_at:type_name -> google.protobuf.Timestamp
-	86, // 32: basil.broker.v1.SignNatsJwtRequest.issued_at:type_name -> google.protobuf.Timestamp
+	91, // 30: basil.broker.v1.SignNatsJwtRequest.ttl:type_name -> google.protobuf.Duration
+	92, // 31: basil.broker.v1.SignNatsJwtRequest.expires_at:type_name -> google.protobuf.Timestamp
+	92, // 32: basil.broker.v1.SignNatsJwtRequest.issued_at:type_name -> google.protobuf.Timestamp
 	3,  // 33: basil.broker.v1.SignNatsJwtRequest.jti_mode:type_name -> basil.broker.v1.NatsJtiMode
-	59, // 34: basil.broker.v1.ValidateNatsJwtRequest.allowed_signers:type_name -> basil.broker.v1.AllowedNatsSigner
+	64, // 34: basil.broker.v1.ValidateNatsJwtRequest.allowed_signers:type_name -> basil.broker.v1.AllowedNatsSigner
 	2,  // 35: basil.broker.v1.ValidateNatsJwtRequest.expected_type:type_name -> basil.broker.v1.NatsJwtType
 	4,  // 36: basil.broker.v1.ValidateNatsJwtResponse.reason:type_name -> basil.broker.v1.NatsJwtValidationReason
 	2,  // 37: basil.broker.v1.ValidateNatsJwtResponse.jwt_type:type_name -> basil.broker.v1.NatsJwtType
-	86, // 38: basil.broker.v1.CredentialResponse.expires_at:type_name -> google.protobuf.Timestamp
-	85, // 39: basil.broker.v1.IssueCertificateRequest.ttl:type_name -> google.protobuf.Duration
-	67, // 40: basil.broker.v1.ReloadResponse.rejection:type_name -> basil.broker.v1.ReloadRejection
-	69, // 41: basil.broker.v1.ExplainResponse.matched_rule:type_name -> basil.broker.v1.MatchedRule
-	9,  // 42: basil.broker.v1.ReadinessResponse.reason:type_name -> basil.broker.v1.ReadinessReason
-	10, // 43: basil.broker.v1.WatchRequest.kinds:type_name -> basil.broker.v1.EventKind
-	10, // 44: basil.broker.v1.Event.kind:type_name -> basil.broker.v1.EventKind
-	86, // 45: basil.broker.v1.Event.at:type_name -> google.protobuf.Timestamp
-	81, // 46: basil.broker.v1.Event.key_rotated:type_name -> basil.broker.v1.KeyRotated
-	82, // 47: basil.broker.v1.Event.bundle_changed:type_name -> basil.broker.v1.BundleChanged
-	83, // 48: basil.broker.v1.Event.revoked:type_name -> basil.broker.v1.Revoked
-	15, // 49: basil.broker.v1.InvocationService.Invoke:input_type -> basil.broker.v1.SealedRequest
-	17, // 50: basil.broker.v1.SigningService.NewKey:input_type -> basil.broker.v1.NewKeyRequest
-	19, // 51: basil.broker.v1.SigningService.Import:input_type -> basil.broker.v1.ImportRequest
-	21, // 52: basil.broker.v1.SigningService.ImportSet:input_type -> basil.broker.v1.ImportSetRequest
-	24, // 53: basil.broker.v1.SigningService.Sign:input_type -> basil.broker.v1.SignRequest
-	26, // 54: basil.broker.v1.SigningService.Verify:input_type -> basil.broker.v1.VerifyRequest
-	28, // 55: basil.broker.v1.SigningService.GetPublicKey:input_type -> basil.broker.v1.GetPublicKeyRequest
-	30, // 56: basil.broker.v1.AeadService.Encrypt:input_type -> basil.broker.v1.EncryptRequest
-	32, // 57: basil.broker.v1.AeadService.Decrypt:input_type -> basil.broker.v1.DecryptRequest
-	34, // 58: basil.broker.v1.AeadService.WrapEnvelope:input_type -> basil.broker.v1.WrapEnvelopeRequest
-	36, // 59: basil.broker.v1.AeadService.UnwrapEnvelope:input_type -> basil.broker.v1.UnwrapEnvelopeRequest
-	38, // 60: basil.broker.v1.AeadService.UnsealCose:input_type -> basil.broker.v1.UnsealCoseRequest
-	40, // 61: basil.broker.v1.SecretService.GetSecret:input_type -> basil.broker.v1.GetSecretRequest
-	42, // 62: basil.broker.v1.SecretService.SetSecret:input_type -> basil.broker.v1.SetSecretRequest
-	44, // 63: basil.broker.v1.SecretService.RotateSecret:input_type -> basil.broker.v1.RotateSecretRequest
-	46, // 64: basil.broker.v1.SecretService.ListCatalog:input_type -> basil.broker.v1.ListCatalogRequest
-	47, // 65: basil.broker.v1.MintingService.MintJwt:input_type -> basil.broker.v1.MintJwtRequest
-	63, // 66: basil.broker.v1.MintingService.IssueCertificate:input_type -> basil.broker.v1.IssueCertificateRequest
-	48, // 67: basil.broker.v1.NatsService.MintNatsUser:input_type -> basil.broker.v1.MintNatsUserRequest
-	49, // 68: basil.broker.v1.NatsService.MintNatsAccount:input_type -> basil.broker.v1.MintNatsAccountRequest
-	50, // 69: basil.broker.v1.NatsService.MintNatsOperator:input_type -> basil.broker.v1.MintNatsOperatorRequest
-	51, // 70: basil.broker.v1.NatsService.MintNatsSigner:input_type -> basil.broker.v1.MintNatsSignerRequest
-	52, // 71: basil.broker.v1.NatsService.MintNatsServer:input_type -> basil.broker.v1.MintNatsServerRequest
-	53, // 72: basil.broker.v1.NatsService.MintNatsCurve:input_type -> basil.broker.v1.MintNatsCurveRequest
-	54, // 73: basil.broker.v1.NatsService.EncryptNatsCurve:input_type -> basil.broker.v1.EncryptNatsCurveRequest
-	56, // 74: basil.broker.v1.NatsService.DecryptNatsCurve:input_type -> basil.broker.v1.DecryptNatsCurveRequest
-	58, // 75: basil.broker.v1.NatsService.SignNatsJwt:input_type -> basil.broker.v1.SignNatsJwtRequest
-	60, // 76: basil.broker.v1.NatsService.ValidateNatsJwt:input_type -> basil.broker.v1.ValidateNatsJwtRequest
-	77, // 77: basil.broker.v1.AdminService.Status:input_type -> basil.broker.v1.StatusRequest
-	73, // 78: basil.broker.v1.AdminService.Health:input_type -> basil.broker.v1.HealthRequest
-	75, // 79: basil.broker.v1.AdminService.Readiness:input_type -> basil.broker.v1.ReadinessRequest
-	79, // 80: basil.broker.v1.AdminService.Watch:input_type -> basil.broker.v1.WatchRequest
-	65, // 81: basil.broker.v1.AdminService.Reload:input_type -> basil.broker.v1.ReloadRequest
-	68, // 82: basil.broker.v1.AdminService.Explain:input_type -> basil.broker.v1.ExplainRequest
-	71, // 83: basil.broker.v1.AdminService.Revoke:input_type -> basil.broker.v1.RevokeRequest
-	16, // 84: basil.broker.v1.InvocationService.Invoke:output_type -> basil.broker.v1.SealedResponse
-	18, // 85: basil.broker.v1.SigningService.NewKey:output_type -> basil.broker.v1.NewKeyResponse
-	18, // 86: basil.broker.v1.SigningService.Import:output_type -> basil.broker.v1.NewKeyResponse
-	23, // 87: basil.broker.v1.SigningService.ImportSet:output_type -> basil.broker.v1.ImportSetResponse
-	25, // 88: basil.broker.v1.SigningService.Sign:output_type -> basil.broker.v1.SignResponse
-	27, // 89: basil.broker.v1.SigningService.Verify:output_type -> basil.broker.v1.VerifyResponse
-	29, // 90: basil.broker.v1.SigningService.GetPublicKey:output_type -> basil.broker.v1.GetPublicKeyResponse
-	31, // 91: basil.broker.v1.AeadService.Encrypt:output_type -> basil.broker.v1.EncryptResponse
-	33, // 92: basil.broker.v1.AeadService.Decrypt:output_type -> basil.broker.v1.DecryptResponse
-	35, // 93: basil.broker.v1.AeadService.WrapEnvelope:output_type -> basil.broker.v1.WrapEnvelopeResponse
-	37, // 94: basil.broker.v1.AeadService.UnwrapEnvelope:output_type -> basil.broker.v1.UnwrapEnvelopeResponse
-	39, // 95: basil.broker.v1.AeadService.UnsealCose:output_type -> basil.broker.v1.UnsealCoseResponse
-	41, // 96: basil.broker.v1.SecretService.GetSecret:output_type -> basil.broker.v1.GetSecretResponse
-	43, // 97: basil.broker.v1.SecretService.SetSecret:output_type -> basil.broker.v1.SetSecretResponse
-	45, // 98: basil.broker.v1.SecretService.RotateSecret:output_type -> basil.broker.v1.RotateSecretResponse
-	14, // 99: basil.broker.v1.SecretService.ListCatalog:output_type -> basil.broker.v1.CatalogEntry
-	62, // 100: basil.broker.v1.MintingService.MintJwt:output_type -> basil.broker.v1.CredentialResponse
-	64, // 101: basil.broker.v1.MintingService.IssueCertificate:output_type -> basil.broker.v1.IssueCertificateResponse
-	62, // 102: basil.broker.v1.NatsService.MintNatsUser:output_type -> basil.broker.v1.CredentialResponse
-	62, // 103: basil.broker.v1.NatsService.MintNatsAccount:output_type -> basil.broker.v1.CredentialResponse
-	62, // 104: basil.broker.v1.NatsService.MintNatsOperator:output_type -> basil.broker.v1.CredentialResponse
-	62, // 105: basil.broker.v1.NatsService.MintNatsSigner:output_type -> basil.broker.v1.CredentialResponse
-	62, // 106: basil.broker.v1.NatsService.MintNatsServer:output_type -> basil.broker.v1.CredentialResponse
-	62, // 107: basil.broker.v1.NatsService.MintNatsCurve:output_type -> basil.broker.v1.CredentialResponse
-	55, // 108: basil.broker.v1.NatsService.EncryptNatsCurve:output_type -> basil.broker.v1.EncryptNatsCurveResponse
-	57, // 109: basil.broker.v1.NatsService.DecryptNatsCurve:output_type -> basil.broker.v1.DecryptNatsCurveResponse
-	62, // 110: basil.broker.v1.NatsService.SignNatsJwt:output_type -> basil.broker.v1.CredentialResponse
-	61, // 111: basil.broker.v1.NatsService.ValidateNatsJwt:output_type -> basil.broker.v1.ValidateNatsJwtResponse
-	78, // 112: basil.broker.v1.AdminService.Status:output_type -> basil.broker.v1.StatusResponse
-	74, // 113: basil.broker.v1.AdminService.Health:output_type -> basil.broker.v1.HealthResponse
-	76, // 114: basil.broker.v1.AdminService.Readiness:output_type -> basil.broker.v1.ReadinessResponse
-	80, // 115: basil.broker.v1.AdminService.Watch:output_type -> basil.broker.v1.Event
-	66, // 116: basil.broker.v1.AdminService.Reload:output_type -> basil.broker.v1.ReloadResponse
-	70, // 117: basil.broker.v1.AdminService.Explain:output_type -> basil.broker.v1.ExplainResponse
-	72, // 118: basil.broker.v1.AdminService.Revoke:output_type -> basil.broker.v1.RevokeResponse
-	84, // [84:119] is the sub-list for method output_type
-	49, // [49:84] is the sub-list for method input_type
-	49, // [49:49] is the sub-list for extension type_name
-	49, // [49:49] is the sub-list for extension extendee
-	0,  // [0:49] is the sub-list for field type_name
+	92, // 38: basil.broker.v1.CredentialResponse.expires_at:type_name -> google.protobuf.Timestamp
+	91, // 39: basil.broker.v1.IssueCertificateRequest.ttl:type_name -> google.protobuf.Duration
+	72, // 40: basil.broker.v1.ReloadResponse.rejection:type_name -> basil.broker.v1.ReloadRejection
+	9,  // 41: basil.broker.v1.ExplainResponse.decision:type_name -> basil.broker.v1.ExplainDecision
+	74, // 42: basil.broker.v1.ExplainResponse.matched_rule:type_name -> basil.broker.v1.MatchedRule
+	10, // 43: basil.broker.v1.ReadinessResponse.reason:type_name -> basil.broker.v1.ReadinessReason
+	11, // 44: basil.broker.v1.RealmStatus.provider:type_name -> basil.broker.v1.RealmProvider
+	12, // 45: basil.broker.v1.RealmStatus.mode:type_name -> basil.broker.v1.RealmMode
+	13, // 46: basil.broker.v1.RealmStatus.state:type_name -> basil.broker.v1.RealmState
+	14, // 47: basil.broker.v1.RealmStatus.reason:type_name -> basil.broker.v1.RealmReason
+	83, // 48: basil.broker.v1.StatusResponse.realms:type_name -> basil.broker.v1.RealmStatus
+	15, // 49: basil.broker.v1.WatchRequest.kinds:type_name -> basil.broker.v1.EventKind
+	15, // 50: basil.broker.v1.Event.kind:type_name -> basil.broker.v1.EventKind
+	92, // 51: basil.broker.v1.Event.at:type_name -> google.protobuf.Timestamp
+	87, // 52: basil.broker.v1.Event.key_rotated:type_name -> basil.broker.v1.KeyRotated
+	88, // 53: basil.broker.v1.Event.bundle_changed:type_name -> basil.broker.v1.BundleChanged
+	89, // 54: basil.broker.v1.Event.revoked:type_name -> basil.broker.v1.Revoked
+	20, // 55: basil.broker.v1.InvocationService.Invoke:input_type -> basil.broker.v1.SealedRequest
+	22, // 56: basil.broker.v1.SigningService.NewKey:input_type -> basil.broker.v1.NewKeyRequest
+	24, // 57: basil.broker.v1.SigningService.Import:input_type -> basil.broker.v1.ImportRequest
+	26, // 58: basil.broker.v1.SigningService.ImportSet:input_type -> basil.broker.v1.ImportSetRequest
+	29, // 59: basil.broker.v1.SigningService.Sign:input_type -> basil.broker.v1.SignRequest
+	31, // 60: basil.broker.v1.SigningService.Verify:input_type -> basil.broker.v1.VerifyRequest
+	33, // 61: basil.broker.v1.SigningService.GetPublicKey:input_type -> basil.broker.v1.GetPublicKeyRequest
+	35, // 62: basil.broker.v1.AeadService.Encrypt:input_type -> basil.broker.v1.EncryptRequest
+	37, // 63: basil.broker.v1.AeadService.Decrypt:input_type -> basil.broker.v1.DecryptRequest
+	39, // 64: basil.broker.v1.AeadService.WrapEnvelope:input_type -> basil.broker.v1.WrapEnvelopeRequest
+	41, // 65: basil.broker.v1.AeadService.UnwrapEnvelope:input_type -> basil.broker.v1.UnwrapEnvelopeRequest
+	43, // 66: basil.broker.v1.AeadService.UnsealCose:input_type -> basil.broker.v1.UnsealCoseRequest
+	45, // 67: basil.broker.v1.SecretService.GetSecret:input_type -> basil.broker.v1.GetSecretRequest
+	47, // 68: basil.broker.v1.SecretService.SetSecret:input_type -> basil.broker.v1.SetSecretRequest
+	49, // 69: basil.broker.v1.SecretService.RotateSecret:input_type -> basil.broker.v1.RotateSecretRequest
+	51, // 70: basil.broker.v1.SecretService.ListCatalog:input_type -> basil.broker.v1.ListCatalogRequest
+	52, // 71: basil.broker.v1.MintingService.MintJwt:input_type -> basil.broker.v1.MintJwtRequest
+	68, // 72: basil.broker.v1.MintingService.IssueCertificate:input_type -> basil.broker.v1.IssueCertificateRequest
+	53, // 73: basil.broker.v1.NatsService.MintNatsUser:input_type -> basil.broker.v1.MintNatsUserRequest
+	54, // 74: basil.broker.v1.NatsService.MintNatsAccount:input_type -> basil.broker.v1.MintNatsAccountRequest
+	55, // 75: basil.broker.v1.NatsService.MintNatsOperator:input_type -> basil.broker.v1.MintNatsOperatorRequest
+	56, // 76: basil.broker.v1.NatsService.MintNatsSigner:input_type -> basil.broker.v1.MintNatsSignerRequest
+	57, // 77: basil.broker.v1.NatsService.MintNatsServer:input_type -> basil.broker.v1.MintNatsServerRequest
+	58, // 78: basil.broker.v1.NatsService.MintNatsCurve:input_type -> basil.broker.v1.MintNatsCurveRequest
+	59, // 79: basil.broker.v1.NatsService.EncryptNatsCurve:input_type -> basil.broker.v1.EncryptNatsCurveRequest
+	61, // 80: basil.broker.v1.NatsService.DecryptNatsCurve:input_type -> basil.broker.v1.DecryptNatsCurveRequest
+	63, // 81: basil.broker.v1.NatsService.SignNatsJwt:input_type -> basil.broker.v1.SignNatsJwtRequest
+	65, // 82: basil.broker.v1.NatsService.ValidateNatsJwt:input_type -> basil.broker.v1.ValidateNatsJwtRequest
+	82, // 83: basil.broker.v1.AdminService.Status:input_type -> basil.broker.v1.StatusRequest
+	78, // 84: basil.broker.v1.AdminService.Health:input_type -> basil.broker.v1.HealthRequest
+	80, // 85: basil.broker.v1.AdminService.Readiness:input_type -> basil.broker.v1.ReadinessRequest
+	85, // 86: basil.broker.v1.AdminService.Watch:input_type -> basil.broker.v1.WatchRequest
+	70, // 87: basil.broker.v1.AdminService.Reload:input_type -> basil.broker.v1.ReloadRequest
+	73, // 88: basil.broker.v1.AdminService.Explain:input_type -> basil.broker.v1.ExplainRequest
+	76, // 89: basil.broker.v1.AdminService.Revoke:input_type -> basil.broker.v1.RevokeRequest
+	21, // 90: basil.broker.v1.InvocationService.Invoke:output_type -> basil.broker.v1.SealedResponse
+	23, // 91: basil.broker.v1.SigningService.NewKey:output_type -> basil.broker.v1.NewKeyResponse
+	23, // 92: basil.broker.v1.SigningService.Import:output_type -> basil.broker.v1.NewKeyResponse
+	28, // 93: basil.broker.v1.SigningService.ImportSet:output_type -> basil.broker.v1.ImportSetResponse
+	30, // 94: basil.broker.v1.SigningService.Sign:output_type -> basil.broker.v1.SignResponse
+	32, // 95: basil.broker.v1.SigningService.Verify:output_type -> basil.broker.v1.VerifyResponse
+	34, // 96: basil.broker.v1.SigningService.GetPublicKey:output_type -> basil.broker.v1.GetPublicKeyResponse
+	36, // 97: basil.broker.v1.AeadService.Encrypt:output_type -> basil.broker.v1.EncryptResponse
+	38, // 98: basil.broker.v1.AeadService.Decrypt:output_type -> basil.broker.v1.DecryptResponse
+	40, // 99: basil.broker.v1.AeadService.WrapEnvelope:output_type -> basil.broker.v1.WrapEnvelopeResponse
+	42, // 100: basil.broker.v1.AeadService.UnwrapEnvelope:output_type -> basil.broker.v1.UnwrapEnvelopeResponse
+	44, // 101: basil.broker.v1.AeadService.UnsealCose:output_type -> basil.broker.v1.UnsealCoseResponse
+	46, // 102: basil.broker.v1.SecretService.GetSecret:output_type -> basil.broker.v1.GetSecretResponse
+	48, // 103: basil.broker.v1.SecretService.SetSecret:output_type -> basil.broker.v1.SetSecretResponse
+	50, // 104: basil.broker.v1.SecretService.RotateSecret:output_type -> basil.broker.v1.RotateSecretResponse
+	19, // 105: basil.broker.v1.SecretService.ListCatalog:output_type -> basil.broker.v1.CatalogEntry
+	67, // 106: basil.broker.v1.MintingService.MintJwt:output_type -> basil.broker.v1.CredentialResponse
+	69, // 107: basil.broker.v1.MintingService.IssueCertificate:output_type -> basil.broker.v1.IssueCertificateResponse
+	67, // 108: basil.broker.v1.NatsService.MintNatsUser:output_type -> basil.broker.v1.CredentialResponse
+	67, // 109: basil.broker.v1.NatsService.MintNatsAccount:output_type -> basil.broker.v1.CredentialResponse
+	67, // 110: basil.broker.v1.NatsService.MintNatsOperator:output_type -> basil.broker.v1.CredentialResponse
+	67, // 111: basil.broker.v1.NatsService.MintNatsSigner:output_type -> basil.broker.v1.CredentialResponse
+	67, // 112: basil.broker.v1.NatsService.MintNatsServer:output_type -> basil.broker.v1.CredentialResponse
+	67, // 113: basil.broker.v1.NatsService.MintNatsCurve:output_type -> basil.broker.v1.CredentialResponse
+	60, // 114: basil.broker.v1.NatsService.EncryptNatsCurve:output_type -> basil.broker.v1.EncryptNatsCurveResponse
+	62, // 115: basil.broker.v1.NatsService.DecryptNatsCurve:output_type -> basil.broker.v1.DecryptNatsCurveResponse
+	67, // 116: basil.broker.v1.NatsService.SignNatsJwt:output_type -> basil.broker.v1.CredentialResponse
+	66, // 117: basil.broker.v1.NatsService.ValidateNatsJwt:output_type -> basil.broker.v1.ValidateNatsJwtResponse
+	84, // 118: basil.broker.v1.AdminService.Status:output_type -> basil.broker.v1.StatusResponse
+	79, // 119: basil.broker.v1.AdminService.Health:output_type -> basil.broker.v1.HealthResponse
+	81, // 120: basil.broker.v1.AdminService.Readiness:output_type -> basil.broker.v1.ReadinessResponse
+	86, // 121: basil.broker.v1.AdminService.Watch:output_type -> basil.broker.v1.Event
+	71, // 122: basil.broker.v1.AdminService.Reload:output_type -> basil.broker.v1.ReloadResponse
+	75, // 123: basil.broker.v1.AdminService.Explain:output_type -> basil.broker.v1.ExplainResponse
+	77, // 124: basil.broker.v1.AdminService.Revoke:output_type -> basil.broker.v1.RevokeResponse
+	90, // [90:125] is the sub-list for method output_type
+	55, // [55:90] is the sub-list for method input_type
+	55, // [55:55] is the sub-list for extension type_name
+	55, // [55:55] is the sub-list for extension extendee
+	0,  // [0:55] is the sub-list for field type_name
 }
 
 func init() { file_basil_broker_v1_broker_proto_init() }
@@ -6257,7 +6770,7 @@ func file_basil_broker_v1_broker_proto_init() {
 		(*AllowedNatsSigner_NatsPublicKey)(nil),
 	}
 	file_basil_broker_v1_broker_proto_msgTypes[51].OneofWrappers = []any{}
-	file_basil_broker_v1_broker_proto_msgTypes[69].OneofWrappers = []any{
+	file_basil_broker_v1_broker_proto_msgTypes[70].OneofWrappers = []any{
 		(*Event_KeyRotated)(nil),
 		(*Event_BundleChanged)(nil),
 		(*Event_Revoked)(nil),
@@ -6267,8 +6780,8 @@ func file_basil_broker_v1_broker_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_basil_broker_v1_broker_proto_rawDesc), len(file_basil_broker_v1_broker_proto_rawDesc)),
-			NumEnums:      11,
-			NumMessages:   74,
+			NumEnums:      16,
+			NumMessages:   75,
 			NumExtensions: 0,
 			NumServices:   7,
 		},

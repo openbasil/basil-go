@@ -3,6 +3,7 @@ package basil
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"iter"
 	"time"
@@ -14,6 +15,19 @@ import (
 // [Readiness] decision. It mirrors basil.broker.v1.ReadinessReason and never
 // names a key.
 type ReadinessReason int32
+
+// RealmProvider is the closed runtime-attestor provider enum. Unknown numeric
+// values are retained so newer servers never silently default.
+type RealmProvider int32
+
+// RealmMode is the closed runtime-attestor account scope enum.
+type RealmMode int32
+
+// RealmState is the disclosure-safe runtime-attestor serving state enum.
+type RealmState int32
+
+// RealmReason is the disclosure-safe runtime-attestor state reason enum.
+type RealmReason int32
 
 const (
 	// ReadinessReasonUnspecified is the zero value.
@@ -42,6 +56,28 @@ type Status struct {
 	Version string
 	// Protocol is the wire protocol version number.
 	Protocol uint32
+	// Realms is populated only by [Client.StatusWithRealms].
+	Realms []RealmStatus
+}
+
+// RealmStatus is one named disclosure-safe runtime-attestor status entry.
+type RealmStatus struct {
+	// Name is the canonical protected realm name.
+	Name string
+	// Provider is the closed provider enum.
+	Provider RealmProvider
+	// Mode is the closed account/runtime scope.
+	Mode RealmMode
+	// State is the accepted serving-state projection.
+	State RealmState
+	// Generation is the accepted configuration generation.
+	Generation uint64
+	// SessionEpoch is the current authoritative session epoch.
+	SessionEpoch uint64
+	// Protocol is the exact private protocol version.
+	Protocol uint32
+	// Reason is the coarse state reason.
+	Reason RealmReason
 }
 
 // Health is the broker's liveness, as returned by [Client.Health]. A returned
@@ -77,6 +113,14 @@ type Readiness struct {
 	// KeysOptionalMissing is the number of absent keys whose missing policy is
 	// warn or generate (reported for visibility only).
 	KeysOptionalMissing uint32
+	// RealmsTotal is the number of accepted runtime-attestor realms.
+	RealmsTotal uint32
+	// RealmsReady is the number with an authoritative ready session.
+	RealmsReady uint32
+	// RealmsDegraded is the accepted non-ready, non-absent count.
+	RealmsDegraded uint32
+	// RealmsAbsent is the accepted absent-socket count.
+	RealmsAbsent uint32
 }
 
 // Status reports the broker's backend, build version, and wire protocol
@@ -84,17 +128,42 @@ type Readiness struct {
 // answers only callers that resolve to a policy subject (no further grant is
 // needed); an unattested or unconfigured peer is denied.
 func (c *Client) Status(ctx context.Context) (*Status, error) {
+	return c.status(ctx, false)
+}
+
+// StatusWithRealms reports broker identity plus the permission-gated named
+// realm inventory. The caller needs an explicit op:realm_status grant over
+// broker.realms; wildcard actions do not imply it.
+func (c *Client) StatusWithRealms(ctx context.Context) (*Status, error) {
+	return c.status(ctx, true)
+}
+
+func (c *Client) status(ctx context.Context, includeRealms bool) (*Status, error) {
 	ctx, cancel := c.withTimeout(ctx)
 	defer cancel()
-	resp, err := c.admin.Status(ctx, &pb.StatusRequest{})
+	resp, err := c.admin.Status(ctx, &pb.StatusRequest{IncludeRealms: includeRealms})
 	if err != nil {
 		return nil, statusError(err)
 	}
-	return &Status{
+	status := &Status{
 		Backend:  resp.GetBackend(),
 		Version:  resp.GetVersion(),
 		Protocol: resp.GetProtocol(),
-	}, nil
+		Realms:   make([]RealmStatus, 0, len(resp.GetRealms())),
+	}
+	for _, realm := range resp.GetRealms() {
+		status.Realms = append(status.Realms, RealmStatus{
+			Name:         realm.GetName(),
+			Provider:     RealmProvider(realm.GetProvider()),
+			Mode:         RealmMode(realm.GetMode()),
+			State:        RealmState(realm.GetState()),
+			Generation:   realm.GetGeneration(),
+			SessionEpoch: realm.GetSessionEpoch(),
+			Protocol:     realm.GetProtocol(),
+			Reason:       RealmReason(realm.GetReason()),
+		})
+	}
+	return status, nil
 }
 
 // Health probes broker liveness: whether the daemon is up and serving the
@@ -130,6 +199,10 @@ func (c *Client) Readiness(ctx context.Context) (*Readiness, error) {
 		KeysPresent:         resp.GetKeysPresent(),
 		KeysRequiredMissing: resp.GetKeysRequiredMissing(),
 		KeysOptionalMissing: resp.GetKeysOptionalMissing(),
+		RealmsTotal:         resp.GetRealmsTotal(),
+		RealmsReady:         resp.GetRealmsReady(),
+		RealmsDegraded:      resp.GetRealmsDegraded(),
+		RealmsAbsent:        resp.GetRealmsAbsent(),
 	}, nil
 }
 
@@ -251,7 +324,7 @@ func (c *Client) Explain(ctx context.Context, subject, op, key string) (*Explain
 		Subject:  resp.GetSubject(),
 		Op:       resp.GetOp(),
 		Key:      resp.GetKey(),
-		Decision: resp.GetDecision(),
+		Decision: explainDecision(resp.GetDecision()),
 		Via:      resp.GetVia(),
 		Reason:   resp.GetReason(),
 	}
@@ -265,6 +338,17 @@ func (c *Client) Explain(ctx context.Context, subject, op, key string) (*Explain
 		}
 	}
 	return out, nil
+}
+
+func explainDecision(decision pb.ExplainDecision) string {
+	switch decision {
+	case pb.ExplainDecision_EXPLAIN_DECISION_ALLOW:
+		return "allow"
+	case pb.ExplainDecision_EXPLAIN_DECISION_DENY:
+		return "deny"
+	default:
+		return fmt.Sprintf("UNKNOWN(%d)", decision)
+	}
 }
 
 // RevokeResult is the outcome of a live [Client.Revoke].

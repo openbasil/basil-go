@@ -24,13 +24,15 @@ type fakeAdmin struct {
 	revokeResp    *pb.RevokeResponse
 	watchEvents   []*pb.Event
 	lastReload    *pb.ReloadRequest
+	lastStatus    *pb.StatusRequest
 	lastExplain   *pb.ExplainRequest
 	lastRevoke    *pb.RevokeRequest
 	lastWatch     *pb.WatchRequest
 	err           error
 }
 
-func (f *fakeAdmin) Status(_ context.Context, _ *pb.StatusRequest) (*pb.StatusResponse, error) {
+func (f *fakeAdmin) Status(_ context.Context, req *pb.StatusRequest) (*pb.StatusResponse, error) {
+	f.lastStatus = req
 	if f.err != nil {
 		return nil, f.err
 	}
@@ -105,6 +107,29 @@ func TestStatusMapsResponse(t *testing.T) {
 	}
 }
 
+func TestStatusWithRealmsOptsInAndPreservesEnums(t *testing.T) {
+	f := &fakeAdmin{statusResp: &pb.StatusResponse{
+		Backend: "vault", Version: "1.2.3", Protocol: 1,
+		Realms: []*pb.RealmStatus{{
+			Name: "prod", Provider: pb.RealmProvider(77), Mode: pb.RealmMode_REALM_MODE_ROOTFUL_HOST,
+			State: pb.RealmState_REALM_STATE_READY, Generation: 7, SessionEpoch: 9,
+			Protocol: 1, Reason: pb.RealmReason_REALM_REASON_NONE,
+		}},
+	}}
+	c := dialAdmin(t, f)
+	st, err := c.StatusWithRealms(context.Background())
+	if err != nil {
+		t.Fatalf("status with realms: %v", err)
+	}
+	if f.lastStatus == nil || !f.lastStatus.GetIncludeRealms() {
+		t.Fatal("status request did not opt into realms")
+	}
+	if len(st.Realms) != 1 || st.Realms[0].Provider != basil.RealmProvider(77) ||
+		st.Realms[0].State != basil.RealmState(pb.RealmState_REALM_STATE_READY) {
+		t.Fatalf("unexpected realms: %+v", st.Realms)
+	}
+}
+
 func TestHealthMapsResponse(t *testing.T) {
 	f := &fakeAdmin{healthResp: &pb.HealthResponse{Alive: true, Version: "1.2.3"}}
 	c := dialAdmin(t, f)
@@ -127,6 +152,10 @@ func TestReadinessMapsResponse(t *testing.T) {
 		KeysPresent:         9,
 		KeysRequiredMissing: 0,
 		KeysOptionalMissing: 1,
+		RealmsTotal:         3,
+		RealmsReady:         1,
+		RealmsDegraded:      1,
+		RealmsAbsent:        1,
 	}}
 	c := dialAdmin(t, f)
 
@@ -135,7 +164,8 @@ func TestReadinessMapsResponse(t *testing.T) {
 		t.Fatalf("readiness: %v", err)
 	}
 	if !r.Ready || r.Reason != basil.ReadinessReasonReady || r.Generation != 7 ||
-		r.KeysTotal != 10 || r.KeysPresent != 9 || r.KeysRequiredMissing != 0 || r.KeysOptionalMissing != 1 {
+		r.KeysTotal != 10 || r.KeysPresent != 9 || r.KeysRequiredMissing != 0 || r.KeysOptionalMissing != 1 ||
+		r.RealmsTotal != 3 || r.RealmsReady != 1 || r.RealmsDegraded != 1 || r.RealmsAbsent != 1 {
 		t.Errorf("unexpected readiness: %+v", r)
 	}
 }
@@ -204,7 +234,7 @@ func TestExplainAllowMapsMatchedRule(t *testing.T) {
 		Subject:  "svc.app",
 		Op:       "sign",
 		Key:      "app.signing",
-		Decision: "allow",
+		Decision: pb.ExplainDecision_EXPLAIN_DECISION_ALLOW,
 		Via:      "subject:svc.app",
 		MatchedRule: &pb.MatchedRule{
 			Rule:    "r1",
@@ -239,7 +269,7 @@ func TestExplainDenyHasNoMatchedRule(t *testing.T) {
 		Subject:  "svc.app",
 		Op:       "get",
 		Key:      "secret",
-		Decision: "deny",
+		Decision: pb.ExplainDecision_EXPLAIN_DECISION_DENY,
 		Reason:   "not_permitted",
 	}}
 	c := dialAdmin(t, f)
