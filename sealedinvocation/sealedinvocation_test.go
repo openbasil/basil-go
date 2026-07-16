@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/ed25519"
 	"crypto/sha3"
+	"errors"
 	"slices"
 	"testing"
 	"time"
@@ -25,6 +26,39 @@ func TestBuildRequestAndOpenResponse(t *testing.T) {
 	}
 	if !bytes.Equal(opened.Plaintext, []byte("go sealed response")) {
 		t.Fatalf("plaintext = %q", opened.Plaintext)
+	}
+}
+
+func TestCBORInitializationErrorsPropagate(t *testing.T) {
+	initializationErr := errors.New("test CBOR initialization failure")
+	originalLoader := loadCBORModes
+	loadCBORModes = func() (*cborModes, error) {
+		return nil, initializationErr
+	}
+	t.Cleanup(func() {
+		loadCBORModes = originalLoader
+	})
+
+	recipientPublic, err := X25519Public(repeatedByte(0x33))
+	if err != nil {
+		t.Fatalf("recipient public: %v", err)
+	}
+	_, err = BuildRequest(RequestParams{
+		ContentType:     "application/test",
+		Plaintext:       []byte("request"),
+		MessageID:       []byte("request-1"),
+		SenderKeyID:     "client.signing",
+		SenderSeed:      repeatedByte(0x11),
+		RecipientKeyID:  "request.sealing",
+		RecipientPublic: recipientPublic,
+	})
+	if !errors.Is(err, initializationErr) {
+		t.Fatalf("BuildRequest error = %v, want CBOR initialization error", err)
+	}
+
+	_, err = OpenResponse(ResponseParams{Message: []byte{0xd2, 0x80}})
+	if !errors.Is(err, initializationErr) {
+		t.Fatalf("OpenResponse error = %v, want CBOR initialization error", err)
 	}
 }
 
@@ -187,7 +221,7 @@ func TestParseEncryptProtectedCritEnforcement(t *testing.T) {
 	rewriteCrit := func(t *testing.T, crit any) []byte {
 		t.Helper()
 		var m map[int64]any
-		if err := decMode.Unmarshal(valid, &m); err != nil {
+		if err := unmarshalCBOR(valid, &m); err != nil {
 			t.Fatalf("decode protected: %v", err)
 		}
 		if crit == nil {
@@ -195,7 +229,7 @@ func TestParseEncryptProtectedCritEnforcement(t *testing.T) {
 		} else {
 			m[labelCrit] = crit
 		}
-		out, err := encMode.Marshal(m)
+		out, err := marshalCBOR(m)
 		if err != nil {
 			t.Fatalf("re-encode protected: %v", err)
 		}

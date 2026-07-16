@@ -13,6 +13,7 @@ import (
 	"crypto/sha3"
 	"fmt"
 	"io"
+	"sync"
 	"time"
 
 	"slices"
@@ -53,19 +54,39 @@ const (
 	ed25519SeedLen       = 32
 )
 
-var encMode cbor.EncMode
-var decMode cbor.DecMode
+type cborModes struct {
+	encoder cbor.EncMode
+	decoder cbor.DecMode
+}
 
-func init() {
-	var err error
-	encMode, err = cbor.CanonicalEncOptions().EncMode()
+var loadCBORModes = sync.OnceValues(initializeCBORModes)
+
+func initializeCBORModes() (*cborModes, error) {
+	encoder, err := cbor.CanonicalEncOptions().EncMode()
 	if err != nil {
-		panic(err)
+		return nil, fmt.Errorf("encoder mode: %w", err)
 	}
-	decMode, err = cbor.DecOptions{}.DecMode()
+	decoder, err := (cbor.DecOptions{}).DecMode()
 	if err != nil {
-		panic(err)
+		return nil, fmt.Errorf("decoder mode: %w", err)
 	}
+	return &cborModes{encoder: encoder, decoder: decoder}, nil
+}
+
+func marshalCBOR(value any) ([]byte, error) {
+	modes, err := loadCBORModes()
+	if err != nil {
+		return nil, fmt.Errorf("sealed invocation: initialize CBOR: %w", err)
+	}
+	return modes.encoder.Marshal(value)
+}
+
+func unmarshalCBOR(data []byte, value any) error {
+	modes, err := loadCBORModes()
+	if err != nil {
+		return fmt.Errorf("sealed invocation: initialize CBOR: %w", err)
+	}
+	return modes.decoder.Unmarshal(data, value)
 }
 
 // RequestParams names the inputs for a sealed invocation request.
@@ -283,7 +304,7 @@ func buildSealed(contentType string, plaintext []byte, claimSet claims, signingK
 	if err != nil {
 		return nil, err
 	}
-	protected, err := encMode.Marshal(map[int64]any{
+	protected, err := marshalCBOR(map[int64]any{
 		labelAlg: algEdDSA,
 		labelKid: []byte(signingKeyID),
 	})
@@ -296,7 +317,7 @@ func buildSealed(contentType string, plaintext []byte, claimSet claims, signingK
 	}
 	private := ed25519.NewKeyFromSeed(signingSeed)
 	signature := ed25519.Sign(private, sigStructure)
-	return encMode.Marshal(cbor.Tag{
+	return marshalCBOR(cbor.Tag{
 		Number: tagSign1,
 		Content: []any{
 			protected,
@@ -328,7 +349,7 @@ func buildEncrypt(contentType string, plaintext []byte, claimSet claims, recipie
 	if err != nil {
 		return nil, fmt.Errorf("sealed invocation: ECDH: %w", err)
 	}
-	recipientProtected, err := encMode.Marshal(map[int64]any{labelAlg: algECDHESHKDF})
+	recipientProtected, err := marshalCBOR(map[int64]any{labelAlg: algECDHESHKDF})
 	if err != nil {
 		return nil, fmt.Errorf("sealed invocation: encode recipient protected: %w", err)
 	}
@@ -358,7 +379,7 @@ func buildEncrypt(contentType string, plaintext []byte, claimSet claims, recipie
 		return nil, fmt.Errorf("sealed invocation: AES-GCM: %w", err)
 	}
 	ciphertext := aead.Seal(nil, nonce, plaintext, aad)
-	return encMode.Marshal(cbor.Tag{
+	return marshalCBOR(cbor.Tag{
 		Number: tagEncrypt,
 		Content: []any{
 			protected,
@@ -416,7 +437,7 @@ func encryptProtected(contentType string, claimSet claims) ([]byte, error) {
 	if claimSet.responseSubject != "" {
 		m[labelResponseSubject] = claimSet.responseSubject
 	}
-	return encMode.Marshal(m)
+	return marshalCBOR(m)
 }
 
 func critLabels(claimSet claims) []int64 {
@@ -441,22 +462,22 @@ func critLabels(claimSet claims) []int64 {
 
 func verifySign1(message []byte, expectedKid string, public []byte) (*coseSign1, string, error) {
 	var tag cbor.Tag
-	if err := decMode.Unmarshal(message, &tag); err != nil {
+	if err := unmarshalCBOR(message, &tag); err != nil {
 		return nil, "", fmt.Errorf("sealed invocation: decode Sign1 tag: %w", err)
 	}
 	if tag.Number != tagSign1 {
 		return nil, "", fmt.Errorf("sealed invocation: Sign1 tag %d, want %d", tag.Number, tagSign1)
 	}
-	body, err := encMode.Marshal(tag.Content)
+	body, err := marshalCBOR(tag.Content)
 	if err != nil {
 		return nil, "", fmt.Errorf("sealed invocation: re-encode Sign1 body: %w", err)
 	}
 	var sign1 coseSign1
-	if err := decMode.Unmarshal(body, &sign1); err != nil {
+	if err := unmarshalCBOR(body, &sign1); err != nil {
 		return nil, "", fmt.Errorf("sealed invocation: decode Sign1 body: %w", err)
 	}
 	var protected map[int64]any
-	if err := decMode.Unmarshal(sign1.Protected, &protected); err != nil {
+	if err := unmarshalCBOR(sign1.Protected, &protected); err != nil {
 		return nil, "", fmt.Errorf("sealed invocation: decode Sign1 protected: %w", err)
 	}
 	alg, ok := int64Value(protected[labelAlg])
@@ -483,18 +504,18 @@ func verifySign1(message []byte, expectedKid string, public []byte) (*coseSign1,
 
 func decodeEncrypt(message []byte) (*encryptedMessage, error) {
 	var tag cbor.Tag
-	if err := decMode.Unmarshal(message, &tag); err != nil {
+	if err := unmarshalCBOR(message, &tag); err != nil {
 		return nil, fmt.Errorf("sealed invocation: decode Encrypt tag: %w", err)
 	}
 	if tag.Number != tagEncrypt {
 		return nil, fmt.Errorf("sealed invocation: Encrypt tag %d, want %d", tag.Number, tagEncrypt)
 	}
-	body, err := encMode.Marshal(tag.Content)
+	body, err := marshalCBOR(tag.Content)
 	if err != nil {
 		return nil, fmt.Errorf("sealed invocation: re-encode Encrypt body: %w", err)
 	}
 	var enc coseEncrypt
-	if err := decMode.Unmarshal(body, &enc); err != nil {
+	if err := unmarshalCBOR(body, &enc); err != nil {
 		return nil, fmt.Errorf("sealed invocation: decode Encrypt body: %w", err)
 	}
 	if len(enc.Recipients) != 1 {
@@ -544,7 +565,7 @@ type parsedProtected struct {
 
 func parseEncryptProtected(raw []byte) (*parsedProtected, error) {
 	var m map[int64]any
-	if err := decMode.Unmarshal(raw, &m); err != nil {
+	if err := unmarshalCBOR(raw, &m); err != nil {
 		return nil, fmt.Errorf("sealed invocation: decode Encrypt protected: %w", err)
 	}
 	alg, ok := int64Value(m[labelAlg])
@@ -618,7 +639,7 @@ func parseEncryptProtected(raw []byte) (*parsedProtected, error) {
 
 func parseRecipientProtected(raw []byte) ([]byte, error) {
 	var m map[int64]any
-	if err := decMode.Unmarshal(raw, &m); err != nil {
+	if err := unmarshalCBOR(raw, &m); err != nil {
 		return nil, fmt.Errorf("sealed invocation: decode recipient protected: %w", err)
 	}
 	alg, ok := int64Value(m[labelAlg])
@@ -700,7 +721,7 @@ func sigStructure(protected, externalAAD, payload []byte) ([]byte, error) {
 	if externalAAD == nil {
 		externalAAD = []byte{}
 	}
-	out, err := encMode.Marshal([]any{"Signature1", protected, externalAAD, payload})
+	out, err := marshalCBOR([]any{"Signature1", protected, externalAAD, payload})
 	if err != nil {
 		return nil, fmt.Errorf("sealed invocation: encode Sig_structure: %w", err)
 	}
@@ -711,7 +732,7 @@ func encStructure(protected, externalAAD []byte) ([]byte, error) {
 	if externalAAD == nil {
 		externalAAD = []byte{}
 	}
-	out, err := encMode.Marshal([]any{"Encrypt", protected, externalAAD})
+	out, err := marshalCBOR([]any{"Encrypt", protected, externalAAD})
 	if err != nil {
 		return nil, fmt.Errorf("sealed invocation: encode Enc_structure: %w", err)
 	}
@@ -719,7 +740,7 @@ func encStructure(protected, externalAAD []byte) ([]byte, error) {
 }
 
 func kdfContext(alg int64, recipientProtected []byte) ([]byte, error) {
-	out, err := encMode.Marshal([]any{
+	out, err := marshalCBOR([]any{
 		alg,
 		[]any{nil, nil, nil},
 		[]any{nil, nil, nil},
@@ -747,12 +768,12 @@ func asMap(value any) (map[int64]any, bool) {
 	if m, ok := value.(map[int64]any); ok {
 		return m, true
 	}
-	raw, err := encMode.Marshal(value)
+	raw, err := marshalCBOR(value)
 	if err != nil {
 		return nil, false
 	}
 	var out map[int64]any
-	if err := decMode.Unmarshal(raw, &out); err != nil {
+	if err := unmarshalCBOR(raw, &out); err != nil {
 		return nil, false
 	}
 	return out, true
