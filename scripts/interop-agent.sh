@@ -20,7 +20,11 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 GO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-REPO_ROOT="$(cd "${GO_ROOT}/../.." && pwd)"
+REPO_ROOT="${BASIL_INTEROP_REPO_ROOT:-$(cd "${GO_ROOT}/../.." && pwd)}"
+if [[ ${REPO_ROOT} != /* || ! -f ${REPO_ROOT}/Cargo.toml ]]; then
+  echo "BASIL_INTEROP_REPO_ROOT must name an absolute Basil checkout" >&2
+  exit 2
+fi
 
 ENGINE="openbao"
 KEEP=0
