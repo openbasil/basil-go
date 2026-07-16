@@ -66,8 +66,6 @@ bash "${REPO_ROOT}/scripts/prefill-test-store.sh" \
 echo "== step 2: launch basil agent on ${SOCKET}"
 "${AGENT_BIN}" agent \
   --config "${AGENT_CONFIG}" \
-  --vault-addr "${ADDR}" \
-  --socket "${SOCKET}" \
   >"${WORKDIR}/agent.log" 2>&1 &
 AGENT_PID=$!
 

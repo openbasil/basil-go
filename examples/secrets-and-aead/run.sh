@@ -106,7 +106,7 @@ write_policy() {
     "crypter":  ["encrypt", "decrypt"]
   },
   "subjects": {
-    "local": { "allOf": [ { "kind": "unix", "uid": ${uid} } ] }
+    "local": { "domain": "host-process", "match": { "all": [ { "process.uid": ${uid} } ] } }
   },
   "rules": [
     { "id": "secret-rw", "subjects": ["local"], "action": ["role:reader", "role:operator"], "target": ["app.session_token"] },

@@ -106,7 +106,7 @@ write_policy() {
     }
   ],
   "subjects": {
-    "local": { "allOf": [ { "kind": "unix", "uid": ${uid} } ] }
+    "local": { "domain": "host-process", "match": { "all": [ { "process.uid": ${uid} } ] } }
   },
   "config": {
     "names": { "users": { "${uid}": "local" }, "groups": {} },
