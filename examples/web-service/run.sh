@@ -99,7 +99,7 @@ write_policy() {
     "token-minter": ["mint", "get_public_key"]
   },
   "subjects": {
-    "web-service": { "allOf": [ { "kind": "unix", "uid": ${uid} } ] }
+    "web-service": { "domain": "host-process", "match": { "all": [ { "process.uid": ${uid} } ] } }
   },
   "rules": [
     {

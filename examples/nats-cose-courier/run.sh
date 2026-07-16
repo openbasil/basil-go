@@ -162,17 +162,19 @@ write_policy() {
   local uid; uid="$(id -u)"
   cat >"${POLICY}" <<JSON
 {
-  "schemaVersion": 2,
+  "schema": "policy",
   "roles": {
     "local_admin": ["get_public_key", "sign", "verify"],
     "invoker": ["decrypt", "sign"]
   },
   "subjects": {
-    "local": { "allOf": [ { "kind": "unix", "uid": ${uid} } ] },
+    "local": { "domain": "host-process", "match": { "all": [ { "process.uid": ${uid} } ] } },
     "go.client": {
-      "allOf": [
-        { "kind": "signature-key", "algorithm": "ed25519", "public": "${CLIENT_SIGNING_PUBLIC_B64}" }
-      ]
+      "domain": "host-process",
+      "match": { "all": [
+        { "process.uid": ${uid} },
+        { "invocation.signature-key": { "algorithm": "ed25519", "public": "${CLIENT_SIGNING_PUBLIC_B64}" } }
+      ] }
     }
   },
   "rules": [

@@ -126,7 +126,7 @@ write_policy() {
     "signer": ["sign", "verify", "get_public_key"]
   },
   "subjects": {
-    "local": { "allOf": [ { "kind": "unix", "uid": ${uid} } ] }
+    "local": { "domain": "host-process", "match": { "all": [ { "process.uid": ${uid} } ] } }
   },
   "rules": [
     { "id": "nats-signer", "subjects": ["local"], "action": ["role:signer"], "target": ["nats.operator", "nats.account", "nats.user", "telemetry.sign"] },
