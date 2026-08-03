@@ -18,7 +18,8 @@ there is no client-side attestation to perform.
 > (encrypt / decrypt + KEM envelope wrap / unwrap), `SecretService`
 > (get / set / rotate / list-catalog), `MintingService` (generic JWT minting
 > and certificate issuance), `NatsService` (NATS mint/sign/validate and curve
-> xkey boxes), and
+> xkey boxes), `NixCacheService` (describe / enroll / sign fingerprints),
+> `InvocationService` (freshness challenges and listener capabilities), and
 > `AdminService` (status / health / readiness). The
 > [`spiffe`](#spiffe-workload-api) subpackage covers the SPIFFE Workload API
 > (fetch / validate SVIDs, trust bundles, rotation). The broker `AdminService`
@@ -213,6 +214,41 @@ cert, err := client.IssueCertificate(ctx, basil.CertificateRequest{
 })
 // cert.CertChainDER, cert.PrivateKeyDER, cert.CAChainDER
 ```
+
+## Nix cache signing
+
+The Nix cache methods use a purpose-specific service. They cannot fall back to
+the generic signing RPC. The broker returns only the public verifier identity
+and a signature over a canonical `PATH_INFO_V1` fingerprint. Supply nonzero
+16-byte batch and request IDs for correlation and replay-safe retries.
+
+```go
+key, err := client.DescribeNixCacheKey(ctx, "cache.signing", batchID, requestID)
+enrollment, err := client.EnrollNixCacheKey(ctx, "cache.signing", batchID, requestID)
+signature, err := client.SignNixCacheFingerprint(
+    ctx, "cache.signing", fingerprint, batchID, requestID,
+)
+```
+
+`key` and `enrollment.Key` contain the Nix key name and public Ed25519 key. The
+private signing key stays in its configured backend.
+
+## Sealed-invocation freshness
+
+Remote invocation couriers use a broker-issued, single-use challenge. Check
+the local listener contract, request a challenge for the caller's 32-byte RFC
+7638 proof-key thumbprint, then place the returned bytes in
+`sealedinvocation.RequestParams.FreshnessChallenge`.
+
+```go
+caps, err := client.GetInvocationCapabilities(ctx)
+challenge, err := client.GetInvocationChallenge(ctx, proofKeyThumbprint, observedSource)
+```
+
+The challenge is bound to its proof key and serving generation. A local direct
+invocation leaves `FreshnessChallenge` unset. These APIs provide the client wire
+surface for CI federation; job-session helpers and complete GitHub Actions
+workflow integration remain future work.
 
 ## Status, health, readiness
 

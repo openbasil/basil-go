@@ -21,14 +21,16 @@ const DefaultTimeout = 30 * time.Second
 // gRPC connection multiplexes calls. Create one with [Dial] and release it
 // with [Client.Close].
 type Client struct {
-	conn    *grpc.ClientConn
-	signing pb.SigningServiceClient
-	aead    pb.AeadServiceClient
-	secret  pb.SecretServiceClient
-	minting pb.MintingServiceClient
-	nats    pb.NatsServiceClient
-	admin   pb.AdminServiceClient
-	timeout time.Duration
+	conn       *grpc.ClientConn
+	signing    pb.SigningServiceClient
+	aead       pb.AeadServiceClient
+	secret     pb.SecretServiceClient
+	minting    pb.MintingServiceClient
+	nats       pb.NatsServiceClient
+	nixCache   pb.NixCacheServiceClient
+	invocation pb.InvocationServiceClient
+	admin      pb.AdminServiceClient
+	timeout    time.Duration
 }
 
 type config struct {
@@ -97,14 +99,16 @@ func Dial(socketPath string, opts ...Option) (*Client, error) {
 		return nil, fmt.Errorf("basil: dial %q: %w", socketPath, err)
 	}
 	return &Client{
-		conn:    conn,
-		signing: pb.NewSigningServiceClient(conn),
-		aead:    pb.NewAeadServiceClient(conn),
-		secret:  pb.NewSecretServiceClient(conn),
-		minting: pb.NewMintingServiceClient(conn),
-		nats:    pb.NewNatsServiceClient(conn),
-		admin:   pb.NewAdminServiceClient(conn),
-		timeout: cfg.timeout,
+		conn:       conn,
+		signing:    pb.NewSigningServiceClient(conn),
+		aead:       pb.NewAeadServiceClient(conn),
+		secret:     pb.NewSecretServiceClient(conn),
+		minting:    pb.NewMintingServiceClient(conn),
+		nats:       pb.NewNatsServiceClient(conn),
+		nixCache:   pb.NewNixCacheServiceClient(conn),
+		invocation: pb.NewInvocationServiceClient(conn),
+		admin:      pb.NewAdminServiceClient(conn),
+		timeout:    cfg.timeout,
 	}, nil
 }
 

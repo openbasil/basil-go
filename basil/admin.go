@@ -3,6 +3,7 @@ package basil
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"iter"
 	"time"
@@ -251,7 +252,7 @@ func (c *Client) Explain(ctx context.Context, subject, op, key string) (*Explain
 		Subject:  resp.GetSubject(),
 		Op:       resp.GetOp(),
 		Key:      resp.GetKey(),
-		Decision: resp.GetDecision(),
+		Decision: explainDecision(resp.GetDecision()),
 		Via:      resp.GetVia(),
 		Reason:   resp.GetReason(),
 	}
@@ -265,6 +266,17 @@ func (c *Client) Explain(ctx context.Context, subject, op, key string) (*Explain
 		}
 	}
 	return out, nil
+}
+
+func explainDecision(decision pb.ExplainDecision) string {
+	switch decision {
+	case pb.ExplainDecision_EXPLAIN_DECISION_ALLOW:
+		return "allow"
+	case pb.ExplainDecision_EXPLAIN_DECISION_DENY:
+		return "deny"
+	default:
+		return fmt.Sprintf("UNKNOWN(%d)", decision)
+	}
 }
 
 // RevokeResult is the outcome of a live [Client.Revoke].

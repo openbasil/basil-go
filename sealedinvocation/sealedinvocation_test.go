@@ -8,6 +8,8 @@ import (
 	"slices"
 	"testing"
 	"time"
+
+	"github.com/fxamacker/cbor/v2"
 )
 
 func repeatedByte(b byte) []byte {
@@ -257,4 +259,155 @@ func TestParseEncryptProtectedCritEnforcement(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestRequestFreshnessChallengeRoundTrips(t *testing.T) {
+	challenge := make([]byte, freshnessChallengeLen)
+	for i := range challenge {
+		challenge[i] = 0x41
+	}
+	challenge[0] = 0x01 // distinct instance-ID prefix byte
+
+	recipientPublic, err := X25519Public(repeatedByte(0x33))
+	if err != nil {
+		t.Fatalf("recipient public: %v", err)
+	}
+	request, err := BuildRequest(RequestParams{
+		ContentType:        "application/basil.go-test-request",
+		Plaintext:          []byte("go sealed request"),
+		IssuedAt:           time.Unix(1_800_000_000, 0),
+		MessageID:          []byte("request-1"),
+		SenderKeyID:        "client.signing",
+		SenderSeed:         repeatedByte(0x11),
+		RecipientKeyID:     "request.sealing",
+		RecipientPublic:    recipientPublic,
+		ResponseKeyID:      "response.sealing",
+		FreshnessChallenge: challenge,
+	})
+	if err != nil {
+		t.Fatalf("build request: %v", err)
+	}
+
+	// Decode the built message back through the strict parser: the claim
+	// must round-trip byte-for-byte and appear in crit.
+	enc, err := decodeEncrypt(mustSign1Payload(t, request.Message))
+	if err != nil {
+		t.Fatalf("decode encrypt: %v", err)
+	}
+	if !bytes.Equal(enc.claims.freshnessChallenge, challenge) {
+		t.Fatalf("freshness challenge = %x, want %x", enc.claims.freshnessChallenge, challenge)
+	}
+
+	// A request without the claim keeps it absent.
+	bare, err := BuildRequest(RequestParams{
+		ContentType:     "application/basil.go-test-request",
+		Plaintext:       []byte("go sealed request"),
+		IssuedAt:        time.Unix(1_800_000_000, 0),
+		MessageID:       []byte("request-2"),
+		SenderKeyID:     "client.signing",
+		SenderSeed:      repeatedByte(0x11),
+		RecipientKeyID:  "request.sealing",
+		RecipientPublic: recipientPublic,
+		ResponseKeyID:   "response.sealing",
+	})
+	if err != nil {
+		t.Fatalf("build bare request: %v", err)
+	}
+	encBare, err := decodeEncrypt(mustSign1Payload(t, bare.Message))
+	if err != nil {
+		t.Fatalf("decode bare encrypt: %v", err)
+	}
+	if encBare.claims.freshnessChallenge != nil {
+		t.Fatalf("bare request carries freshness challenge %x", encBare.claims.freshnessChallenge)
+	}
+}
+
+func TestBuildRequestRejectsWrongLengthFreshnessChallenge(t *testing.T) {
+	recipientPublic, err := X25519Public(repeatedByte(0x33))
+	if err != nil {
+		t.Fatalf("recipient public: %v", err)
+	}
+	for _, wrong := range []int{1, 16, 31, 33, 64} {
+		_, err := BuildRequest(RequestParams{
+			ContentType:        "application/basil.go-test-request",
+			Plaintext:          []byte("go sealed request"),
+			MessageID:          []byte("request-1"),
+			SenderKeyID:        "client.signing",
+			SenderSeed:         repeatedByte(0x11),
+			RecipientKeyID:     "request.sealing",
+			RecipientPublic:    recipientPublic,
+			ResponseKeyID:      "response.sealing",
+			FreshnessChallenge: make([]byte, wrong),
+		})
+		if err == nil {
+			t.Fatalf("BuildRequest accepted a %d-byte freshness challenge", wrong)
+		}
+	}
+}
+
+func TestResponsesRejectTheRequestOnlyFreshnessChallengeClaim(t *testing.T) {
+	claimSet := claims{
+		issuer:             "broker",
+		issuedAt:           1_800_000_000,
+		expiresAt:          1_800_000_060,
+		messageID:          []byte("response-1"),
+		senderKeyID:        "broker.signing",
+		inReplyTo:          []byte("request-1"),
+		requestHash:        repeatedByte(0x55),
+		freshnessChallenge: repeatedByte(0x41),
+	}
+	err := validateResponseClaims(claimSet, time.Unix(1_800_000_010, 0), time.Minute, 5*time.Minute)
+	if err == nil {
+		t.Fatalf("validateResponseClaims accepted a response carrying a freshness challenge")
+	}
+}
+
+func TestParseEncryptProtectedRejectsWrongLengthFreshnessChallenge(t *testing.T) {
+	claimSet := claims{
+		issuer:             "client",
+		issuedAt:           1_800_000_000,
+		expiresAt:          1_800_000_060,
+		messageID:          []byte("request-1"),
+		senderKeyID:        "client.signing",
+		responseKeyID:      "response.sealing",
+		freshnessChallenge: repeatedByte(0x41),
+	}
+	valid, err := encryptProtected("application/test", claimSet)
+	if err != nil {
+		t.Fatalf("encrypt protected: %v", err)
+	}
+	if _, err := parseEncryptProtected(valid); err != nil {
+		t.Fatalf("parse valid protected: %v", err)
+	}
+
+	var m map[int64]any
+	if err := unmarshalCBOR(valid, &m); err != nil {
+		t.Fatalf("decode protected: %v", err)
+	}
+	m[labelFreshnessChallenge] = []byte{0x41, 0x41}
+	truncated, err := marshalCBOR(m)
+	if err != nil {
+		t.Fatalf("re-encode protected: %v", err)
+	}
+	if _, err := parseEncryptProtected(truncated); err == nil {
+		t.Fatalf("parseEncryptProtected accepted a 2-byte freshness challenge")
+	}
+}
+
+// mustSign1Payload decodes the outer tagged COSE_Sign1 and returns its
+// payload (the embedded tagged COSE_Encrypt) without verifying anything.
+func mustSign1Payload(t *testing.T, message []byte) []byte {
+	t.Helper()
+	var tag cbor.RawTag
+	if err := unmarshalCBOR(message, &tag); err != nil {
+		t.Fatalf("decode Sign1 tag: %v", err)
+	}
+	if tag.Number != tagSign1 {
+		t.Fatalf("Sign1 tag = %d, want %d", tag.Number, tagSign1)
+	}
+	var sign1 coseSign1
+	if err := unmarshalCBOR(tag.Content, &sign1); err != nil {
+		t.Fatalf("decode Sign1 body: %v", err)
+	}
+	return sign1.Payload
 }

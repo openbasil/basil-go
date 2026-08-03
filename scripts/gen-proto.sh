@@ -2,9 +2,8 @@
 # Regenerate the Go gRPC stubs for the Basil broker contract.
 #
 # The generated *.pb.go / *_grpc.pb.go files are checked into the repo under
-# internal/pb, so consumers do not need protoc. Re-run this script only when the
-# vendored proto/basil/broker/v1/broker.proto changes (see proto/UPSTREAM.md for
-# how it is synced from the openbasil/basil server repo).
+# internal/pb, so consumers do not need protoc. Re-run this script when either
+# vendored Basil broker contract changes.
 #
 # Requirements:
 #   * protoc on PATH (provides the well-known-type includes).
@@ -15,9 +14,9 @@
 #       PATH="$GOPLUG:$PATH" scripts/gen-proto.sh
 #
 # Notes on mappings:
-#   * broker.proto has NO `option go_package` (it is consumed by the Rust
-#     build, which must not be perturbed). The Go package is supplied entirely
-#     via --go_opt=M.../--go-grpc_opt=M... module-relative mappings here.
+#   * The Basil protos have NO `option go_package` (they are consumed by the
+#     Rust build, which must not be perturbed). The Go package is supplied
+#     entirely via --go_opt=M.../--go-grpc_opt=M... mappings here.
 #   * google/rpc/status.proto is mapped to the genproto module rather than
 #     regenerated locally (defensive: broker.proto references it only in prose).
 #   * The google/protobuf/* well-known types are auto-mapped by protoc-gen-go
@@ -35,7 +34,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 GO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 PROTO_ROOT="${GO_ROOT}/proto"
-PROTO_FILE="basil/broker/v1/broker.proto"
+PROTO_FILES=(
+  "basil/broker/v1/broker.proto"
+  "basil/broker/v1/nix_cache.proto"
+)
 
 # protoc's bundled well-known-type includes live next to the binary.
 PROTOC_BIN="$(readlink -f "$(command -v protoc)")"
@@ -56,12 +58,15 @@ protoc \
   -I "${WKT_INCLUDE}" \
   --go_out="${OUT_DIR}" \
   --go_opt=module="${GO_MODULE}" \
-  --go_opt=M"${PROTO_FILE}"="${PB_IMPORT}" \
+  --go_opt=M"${PROTO_FILES[0]}"="${PB_IMPORT}" \
+  --go_opt=M"${PROTO_FILES[1]}"="${PB_IMPORT}" \
   --go_opt=Mgoogle/rpc/status.proto=google.golang.org/genproto/googleapis/rpc/status \
   --go-grpc_out="${OUT_DIR}" \
   --go-grpc_opt=module="${GO_MODULE}" \
-  --go-grpc_opt=M"${PROTO_FILE}"="${PB_IMPORT}" \
+  --go-grpc_opt=M"${PROTO_FILES[0]}"="${PB_IMPORT}" \
+  --go-grpc_opt=M"${PROTO_FILES[1]}"="${PB_IMPORT}" \
   --go-grpc_opt=Mgoogle/rpc/status.proto=google.golang.org/genproto/googleapis/rpc/status \
-  "${PROTO_ROOT}/${PROTO_FILE}"
+  "${PROTO_ROOT}/${PROTO_FILES[0]}" \
+  "${PROTO_ROOT}/${PROTO_FILES[1]}"
 
 echo "generated stubs under ${OUT_DIR}/internal/pb"

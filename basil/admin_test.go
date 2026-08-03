@@ -204,7 +204,7 @@ func TestExplainAllowMapsMatchedRule(t *testing.T) {
 		Subject:  "svc.app",
 		Op:       "sign",
 		Key:      "app.signing",
-		Decision: "allow",
+		Decision: pb.ExplainDecision_EXPLAIN_DECISION_ALLOW,
 		Via:      "subject:svc.app",
 		MatchedRule: &pb.MatchedRule{
 			Rule:    "r1",
@@ -239,7 +239,7 @@ func TestExplainDenyHasNoMatchedRule(t *testing.T) {
 		Subject:  "svc.app",
 		Op:       "get",
 		Key:      "secret",
-		Decision: "deny",
+		Decision: pb.ExplainDecision_EXPLAIN_DECISION_DENY,
 		Reason:   "not_permitted",
 	}}
 	c := dialAdmin(t, f)

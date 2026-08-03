@@ -23,11 +23,12 @@ import (
 )
 
 const (
-	labelInReplyTo       int64 = -70001
-	labelRequestHash     int64 = -70002
-	labelSenderKeyID     int64 = -70003
-	labelResponseKeyID   int64 = -70004
-	labelResponseSubject int64 = -70005
+	labelInReplyTo          int64 = -70001
+	labelRequestHash        int64 = -70002
+	labelSenderKeyID        int64 = -70003
+	labelResponseKeyID      int64 = -70004
+	labelResponseSubject    int64 = -70005
+	labelFreshnessChallenge int64 = -70008
 
 	labelAlg       int64 = 1
 	labelCrit      int64 = 2
@@ -52,6 +53,10 @@ const (
 	nonceLen             = 12
 	x25519Len            = 32
 	ed25519SeedLen       = 32
+	// freshnessChallengeLen is the exact byte length of the broker-issued
+	// single-use challenge: a 16-byte issuing-instance ID prefix followed by
+	// 16 CSPRNG bytes.
+	freshnessChallengeLen = 32
 )
 
 type cborModes struct {
@@ -117,6 +122,12 @@ type RequestParams struct {
 	ResponseKeyID string
 	// ResponseSubject is the optional NATS subject for a response.
 	ResponseSubject string
+	// FreshnessChallenge is the optional broker-issued single-use challenge
+	// (exactly 32 bytes), obtained from
+	// InvocationService.GetInvocationChallenge and carried as encrypted-layer
+	// claim -70008. Remote CI invocations must set it; local direct
+	// invocations leave it nil.
+	FreshnessChallenge []byte
 }
 
 // Request is a sealed invocation request plus its correlation fields.
@@ -162,16 +173,17 @@ type Response struct {
 }
 
 type claims struct {
-	issuer          string
-	audience        string
-	expiresAt       int64
-	issuedAt        int64
-	messageID       []byte
-	senderKeyID     string
-	responseKeyID   string
-	responseSubject string
-	inReplyTo       []byte
-	requestHash     []byte
+	issuer             string
+	audience           string
+	expiresAt          int64
+	issuedAt           int64
+	messageID          []byte
+	senderKeyID        string
+	responseKeyID      string
+	responseSubject    string
+	inReplyTo          []byte
+	requestHash        []byte
+	freshnessChallenge []byte
 }
 
 type encryptedMessage struct {
@@ -213,6 +225,9 @@ func BuildRequest(params RequestParams) (*Request, error) {
 	if len(params.MessageID) == 0 || len(params.MessageID) > 64 {
 		return nil, fmt.Errorf("sealed invocation: message id must be 1..64 bytes")
 	}
+	if params.FreshnessChallenge != nil && len(params.FreshnessChallenge) != freshnessChallengeLen {
+		return nil, fmt.Errorf("sealed invocation: freshness challenge must be exactly %d bytes, got %d", freshnessChallengeLen, len(params.FreshnessChallenge))
+	}
 	issuedAt := params.IssuedAt
 	if issuedAt.IsZero() {
 		issuedAt = time.Now()
@@ -222,14 +237,15 @@ func BuildRequest(params RequestParams) (*Request, error) {
 		ttl = 2 * time.Minute
 	}
 	claimSet := claims{
-		issuer:          params.Issuer,
-		audience:        params.Audience,
-		issuedAt:        issuedAt.Unix(),
-		expiresAt:       issuedAt.Add(ttl).Unix(),
-		messageID:       append([]byte(nil), params.MessageID...),
-		senderKeyID:     params.SenderKeyID,
-		responseKeyID:   params.ResponseKeyID,
-		responseSubject: params.ResponseSubject,
+		issuer:             params.Issuer,
+		audience:           params.Audience,
+		issuedAt:           issuedAt.Unix(),
+		expiresAt:          issuedAt.Add(ttl).Unix(),
+		messageID:          append([]byte(nil), params.MessageID...),
+		senderKeyID:        params.SenderKeyID,
+		responseKeyID:      params.ResponseKeyID,
+		responseSubject:    params.ResponseSubject,
+		freshnessChallenge: append([]byte(nil), params.FreshnessChallenge...),
 	}
 	msg, err := buildSealed(params.ContentType, params.Plaintext, claimSet, params.SenderKeyID, params.SenderSeed, params.RecipientKeyID, params.RecipientPublic)
 	if err != nil {
@@ -437,6 +453,9 @@ func encryptProtected(contentType string, claimSet claims) ([]byte, error) {
 	if claimSet.responseSubject != "" {
 		m[labelResponseSubject] = claimSet.responseSubject
 	}
+	if claimSet.freshnessChallenge != nil {
+		m[labelFreshnessChallenge] = claimSet.freshnessChallenge
+	}
 	return marshalCBOR(m)
 }
 
@@ -456,6 +475,11 @@ func critLabels(claimSet claims) []int64 {
 	}
 	if claimSet.responseSubject != "" {
 		labels = append(labels, labelResponseSubject)
+	}
+	// -70008 sorts after every other basil claim label in the canonical
+	// (bytewise) CBOR label order.
+	if claimSet.freshnessChallenge != nil {
+		labels = append(labels, labelFreshnessChallenge)
 	}
 	return labels
 }
@@ -615,6 +639,12 @@ func parseEncryptProtected(raw []byte) (*parsedProtected, error) {
 	if value, ok := m[labelResponseSubject].(string); ok {
 		parsed.responseSubject = value
 	}
+	if value, ok := m[labelFreshnessChallenge].([]byte); ok {
+		if len(value) != freshnessChallengeLen {
+			return nil, fmt.Errorf("sealed invocation: freshness challenge must be exactly %d bytes, got %d", freshnessChallengeLen, len(value))
+		}
+		parsed.freshnessChallenge = value
+	}
 	// RFC 9052 §3.1: a recipient must reject a message whose crit lists a
 	// label it does not understand. Mirror the broker's decoder: crit must be
 	// present and list exactly the profile labels for the claims this header
@@ -711,7 +741,7 @@ func validateResponseClaims(claimSet claims, now time.Time, skew, maxTTL time.Du
 	if claimSet.inReplyTo == nil || claimSet.requestHash == nil {
 		return fmt.Errorf("sealed invocation: response claims missing correlation")
 	}
-	if claimSet.responseKeyID != "" || claimSet.responseSubject != "" {
+	if claimSet.responseKeyID != "" || claimSet.responseSubject != "" || claimSet.freshnessChallenge != nil {
 		return fmt.Errorf("sealed invocation: response carries request-only claims")
 	}
 	return nil
