@@ -93,8 +93,8 @@ func (c *Client) GetInvocationCapabilities(ctx context.Context) (*InvocationCapa
 // broker to partition issuance rate limits per client source; direct local
 // callers pass "". It is never an identity or authorization input. Declined
 // issuance surfaces as a [StatusError] with codes.ResourceExhausted and
-// Reason [ReasonChallengeIssuanceDeclined]; until broker challenge issuance
-// lands the broker answers codes.Unimplemented.
+// Reason [ReasonChallengeIssuanceDeclined]. [Client.GetInvocationCapabilities]
+// is the authority for the connected listener's challenge and courier contract.
 func (c *Client) GetInvocationChallenge(ctx context.Context, jkt []byte, courierObservedSource string) (*InvocationChallenge, error) {
 	if len(jkt) != InvocationChallengeLen {
 		return nil, fmt.Errorf("basil: jkt must be exactly %d bytes, got %d", InvocationChallengeLen, len(jkt))

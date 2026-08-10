@@ -305,8 +305,7 @@ service InvocationService {
   // issuance under capacity or rate-limit pressure fails with
   // `RESOURCE_EXHAUSTED` and the stable reason token
   // `CHALLENGE_ISSUANCE_DECLINED`; that denial is retryable with the same
-  // request after backoff. Until broker challenge issuance lands this method
-  // returns `UNIMPLEMENTED`.
+  // request after backoff.
   rpc GetInvocationChallenge(GetInvocationChallengeRequest) returns (GetInvocationChallengeResponse);
   // Report the effective local listener profile and courier safety contract.
   // Couriers require COURIER, require_challenge=true, and protocol version 1.
@@ -1115,6 +1114,7 @@ enum ConnectionListenerType {
   CONNECTION_LISTENER_TYPE_UNSPECIFIED = 0;
   CONNECTION_LISTENER_TYPE_HOST = 1;
   CONNECTION_LISTENER_TYPE_CONTAINER = 2;
+  CONNECTION_LISTENER_TYPE_COURIER = 3;
 }
 
 // Independently resolved authorization domain for an active connection.
