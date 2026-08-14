@@ -277,8 +277,8 @@ enum ListenerProfile {
   UNSPECIFIED = 0;
   // Host and operator listener.
   HOST = 1;
-  // Container workload listener.
-  CONTAINER = 2;
+  reserved 2;
+  reserved "CONTAINER";
   // Courier-only invocation listener.
   COURIER = 3;
 }
@@ -965,8 +965,7 @@ message ReloadResponse {
   // Empty when the candidate changes no listener.
   repeated ListenerImpactInfo listener_impacts = 8;
   // Persistent rewire diagnostics: listeners whose socket path changed in an
-  // earlier applied reload and whose externally generated wiring (for example
-  // Compose bind mounts recorded against the old resolved path) has not been
+  // earlier applied reload and whose externally generated wiring has not been
   // regenerated. Reported until the listener is removed or its path returns to
   // the recorded previous path. Advisory only: it never affects authorization.
   repeated RewireDiagnostic rewire_required = 9;
@@ -1013,8 +1012,8 @@ message ListenerImpactInfo {
 
 // One persistent listener rewire diagnostic: a same-name socket-path change
 // applied by an earlier reload. External wiring generated against the previous
-// resolved path (for example Compose long-syntax bind mounts) keeps failing
-// closed until it is regenerated and its workloads are recreated. Structured
+// resolved path keeps failing closed until it is regenerated and its services
+// are restarted. Structured
 // configuration-attention state: it never affects authorization, and unrelated
 // listeners keep serving.
 message RewireDiagnostic {
@@ -1113,7 +1112,8 @@ message ListConnectionsRequest {}
 enum ConnectionListenerType {
   CONNECTION_LISTENER_TYPE_UNSPECIFIED = 0;
   CONNECTION_LISTENER_TYPE_HOST = 1;
-  CONNECTION_LISTENER_TYPE_CONTAINER = 2;
+  reserved 2;
+  reserved "CONNECTION_LISTENER_TYPE_CONTAINER";
   CONNECTION_LISTENER_TYPE_COURIER = 3;
 }
 
@@ -1122,7 +1122,8 @@ enum ConnectionDomain {
   CONNECTION_DOMAIN_UNSPECIFIED = 0;
   CONNECTION_DOMAIN_HOST_PROCESS = 1;
   CONNECTION_DOMAIN_SYSTEMD_UNIT = 2;
-  CONNECTION_DOMAIN_CONTAINER = 3;
+  reserved 3;
+  reserved "CONNECTION_DOMAIN_CONTAINER";
 }
 
 // Trusted concrete systemd identity.
@@ -1130,13 +1131,6 @@ message ConnectionSystemdIdentity {
   string unit = 1;
   // Present for a per-user manager; absent for the system manager.
   optional uint32 manager_uid = 2;
-}
-
-// Trusted Compose identity correlated by a runtime attestor.
-message ConnectionComposeIdentity {
-  string realm = 1;
-  string project = 2;
-  optional string service = 3;
 }
 
 // One accepted transport. Peer fields are kernel-derived; domain, subject, and
@@ -1151,7 +1145,8 @@ message ConnectionInfo {
   ConnectionDomain domain = 7;
   string subject = 8;
   ConnectionSystemdIdentity systemd = 9;
-  ConnectionComposeIdentity compose = 10;
+  reserved 10;
+  reserved "compose";
   bool cancellation_requested = 11;
   uint32 active_streams = 12;
 }
@@ -1166,21 +1161,14 @@ message ConnectionSystemdSelector {
   optional uint32 manager_uid = 2;
 }
 
-// Exact typed Compose selector. Bare mutable container names are deliberately
-// absent from this contract.
-message ConnectionComposeSelector {
-  string realm = 1;
-  string project = 2;
-  optional string service = 3;
-}
-
 // One selector in a bounded OR-set.
 message ConnectionSelector {
+  reserved 4;
+  reserved "compose";
   oneof selector {
     uint64 id = 1;
     uint32 uid = 2;
     ConnectionSystemdSelector systemd = 3;
-    ConnectionComposeSelector compose = 4;
   }
 }
 
@@ -1251,14 +1239,8 @@ message ReadinessResponse {
   // Absent keys whose `missing` policy is `warn` or `generate` (reported for
   // visibility; they do not by themselves make the broker not ready).
   uint32 keys_optional_missing = 7;
-  // Accepted attestor realms in this generation.
-  uint32 realms_total = 8;
-  // Accepted realms with one authoritative ready session.
-  uint32 realms_ready = 9;
-  // Accepted non-ready, non-absent realms.
-  uint32 realms_degraded = 10;
-  // Accepted realms whose configured socket is absent.
-  uint32 realms_absent = 11;
+  reserved 8 to 11;
+  reserved "realms_total", "realms_ready", "realms_degraded", "realms_absent";
   // Listeners whose socket path changed in an applied reload and whose
   // externally generated wiring has not been regenerated (`rewire-required`).
   // A COUNT only (bounded disclosure on this ungated probe): the named
@@ -1269,64 +1251,7 @@ message ReadinessResponse {
 }
 
 // Request for broker status.
-message StatusRequest {
-  // Include named realm status. Requires the dedicated `realm_status` admin
-  // grant over `broker.realms`; admin wildcards do not imply it.
-  bool include_realms = 1;
-}
-
-// Closed attestor provider set.
-enum RealmProvider {
-  REALM_PROVIDER_UNSPECIFIED = 0;
-  REALM_PROVIDER_DOCKER = 1;
-  REALM_PROVIDER_PODMAN = 2;
-}
-
-// Closed attestor account/runtime scope.
-enum RealmMode {
-  REALM_MODE_UNSPECIFIED = 0;
-  REALM_MODE_ROOTFUL_HOST = 1;
-  REALM_MODE_ROOTLESS_OWNER = 2;
-}
-
-// Disclosure-safe accepted realm state.
-enum RealmState {
-  REALM_STATE_UNSPECIFIED = 0;
-  REALM_STATE_ABSENT = 1;
-  REALM_STATE_CONNECTING = 2;
-  REALM_STATE_AUTHENTICATING = 3;
-  REALM_STATE_HANDSHAKING = 4;
-  REALM_STATE_HEALTH_CHECKING = 5;
-  REALM_STATE_READY = 6;
-  REALM_STATE_DEGRADED = 7;
-  REALM_STATE_STAGING = 8;
-  REALM_STATE_DRAINING = 9;
-}
-
-// Coarse disclosure-safe reason for a realm state.
-enum RealmReason {
-  REALM_REASON_UNSPECIFIED = 0;
-  REALM_REASON_NONE = 1;
-  REALM_REASON_SOCKET_ABSENT = 2;
-  REALM_REASON_CONNECTING = 3;
-  REALM_REASON_AUTHENTICATION_FAILED = 4;
-  REALM_REASON_ADMISSION_FAILED = 5;
-  REALM_REASON_PROTOCOL_FAILED = 6;
-  REALM_REASON_HEALTH_FAILED = 7;
-  REALM_REASON_DRAINING = 8;
-}
-
-// Named realm inventory available only through the dedicated admin grant.
-message RealmStatus {
-  string name = 1;
-  RealmProvider provider = 2;
-  RealmMode mode = 3;
-  RealmState state = 4;
-  uint64 generation = 5;
-  uint64 session_epoch = 6;
-  uint32 protocol = 7;
-  RealmReason reason = 8;
-}
+message StatusRequest {}
 
 // Broker identity and protocol info.
 message StatusResponse {
@@ -1336,9 +1261,8 @@ message StatusResponse {
   string version = 2;
   // Wire protocol version number.
   uint32 protocol = 3;
-  // Accepted-generation realms plus removed realms still draining. Empty
-  // unless the request opted in and passed its dedicated authorization check.
-  repeated RealmStatus realms = 4;
+  reserved 4;
+  reserved "realms";
 }
 
 // Request to watch for change events, optionally filtered by kind.

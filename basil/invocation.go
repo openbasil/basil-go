@@ -24,11 +24,9 @@ type InvocationListenerProfile uint8
 
 const (
 	// InvocationListenerHost exposes the host and operator service surface.
-	InvocationListenerHost InvocationListenerProfile = iota + 1
-	// InvocationListenerContainer exposes the container workload surface.
-	InvocationListenerContainer
+	InvocationListenerHost InvocationListenerProfile = 1
 	// InvocationListenerCourier exposes only InvocationService.
-	InvocationListenerCourier
+	InvocationListenerCourier InvocationListenerProfile = 3
 )
 
 // InvocationCapabilities describes the effective local listener contract.
@@ -69,8 +67,6 @@ func (c *Client) GetInvocationCapabilities(ctx context.Context) (*InvocationCapa
 	switch resp.GetListenerProfile() {
 	case pb.ListenerProfile_HOST:
 		profile = InvocationListenerHost
-	case pb.ListenerProfile_CONTAINER:
-		profile = InvocationListenerContainer
 	case pb.ListenerProfile_COURIER:
 		profile = InvocationListenerCourier
 	case pb.ListenerProfile_UNSPECIFIED:

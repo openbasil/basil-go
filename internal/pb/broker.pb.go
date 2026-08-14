@@ -631,8 +631,6 @@ const (
 	ListenerProfile_UNSPECIFIED ListenerProfile = 0
 	// Host and operator listener.
 	ListenerProfile_HOST ListenerProfile = 1
-	// Container workload listener.
-	ListenerProfile_CONTAINER ListenerProfile = 2
 	// Courier-only invocation listener.
 	ListenerProfile_COURIER ListenerProfile = 3
 )
@@ -642,13 +640,11 @@ var (
 	ListenerProfile_name = map[int32]string{
 		0: "UNSPECIFIED",
 		1: "HOST",
-		2: "CONTAINER",
 		3: "COURIER",
 	}
 	ListenerProfile_value = map[string]int32{
 		"UNSPECIFIED": 0,
 		"HOST":        1,
-		"CONTAINER":   2,
 		"COURIER":     3,
 	}
 )
@@ -795,7 +791,6 @@ type ConnectionListenerType int32
 const (
 	ConnectionListenerType_CONNECTION_LISTENER_TYPE_UNSPECIFIED ConnectionListenerType = 0
 	ConnectionListenerType_CONNECTION_LISTENER_TYPE_HOST        ConnectionListenerType = 1
-	ConnectionListenerType_CONNECTION_LISTENER_TYPE_CONTAINER   ConnectionListenerType = 2
 	ConnectionListenerType_CONNECTION_LISTENER_TYPE_COURIER     ConnectionListenerType = 3
 )
 
@@ -804,13 +799,11 @@ var (
 	ConnectionListenerType_name = map[int32]string{
 		0: "CONNECTION_LISTENER_TYPE_UNSPECIFIED",
 		1: "CONNECTION_LISTENER_TYPE_HOST",
-		2: "CONNECTION_LISTENER_TYPE_CONTAINER",
 		3: "CONNECTION_LISTENER_TYPE_COURIER",
 	}
 	ConnectionListenerType_value = map[string]int32{
 		"CONNECTION_LISTENER_TYPE_UNSPECIFIED": 0,
 		"CONNECTION_LISTENER_TYPE_HOST":        1,
-		"CONNECTION_LISTENER_TYPE_CONTAINER":   2,
 		"CONNECTION_LISTENER_TYPE_COURIER":     3,
 	}
 )
@@ -849,7 +842,6 @@ const (
 	ConnectionDomain_CONNECTION_DOMAIN_UNSPECIFIED  ConnectionDomain = 0
 	ConnectionDomain_CONNECTION_DOMAIN_HOST_PROCESS ConnectionDomain = 1
 	ConnectionDomain_CONNECTION_DOMAIN_SYSTEMD_UNIT ConnectionDomain = 2
-	ConnectionDomain_CONNECTION_DOMAIN_CONTAINER    ConnectionDomain = 3
 )
 
 // Enum value maps for ConnectionDomain.
@@ -858,13 +850,11 @@ var (
 		0: "CONNECTION_DOMAIN_UNSPECIFIED",
 		1: "CONNECTION_DOMAIN_HOST_PROCESS",
 		2: "CONNECTION_DOMAIN_SYSTEMD_UNIT",
-		3: "CONNECTION_DOMAIN_CONTAINER",
 	}
 	ConnectionDomain_value = map[string]int32{
 		"CONNECTION_DOMAIN_UNSPECIFIED":  0,
 		"CONNECTION_DOMAIN_HOST_PROCESS": 1,
 		"CONNECTION_DOMAIN_SYSTEMD_UNIT": 2,
-		"CONNECTION_DOMAIN_CONTAINER":    3,
 	}
 )
 
@@ -955,245 +945,6 @@ func (ReadinessReason) EnumDescriptor() ([]byte, []int) {
 	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{14}
 }
 
-// Closed attestor provider set.
-type RealmProvider int32
-
-const (
-	RealmProvider_REALM_PROVIDER_UNSPECIFIED RealmProvider = 0
-	RealmProvider_REALM_PROVIDER_DOCKER      RealmProvider = 1
-	RealmProvider_REALM_PROVIDER_PODMAN      RealmProvider = 2
-)
-
-// Enum value maps for RealmProvider.
-var (
-	RealmProvider_name = map[int32]string{
-		0: "REALM_PROVIDER_UNSPECIFIED",
-		1: "REALM_PROVIDER_DOCKER",
-		2: "REALM_PROVIDER_PODMAN",
-	}
-	RealmProvider_value = map[string]int32{
-		"REALM_PROVIDER_UNSPECIFIED": 0,
-		"REALM_PROVIDER_DOCKER":      1,
-		"REALM_PROVIDER_PODMAN":      2,
-	}
-)
-
-func (x RealmProvider) Enum() *RealmProvider {
-	p := new(RealmProvider)
-	*p = x
-	return p
-}
-
-func (x RealmProvider) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (RealmProvider) Descriptor() protoreflect.EnumDescriptor {
-	return file_basil_broker_v1_broker_proto_enumTypes[15].Descriptor()
-}
-
-func (RealmProvider) Type() protoreflect.EnumType {
-	return &file_basil_broker_v1_broker_proto_enumTypes[15]
-}
-
-func (x RealmProvider) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use RealmProvider.Descriptor instead.
-func (RealmProvider) EnumDescriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{15}
-}
-
-// Closed attestor account/runtime scope.
-type RealmMode int32
-
-const (
-	RealmMode_REALM_MODE_UNSPECIFIED    RealmMode = 0
-	RealmMode_REALM_MODE_ROOTFUL_HOST   RealmMode = 1
-	RealmMode_REALM_MODE_ROOTLESS_OWNER RealmMode = 2
-)
-
-// Enum value maps for RealmMode.
-var (
-	RealmMode_name = map[int32]string{
-		0: "REALM_MODE_UNSPECIFIED",
-		1: "REALM_MODE_ROOTFUL_HOST",
-		2: "REALM_MODE_ROOTLESS_OWNER",
-	}
-	RealmMode_value = map[string]int32{
-		"REALM_MODE_UNSPECIFIED":    0,
-		"REALM_MODE_ROOTFUL_HOST":   1,
-		"REALM_MODE_ROOTLESS_OWNER": 2,
-	}
-)
-
-func (x RealmMode) Enum() *RealmMode {
-	p := new(RealmMode)
-	*p = x
-	return p
-}
-
-func (x RealmMode) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (RealmMode) Descriptor() protoreflect.EnumDescriptor {
-	return file_basil_broker_v1_broker_proto_enumTypes[16].Descriptor()
-}
-
-func (RealmMode) Type() protoreflect.EnumType {
-	return &file_basil_broker_v1_broker_proto_enumTypes[16]
-}
-
-func (x RealmMode) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use RealmMode.Descriptor instead.
-func (RealmMode) EnumDescriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{16}
-}
-
-// Disclosure-safe accepted realm state.
-type RealmState int32
-
-const (
-	RealmState_REALM_STATE_UNSPECIFIED     RealmState = 0
-	RealmState_REALM_STATE_ABSENT          RealmState = 1
-	RealmState_REALM_STATE_CONNECTING      RealmState = 2
-	RealmState_REALM_STATE_AUTHENTICATING  RealmState = 3
-	RealmState_REALM_STATE_HANDSHAKING     RealmState = 4
-	RealmState_REALM_STATE_HEALTH_CHECKING RealmState = 5
-	RealmState_REALM_STATE_READY           RealmState = 6
-	RealmState_REALM_STATE_DEGRADED        RealmState = 7
-	RealmState_REALM_STATE_STAGING         RealmState = 8
-	RealmState_REALM_STATE_DRAINING        RealmState = 9
-)
-
-// Enum value maps for RealmState.
-var (
-	RealmState_name = map[int32]string{
-		0: "REALM_STATE_UNSPECIFIED",
-		1: "REALM_STATE_ABSENT",
-		2: "REALM_STATE_CONNECTING",
-		3: "REALM_STATE_AUTHENTICATING",
-		4: "REALM_STATE_HANDSHAKING",
-		5: "REALM_STATE_HEALTH_CHECKING",
-		6: "REALM_STATE_READY",
-		7: "REALM_STATE_DEGRADED",
-		8: "REALM_STATE_STAGING",
-		9: "REALM_STATE_DRAINING",
-	}
-	RealmState_value = map[string]int32{
-		"REALM_STATE_UNSPECIFIED":     0,
-		"REALM_STATE_ABSENT":          1,
-		"REALM_STATE_CONNECTING":      2,
-		"REALM_STATE_AUTHENTICATING":  3,
-		"REALM_STATE_HANDSHAKING":     4,
-		"REALM_STATE_HEALTH_CHECKING": 5,
-		"REALM_STATE_READY":           6,
-		"REALM_STATE_DEGRADED":        7,
-		"REALM_STATE_STAGING":         8,
-		"REALM_STATE_DRAINING":        9,
-	}
-)
-
-func (x RealmState) Enum() *RealmState {
-	p := new(RealmState)
-	*p = x
-	return p
-}
-
-func (x RealmState) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (RealmState) Descriptor() protoreflect.EnumDescriptor {
-	return file_basil_broker_v1_broker_proto_enumTypes[17].Descriptor()
-}
-
-func (RealmState) Type() protoreflect.EnumType {
-	return &file_basil_broker_v1_broker_proto_enumTypes[17]
-}
-
-func (x RealmState) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use RealmState.Descriptor instead.
-func (RealmState) EnumDescriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{17}
-}
-
-// Coarse disclosure-safe reason for a realm state.
-type RealmReason int32
-
-const (
-	RealmReason_REALM_REASON_UNSPECIFIED           RealmReason = 0
-	RealmReason_REALM_REASON_NONE                  RealmReason = 1
-	RealmReason_REALM_REASON_SOCKET_ABSENT         RealmReason = 2
-	RealmReason_REALM_REASON_CONNECTING            RealmReason = 3
-	RealmReason_REALM_REASON_AUTHENTICATION_FAILED RealmReason = 4
-	RealmReason_REALM_REASON_ADMISSION_FAILED      RealmReason = 5
-	RealmReason_REALM_REASON_PROTOCOL_FAILED       RealmReason = 6
-	RealmReason_REALM_REASON_HEALTH_FAILED         RealmReason = 7
-	RealmReason_REALM_REASON_DRAINING              RealmReason = 8
-)
-
-// Enum value maps for RealmReason.
-var (
-	RealmReason_name = map[int32]string{
-		0: "REALM_REASON_UNSPECIFIED",
-		1: "REALM_REASON_NONE",
-		2: "REALM_REASON_SOCKET_ABSENT",
-		3: "REALM_REASON_CONNECTING",
-		4: "REALM_REASON_AUTHENTICATION_FAILED",
-		5: "REALM_REASON_ADMISSION_FAILED",
-		6: "REALM_REASON_PROTOCOL_FAILED",
-		7: "REALM_REASON_HEALTH_FAILED",
-		8: "REALM_REASON_DRAINING",
-	}
-	RealmReason_value = map[string]int32{
-		"REALM_REASON_UNSPECIFIED":           0,
-		"REALM_REASON_NONE":                  1,
-		"REALM_REASON_SOCKET_ABSENT":         2,
-		"REALM_REASON_CONNECTING":            3,
-		"REALM_REASON_AUTHENTICATION_FAILED": 4,
-		"REALM_REASON_ADMISSION_FAILED":      5,
-		"REALM_REASON_PROTOCOL_FAILED":       6,
-		"REALM_REASON_HEALTH_FAILED":         7,
-		"REALM_REASON_DRAINING":              8,
-	}
-)
-
-func (x RealmReason) Enum() *RealmReason {
-	p := new(RealmReason)
-	*p = x
-	return p
-}
-
-func (x RealmReason) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (RealmReason) Descriptor() protoreflect.EnumDescriptor {
-	return file_basil_broker_v1_broker_proto_enumTypes[18].Descriptor()
-}
-
-func (RealmReason) Type() protoreflect.EnumType {
-	return &file_basil_broker_v1_broker_proto_enumTypes[18]
-}
-
-func (x RealmReason) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use RealmReason.Descriptor instead.
-func (RealmReason) EnumDescriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{18}
-}
-
 // The kind of a change `Event`.
 type EventKind int32
 
@@ -1235,11 +986,11 @@ func (x EventKind) String() string {
 }
 
 func (EventKind) Descriptor() protoreflect.EnumDescriptor {
-	return file_basil_broker_v1_broker_proto_enumTypes[19].Descriptor()
+	return file_basil_broker_v1_broker_proto_enumTypes[15].Descriptor()
 }
 
 func (EventKind) Type() protoreflect.EnumType {
-	return &file_basil_broker_v1_broker_proto_enumTypes[19]
+	return &file_basil_broker_v1_broker_proto_enumTypes[15]
 }
 
 func (x EventKind) Number() protoreflect.EnumNumber {
@@ -1248,7 +999,7 @@ func (x EventKind) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use EventKind.Descriptor instead.
 func (EventKind) EnumDescriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{19}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{15}
 }
 
 // BYOK key material for `Import`/`ImportSet`. Write-only: it is accepted into
@@ -5053,8 +4804,7 @@ type ReloadResponse struct {
 	// Empty when the candidate changes no listener.
 	ListenerImpacts []*ListenerImpactInfo `protobuf:"bytes,8,rep,name=listener_impacts,json=listenerImpacts,proto3" json:"listener_impacts,omitempty"`
 	// Persistent rewire diagnostics: listeners whose socket path changed in an
-	// earlier applied reload and whose externally generated wiring (for example
-	// Compose bind mounts recorded against the old resolved path) has not been
+	// earlier applied reload and whose externally generated wiring has not been
 	// regenerated. Reported until the listener is removed or its path returns to
 	// the recorded previous path. Advisory only: it never affects authorization.
 	RewireRequired []*RewireDiagnostic `protobuf:"bytes,9,rep,name=rewire_required,json=rewireRequired,proto3" json:"rewire_required,omitempty"`
@@ -5300,8 +5050,8 @@ func (x *ListenerImpactInfo) GetNewPath() string {
 
 // One persistent listener rewire diagnostic: a same-name socket-path change
 // applied by an earlier reload. External wiring generated against the previous
-// resolved path (for example Compose long-syntax bind mounts) keeps failing
-// closed until it is regenerated and its workloads are recreated. Structured
+// resolved path keeps failing closed until it is regenerated and its services
+// are restarted. Structured
 // configuration-attention state: it never affects authorization, and unrelated
 // listeners keep serving.
 type RewireDiagnostic struct {
@@ -5860,67 +5610,6 @@ func (x *ConnectionSystemdIdentity) GetManagerUid() uint32 {
 	return 0
 }
 
-// Trusted Compose identity correlated by a runtime attestor.
-type ConnectionComposeIdentity struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Realm         string                 `protobuf:"bytes,1,opt,name=realm,proto3" json:"realm,omitempty"`
-	Project       string                 `protobuf:"bytes,2,opt,name=project,proto3" json:"project,omitempty"`
-	Service       *string                `protobuf:"bytes,3,opt,name=service,proto3,oneof" json:"service,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ConnectionComposeIdentity) Reset() {
-	*x = ConnectionComposeIdentity{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[70]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ConnectionComposeIdentity) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ConnectionComposeIdentity) ProtoMessage() {}
-
-func (x *ConnectionComposeIdentity) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[70]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ConnectionComposeIdentity.ProtoReflect.Descriptor instead.
-func (*ConnectionComposeIdentity) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{70}
-}
-
-func (x *ConnectionComposeIdentity) GetRealm() string {
-	if x != nil {
-		return x.Realm
-	}
-	return ""
-}
-
-func (x *ConnectionComposeIdentity) GetProject() string {
-	if x != nil {
-		return x.Project
-	}
-	return ""
-}
-
-func (x *ConnectionComposeIdentity) GetService() string {
-	if x != nil && x.Service != nil {
-		return *x.Service
-	}
-	return ""
-}
-
 // One accepted transport. Peer fields are kernel-derived; domain, subject, and
 // typed identity are populated after the transport first resolves successfully.
 type ConnectionInfo struct {
@@ -5934,7 +5623,6 @@ type ConnectionInfo struct {
 	Domain                ConnectionDomain           `protobuf:"varint,7,opt,name=domain,proto3,enum=basil.broker.v1.ConnectionDomain" json:"domain,omitempty"`
 	Subject               string                     `protobuf:"bytes,8,opt,name=subject,proto3" json:"subject,omitempty"`
 	Systemd               *ConnectionSystemdIdentity `protobuf:"bytes,9,opt,name=systemd,proto3" json:"systemd,omitempty"`
-	Compose               *ConnectionComposeIdentity `protobuf:"bytes,10,opt,name=compose,proto3" json:"compose,omitempty"`
 	CancellationRequested bool                       `protobuf:"varint,11,opt,name=cancellation_requested,json=cancellationRequested,proto3" json:"cancellation_requested,omitempty"`
 	ActiveStreams         uint32                     `protobuf:"varint,12,opt,name=active_streams,json=activeStreams,proto3" json:"active_streams,omitempty"`
 	unknownFields         protoimpl.UnknownFields
@@ -5943,7 +5631,7 @@ type ConnectionInfo struct {
 
 func (x *ConnectionInfo) Reset() {
 	*x = ConnectionInfo{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[71]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[70]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5955,7 +5643,7 @@ func (x *ConnectionInfo) String() string {
 func (*ConnectionInfo) ProtoMessage() {}
 
 func (x *ConnectionInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[71]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[70]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5968,7 +5656,7 @@ func (x *ConnectionInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConnectionInfo.ProtoReflect.Descriptor instead.
 func (*ConnectionInfo) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{71}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{70}
 }
 
 func (x *ConnectionInfo) GetId() uint64 {
@@ -6034,13 +5722,6 @@ func (x *ConnectionInfo) GetSystemd() *ConnectionSystemdIdentity {
 	return nil
 }
 
-func (x *ConnectionInfo) GetCompose() *ConnectionComposeIdentity {
-	if x != nil {
-		return x.Compose
-	}
-	return nil
-}
-
 func (x *ConnectionInfo) GetCancellationRequested() bool {
 	if x != nil {
 		return x.CancellationRequested
@@ -6064,7 +5745,7 @@ type ListConnectionsResponse struct {
 
 func (x *ListConnectionsResponse) Reset() {
 	*x = ListConnectionsResponse{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[72]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[71]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6076,7 +5757,7 @@ func (x *ListConnectionsResponse) String() string {
 func (*ListConnectionsResponse) ProtoMessage() {}
 
 func (x *ListConnectionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[72]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[71]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6089,7 +5770,7 @@ func (x *ListConnectionsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListConnectionsResponse.ProtoReflect.Descriptor instead.
 func (*ListConnectionsResponse) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{72}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{71}
 }
 
 func (x *ListConnectionsResponse) GetConnections() []*ConnectionInfo {
@@ -6110,7 +5791,7 @@ type ConnectionSystemdSelector struct {
 
 func (x *ConnectionSystemdSelector) Reset() {
 	*x = ConnectionSystemdSelector{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[73]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[72]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6122,7 +5803,7 @@ func (x *ConnectionSystemdSelector) String() string {
 func (*ConnectionSystemdSelector) ProtoMessage() {}
 
 func (x *ConnectionSystemdSelector) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[73]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[72]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6135,7 +5816,7 @@ func (x *ConnectionSystemdSelector) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConnectionSystemdSelector.ProtoReflect.Descriptor instead.
 func (*ConnectionSystemdSelector) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{73}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{72}
 }
 
 func (x *ConnectionSystemdSelector) GetUnit() string {
@@ -6152,68 +5833,6 @@ func (x *ConnectionSystemdSelector) GetManagerUid() uint32 {
 	return 0
 }
 
-// Exact typed Compose selector. Bare mutable container names are deliberately
-// absent from this contract.
-type ConnectionComposeSelector struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Realm         string                 `protobuf:"bytes,1,opt,name=realm,proto3" json:"realm,omitempty"`
-	Project       string                 `protobuf:"bytes,2,opt,name=project,proto3" json:"project,omitempty"`
-	Service       *string                `protobuf:"bytes,3,opt,name=service,proto3,oneof" json:"service,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ConnectionComposeSelector) Reset() {
-	*x = ConnectionComposeSelector{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[74]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ConnectionComposeSelector) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ConnectionComposeSelector) ProtoMessage() {}
-
-func (x *ConnectionComposeSelector) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[74]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ConnectionComposeSelector.ProtoReflect.Descriptor instead.
-func (*ConnectionComposeSelector) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{74}
-}
-
-func (x *ConnectionComposeSelector) GetRealm() string {
-	if x != nil {
-		return x.Realm
-	}
-	return ""
-}
-
-func (x *ConnectionComposeSelector) GetProject() string {
-	if x != nil {
-		return x.Project
-	}
-	return ""
-}
-
-func (x *ConnectionComposeSelector) GetService() string {
-	if x != nil && x.Service != nil {
-		return *x.Service
-	}
-	return ""
-}
-
 // One selector in a bounded OR-set.
 type ConnectionSelector struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -6222,7 +5841,6 @@ type ConnectionSelector struct {
 	//	*ConnectionSelector_Id
 	//	*ConnectionSelector_Uid
 	//	*ConnectionSelector_Systemd
-	//	*ConnectionSelector_Compose
 	Selector      isConnectionSelector_Selector `protobuf_oneof:"selector"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -6230,7 +5848,7 @@ type ConnectionSelector struct {
 
 func (x *ConnectionSelector) Reset() {
 	*x = ConnectionSelector{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[75]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[73]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6242,7 +5860,7 @@ func (x *ConnectionSelector) String() string {
 func (*ConnectionSelector) ProtoMessage() {}
 
 func (x *ConnectionSelector) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[75]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[73]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6255,7 +5873,7 @@ func (x *ConnectionSelector) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConnectionSelector.ProtoReflect.Descriptor instead.
 func (*ConnectionSelector) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{75}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{73}
 }
 
 func (x *ConnectionSelector) GetSelector() isConnectionSelector_Selector {
@@ -6292,15 +5910,6 @@ func (x *ConnectionSelector) GetSystemd() *ConnectionSystemdSelector {
 	return nil
 }
 
-func (x *ConnectionSelector) GetCompose() *ConnectionComposeSelector {
-	if x != nil {
-		if x, ok := x.Selector.(*ConnectionSelector_Compose); ok {
-			return x.Compose
-		}
-	}
-	return nil
-}
-
 type isConnectionSelector_Selector interface {
 	isConnectionSelector_Selector()
 }
@@ -6317,17 +5926,11 @@ type ConnectionSelector_Systemd struct {
 	Systemd *ConnectionSystemdSelector `protobuf:"bytes,3,opt,name=systemd,proto3,oneof"`
 }
 
-type ConnectionSelector_Compose struct {
-	Compose *ConnectionComposeSelector `protobuf:"bytes,4,opt,name=compose,proto3,oneof"`
-}
-
 func (*ConnectionSelector_Id) isConnectionSelector_Selector() {}
 
 func (*ConnectionSelector_Uid) isConnectionSelector_Selector() {}
 
 func (*ConnectionSelector_Systemd) isConnectionSelector_Selector() {}
-
-func (*ConnectionSelector_Compose) isConnectionSelector_Selector() {}
 
 type DropConnectionsRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -6341,7 +5944,7 @@ type DropConnectionsRequest struct {
 
 func (x *DropConnectionsRequest) Reset() {
 	*x = DropConnectionsRequest{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[76]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[74]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6353,7 +5956,7 @@ func (x *DropConnectionsRequest) String() string {
 func (*DropConnectionsRequest) ProtoMessage() {}
 
 func (x *DropConnectionsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[76]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[74]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6366,7 +5969,7 @@ func (x *DropConnectionsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DropConnectionsRequest.ProtoReflect.Descriptor instead.
 func (*DropConnectionsRequest) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{76}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{74}
 }
 
 func (x *DropConnectionsRequest) GetSelectors() []*ConnectionSelector {
@@ -6388,7 +5991,7 @@ type DropConnectionsResponse struct {
 
 func (x *DropConnectionsResponse) Reset() {
 	*x = DropConnectionsResponse{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[77]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[75]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6400,7 +6003,7 @@ func (x *DropConnectionsResponse) String() string {
 func (*DropConnectionsResponse) ProtoMessage() {}
 
 func (x *DropConnectionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[77]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[75]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6413,7 +6016,7 @@ func (x *DropConnectionsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DropConnectionsResponse.ProtoReflect.Descriptor instead.
 func (*DropConnectionsResponse) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{77}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{75}
 }
 
 func (x *DropConnectionsResponse) GetMatched() uint32 {
@@ -6453,7 +6056,7 @@ type HealthRequest struct {
 
 func (x *HealthRequest) Reset() {
 	*x = HealthRequest{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[78]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[76]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6465,7 +6068,7 @@ func (x *HealthRequest) String() string {
 func (*HealthRequest) ProtoMessage() {}
 
 func (x *HealthRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[78]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[76]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6478,7 +6081,7 @@ func (x *HealthRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HealthRequest.ProtoReflect.Descriptor instead.
 func (*HealthRequest) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{78}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{76}
 }
 
 // Broker liveness. A returned response is itself the liveness signal: the
@@ -6496,7 +6099,7 @@ type HealthResponse struct {
 
 func (x *HealthResponse) Reset() {
 	*x = HealthResponse{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[79]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[77]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6508,7 +6111,7 @@ func (x *HealthResponse) String() string {
 func (*HealthResponse) ProtoMessage() {}
 
 func (x *HealthResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[79]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[77]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6521,7 +6124,7 @@ func (x *HealthResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HealthResponse.ProtoReflect.Descriptor instead.
 func (*HealthResponse) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{79}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{77}
 }
 
 func (x *HealthResponse) GetAlive() bool {
@@ -6547,7 +6150,7 @@ type ReadinessRequest struct {
 
 func (x *ReadinessRequest) Reset() {
 	*x = ReadinessRequest{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[80]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[78]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6559,7 +6162,7 @@ func (x *ReadinessRequest) String() string {
 func (*ReadinessRequest) ProtoMessage() {}
 
 func (x *ReadinessRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[80]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[78]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6572,7 +6175,7 @@ func (x *ReadinessRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadinessRequest.ProtoReflect.Descriptor instead.
 func (*ReadinessRequest) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{80}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{78}
 }
 
 // Broker readiness: a non-secret operational summary. Never carries key names,
@@ -6598,14 +6201,6 @@ type ReadinessResponse struct {
 	// Absent keys whose `missing` policy is `warn` or `generate` (reported for
 	// visibility; they do not by themselves make the broker not ready).
 	KeysOptionalMissing uint32 `protobuf:"varint,7,opt,name=keys_optional_missing,json=keysOptionalMissing,proto3" json:"keys_optional_missing,omitempty"`
-	// Accepted attestor realms in this generation.
-	RealmsTotal uint32 `protobuf:"varint,8,opt,name=realms_total,json=realmsTotal,proto3" json:"realms_total,omitempty"`
-	// Accepted realms with one authoritative ready session.
-	RealmsReady uint32 `protobuf:"varint,9,opt,name=realms_ready,json=realmsReady,proto3" json:"realms_ready,omitempty"`
-	// Accepted non-ready, non-absent realms.
-	RealmsDegraded uint32 `protobuf:"varint,10,opt,name=realms_degraded,json=realmsDegraded,proto3" json:"realms_degraded,omitempty"`
-	// Accepted realms whose configured socket is absent.
-	RealmsAbsent uint32 `protobuf:"varint,11,opt,name=realms_absent,json=realmsAbsent,proto3" json:"realms_absent,omitempty"`
 	// Listeners whose socket path changed in an applied reload and whose
 	// externally generated wiring has not been regenerated (`rewire-required`).
 	// A COUNT only (bounded disclosure on this ungated probe): the named
@@ -6619,7 +6214,7 @@ type ReadinessResponse struct {
 
 func (x *ReadinessResponse) Reset() {
 	*x = ReadinessResponse{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[81]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[79]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6631,7 +6226,7 @@ func (x *ReadinessResponse) String() string {
 func (*ReadinessResponse) ProtoMessage() {}
 
 func (x *ReadinessResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[81]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[79]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6644,7 +6239,7 @@ func (x *ReadinessResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadinessResponse.ProtoReflect.Descriptor instead.
 func (*ReadinessResponse) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{81}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{79}
 }
 
 func (x *ReadinessResponse) GetReady() bool {
@@ -6696,34 +6291,6 @@ func (x *ReadinessResponse) GetKeysOptionalMissing() uint32 {
 	return 0
 }
 
-func (x *ReadinessResponse) GetRealmsTotal() uint32 {
-	if x != nil {
-		return x.RealmsTotal
-	}
-	return 0
-}
-
-func (x *ReadinessResponse) GetRealmsReady() uint32 {
-	if x != nil {
-		return x.RealmsReady
-	}
-	return 0
-}
-
-func (x *ReadinessResponse) GetRealmsDegraded() uint32 {
-	if x != nil {
-		return x.RealmsDegraded
-	}
-	return 0
-}
-
-func (x *ReadinessResponse) GetRealmsAbsent() uint32 {
-	if x != nil {
-		return x.RealmsAbsent
-	}
-	return 0
-}
-
 func (x *ReadinessResponse) GetListenersRewireRequired() uint32 {
 	if x != nil {
 		return x.ListenersRewireRequired
@@ -6733,17 +6300,14 @@ func (x *ReadinessResponse) GetListenersRewireRequired() uint32 {
 
 // Request for broker status.
 type StatusRequest struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Include named realm status. Requires the dedicated `realm_status` admin
-	// grant over `broker.realms`; admin wildcards do not imply it.
-	IncludeRealms bool `protobuf:"varint,1,opt,name=include_realms,json=includeRealms,proto3" json:"include_realms,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *StatusRequest) Reset() {
 	*x = StatusRequest{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[82]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[80]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6755,7 +6319,7 @@ func (x *StatusRequest) String() string {
 func (*StatusRequest) ProtoMessage() {}
 
 func (x *StatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[82]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[80]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6768,115 +6332,7 @@ func (x *StatusRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StatusRequest.ProtoReflect.Descriptor instead.
 func (*StatusRequest) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{82}
-}
-
-func (x *StatusRequest) GetIncludeRealms() bool {
-	if x != nil {
-		return x.IncludeRealms
-	}
-	return false
-}
-
-// Named realm inventory available only through the dedicated admin grant.
-type RealmStatus struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Provider      RealmProvider          `protobuf:"varint,2,opt,name=provider,proto3,enum=basil.broker.v1.RealmProvider" json:"provider,omitempty"`
-	Mode          RealmMode              `protobuf:"varint,3,opt,name=mode,proto3,enum=basil.broker.v1.RealmMode" json:"mode,omitempty"`
-	State         RealmState             `protobuf:"varint,4,opt,name=state,proto3,enum=basil.broker.v1.RealmState" json:"state,omitempty"`
-	Generation    uint64                 `protobuf:"varint,5,opt,name=generation,proto3" json:"generation,omitempty"`
-	SessionEpoch  uint64                 `protobuf:"varint,6,opt,name=session_epoch,json=sessionEpoch,proto3" json:"session_epoch,omitempty"`
-	Protocol      uint32                 `protobuf:"varint,7,opt,name=protocol,proto3" json:"protocol,omitempty"`
-	Reason        RealmReason            `protobuf:"varint,8,opt,name=reason,proto3,enum=basil.broker.v1.RealmReason" json:"reason,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *RealmStatus) Reset() {
-	*x = RealmStatus{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[83]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *RealmStatus) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*RealmStatus) ProtoMessage() {}
-
-func (x *RealmStatus) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[83]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use RealmStatus.ProtoReflect.Descriptor instead.
-func (*RealmStatus) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{83}
-}
-
-func (x *RealmStatus) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *RealmStatus) GetProvider() RealmProvider {
-	if x != nil {
-		return x.Provider
-	}
-	return RealmProvider_REALM_PROVIDER_UNSPECIFIED
-}
-
-func (x *RealmStatus) GetMode() RealmMode {
-	if x != nil {
-		return x.Mode
-	}
-	return RealmMode_REALM_MODE_UNSPECIFIED
-}
-
-func (x *RealmStatus) GetState() RealmState {
-	if x != nil {
-		return x.State
-	}
-	return RealmState_REALM_STATE_UNSPECIFIED
-}
-
-func (x *RealmStatus) GetGeneration() uint64 {
-	if x != nil {
-		return x.Generation
-	}
-	return 0
-}
-
-func (x *RealmStatus) GetSessionEpoch() uint64 {
-	if x != nil {
-		return x.SessionEpoch
-	}
-	return 0
-}
-
-func (x *RealmStatus) GetProtocol() uint32 {
-	if x != nil {
-		return x.Protocol
-	}
-	return 0
-}
-
-func (x *RealmStatus) GetReason() RealmReason {
-	if x != nil {
-		return x.Reason
-	}
-	return RealmReason_REALM_REASON_UNSPECIFIED
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{80}
 }
 
 // Broker identity and protocol info.
@@ -6887,17 +6343,14 @@ type StatusResponse struct {
 	// Broker build version string.
 	Version string `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"`
 	// Wire protocol version number.
-	Protocol uint32 `protobuf:"varint,3,opt,name=protocol,proto3" json:"protocol,omitempty"`
-	// Accepted-generation realms plus removed realms still draining. Empty
-	// unless the request opted in and passed its dedicated authorization check.
-	Realms        []*RealmStatus `protobuf:"bytes,4,rep,name=realms,proto3" json:"realms,omitempty"`
+	Protocol      uint32 `protobuf:"varint,3,opt,name=protocol,proto3" json:"protocol,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *StatusResponse) Reset() {
 	*x = StatusResponse{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[84]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[81]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6909,7 +6362,7 @@ func (x *StatusResponse) String() string {
 func (*StatusResponse) ProtoMessage() {}
 
 func (x *StatusResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[84]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[81]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6922,7 +6375,7 @@ func (x *StatusResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StatusResponse.ProtoReflect.Descriptor instead.
 func (*StatusResponse) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{84}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{81}
 }
 
 func (x *StatusResponse) GetBackend() string {
@@ -6946,13 +6399,6 @@ func (x *StatusResponse) GetProtocol() uint32 {
 	return 0
 }
 
-func (x *StatusResponse) GetRealms() []*RealmStatus {
-	if x != nil {
-		return x.Realms
-	}
-	return nil
-}
-
 // Request to watch for change events, optionally filtered by kind.
 type WatchRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -6964,7 +6410,7 @@ type WatchRequest struct {
 
 func (x *WatchRequest) Reset() {
 	*x = WatchRequest{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[85]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[82]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6976,7 +6422,7 @@ func (x *WatchRequest) String() string {
 func (*WatchRequest) ProtoMessage() {}
 
 func (x *WatchRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[85]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[82]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6989,7 +6435,7 @@ func (x *WatchRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WatchRequest.ProtoReflect.Descriptor instead.
 func (*WatchRequest) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{85}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{82}
 }
 
 func (x *WatchRequest) GetKinds() []EventKind {
@@ -7020,7 +6466,7 @@ type Event struct {
 
 func (x *Event) Reset() {
 	*x = Event{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[86]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[83]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7032,7 +6478,7 @@ func (x *Event) String() string {
 func (*Event) ProtoMessage() {}
 
 func (x *Event) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[86]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[83]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7045,7 +6491,7 @@ func (x *Event) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Event.ProtoReflect.Descriptor instead.
 func (*Event) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{86}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{83}
 }
 
 func (x *Event) GetKind() EventKind {
@@ -7134,7 +6580,7 @@ type KeyRotated struct {
 
 func (x *KeyRotated) Reset() {
 	*x = KeyRotated{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[87]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[84]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7146,7 +6592,7 @@ func (x *KeyRotated) String() string {
 func (*KeyRotated) ProtoMessage() {}
 
 func (x *KeyRotated) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[87]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[84]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7159,7 +6605,7 @@ func (x *KeyRotated) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KeyRotated.ProtoReflect.Descriptor instead.
 func (*KeyRotated) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{87}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{84}
 }
 
 func (x *KeyRotated) GetKeyId() string {
@@ -7187,7 +6633,7 @@ type BundleChanged struct {
 
 func (x *BundleChanged) Reset() {
 	*x = BundleChanged{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[88]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[85]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7199,7 +6645,7 @@ func (x *BundleChanged) String() string {
 func (*BundleChanged) ProtoMessage() {}
 
 func (x *BundleChanged) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[88]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[85]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7212,7 +6658,7 @@ func (x *BundleChanged) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BundleChanged.ProtoReflect.Descriptor instead.
 func (*BundleChanged) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{88}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{85}
 }
 
 func (x *BundleChanged) GetTrustDomain() string {
@@ -7235,7 +6681,7 @@ type Revoked struct {
 
 func (x *Revoked) Reset() {
 	*x = Revoked{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[89]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[86]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7247,7 +6693,7 @@ func (x *Revoked) String() string {
 func (*Revoked) ProtoMessage() {}
 
 func (x *Revoked) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[89]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[86]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7260,7 +6706,7 @@ func (x *Revoked) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Revoked.ProtoReflect.Descriptor instead.
 func (*Revoked) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{89}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{86}
 }
 
 func (x *Revoked) GetTrustDomain() string {
@@ -7291,7 +6737,7 @@ type BrokerErrorInfo struct {
 
 func (x *BrokerErrorInfo) Reset() {
 	*x = BrokerErrorInfo{}
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[90]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[87]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7303,7 +6749,7 @@ func (x *BrokerErrorInfo) String() string {
 func (*BrokerErrorInfo) ProtoMessage() {}
 
 func (x *BrokerErrorInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_basil_broker_v1_broker_proto_msgTypes[90]
+	mi := &file_basil_broker_v1_broker_proto_msgTypes[87]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7316,7 +6762,7 @@ func (x *BrokerErrorInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BrokerErrorInfo.ProtoReflect.Descriptor instead.
 func (*BrokerErrorInfo) Descriptor() ([]byte, []int) {
-	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{90}
+	return file_basil_broker_v1_broker_proto_rawDescGZIP(), []int{87}
 }
 
 func (x *BrokerErrorInfo) GetReason() string {
@@ -7665,13 +7111,7 @@ const file_basil_broker_v1_broker_proto_rawDesc = "" +
 	"\x04unit\x18\x01 \x01(\tR\x04unit\x12$\n" +
 	"\vmanager_uid\x18\x02 \x01(\rH\x00R\n" +
 	"managerUid\x88\x01\x01B\x0e\n" +
-	"\f_manager_uid\"v\n" +
-	"\x19ConnectionComposeIdentity\x12\x14\n" +
-	"\x05realm\x18\x01 \x01(\tR\x05realm\x12\x18\n" +
-	"\aproject\x18\x02 \x01(\tR\aproject\x12\x1d\n" +
-	"\aservice\x18\x03 \x01(\tH\x00R\aservice\x88\x01\x01B\n" +
-	"\n" +
-	"\b_service\"\xaf\x04\n" +
+	"\f_manager_uid\"\xf8\x03\n" +
 	"\x0eConnectionInfo\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x04R\x02id\x12#\n" +
 	"\rlistener_name\x18\x02 \x01(\tR\flistenerName\x12L\n" +
@@ -7681,34 +7121,26 @@ const file_basil_broker_v1_broker_proto_rawDesc = "" +
 	"\x03gid\x18\x06 \x01(\rH\x02R\x03gid\x88\x01\x01\x129\n" +
 	"\x06domain\x18\a \x01(\x0e2!.basil.broker.v1.ConnectionDomainR\x06domain\x12\x18\n" +
 	"\asubject\x18\b \x01(\tR\asubject\x12D\n" +
-	"\asystemd\x18\t \x01(\v2*.basil.broker.v1.ConnectionSystemdIdentityR\asystemd\x12D\n" +
-	"\acompose\x18\n" +
-	" \x01(\v2*.basil.broker.v1.ConnectionComposeIdentityR\acompose\x125\n" +
+	"\asystemd\x18\t \x01(\v2*.basil.broker.v1.ConnectionSystemdIdentityR\asystemd\x125\n" +
 	"\x16cancellation_requested\x18\v \x01(\bR\x15cancellationRequested\x12%\n" +
 	"\x0eactive_streams\x18\f \x01(\rR\ractiveStreamsB\x06\n" +
 	"\x04_pidB\x06\n" +
 	"\x04_uidB\x06\n" +
-	"\x04_gid\"\\\n" +
+	"\x04_gidJ\x04\b\n" +
+	"\x10\vR\acompose\"\\\n" +
 	"\x17ListConnectionsResponse\x12A\n" +
 	"\vconnections\x18\x01 \x03(\v2\x1f.basil.broker.v1.ConnectionInfoR\vconnections\"e\n" +
 	"\x19ConnectionSystemdSelector\x12\x12\n" +
 	"\x04unit\x18\x01 \x01(\tR\x04unit\x12$\n" +
 	"\vmanager_uid\x18\x02 \x01(\rH\x00R\n" +
 	"managerUid\x88\x01\x01B\x0e\n" +
-	"\f_manager_uid\"v\n" +
-	"\x19ConnectionComposeSelector\x12\x14\n" +
-	"\x05realm\x18\x01 \x01(\tR\x05realm\x12\x18\n" +
-	"\aproject\x18\x02 \x01(\tR\aproject\x12\x1d\n" +
-	"\aservice\x18\x03 \x01(\tH\x00R\aservice\x88\x01\x01B\n" +
-	"\n" +
-	"\b_service\"\xd6\x01\n" +
+	"\f_manager_uid\"\x9d\x01\n" +
 	"\x12ConnectionSelector\x12\x10\n" +
 	"\x02id\x18\x01 \x01(\x04H\x00R\x02id\x12\x12\n" +
 	"\x03uid\x18\x02 \x01(\rH\x00R\x03uid\x12F\n" +
-	"\asystemd\x18\x03 \x01(\v2*.basil.broker.v1.ConnectionSystemdSelectorH\x00R\asystemd\x12F\n" +
-	"\acompose\x18\x04 \x01(\v2*.basil.broker.v1.ConnectionComposeSelectorH\x00R\acomposeB\n" +
+	"\asystemd\x18\x03 \x01(\v2*.basil.broker.v1.ConnectionSystemdSelectorH\x00R\asystemdB\n" +
 	"\n" +
-	"\bselector\"[\n" +
+	"\bselectorJ\x04\b\x04\x10\x05R\acompose\"[\n" +
 	"\x16DropConnectionsRequest\x12A\n" +
 	"\tselectors\x18\x01 \x03(\v2#.basil.broker.v1.ConnectionSelectorR\tselectors\"\xa7\x01\n" +
 	"\x17DropConnectionsResponse\x12\x18\n" +
@@ -7720,7 +7152,7 @@ const file_basil_broker_v1_broker_proto_rawDesc = "" +
 	"\x0eHealthResponse\x12\x14\n" +
 	"\x05alive\x18\x01 \x01(\bR\x05alive\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\tR\aversion\"\x12\n" +
-	"\x10ReadinessRequest\"\xfd\x03\n" +
+	"\x10ReadinessRequest\"\xab\x03\n" +
 	"\x11ReadinessResponse\x12\x14\n" +
 	"\x05ready\x18\x01 \x01(\bR\x05ready\x128\n" +
 	"\x06reason\x18\x02 \x01(\x0e2 .basil.broker.v1.ReadinessReasonR\x06reason\x12\x1e\n" +
@@ -7731,31 +7163,13 @@ const file_basil_broker_v1_broker_proto_rawDesc = "" +
 	"keys_total\x18\x04 \x01(\rR\tkeysTotal\x12!\n" +
 	"\fkeys_present\x18\x05 \x01(\rR\vkeysPresent\x122\n" +
 	"\x15keys_required_missing\x18\x06 \x01(\rR\x13keysRequiredMissing\x122\n" +
-	"\x15keys_optional_missing\x18\a \x01(\rR\x13keysOptionalMissing\x12!\n" +
-	"\frealms_total\x18\b \x01(\rR\vrealmsTotal\x12!\n" +
-	"\frealms_ready\x18\t \x01(\rR\vrealmsReady\x12'\n" +
-	"\x0frealms_degraded\x18\n" +
-	" \x01(\rR\x0erealmsDegraded\x12#\n" +
-	"\rrealms_absent\x18\v \x01(\rR\frealmsAbsent\x12:\n" +
-	"\x19listeners_rewire_required\x18\f \x01(\rR\x17listenersRewireRequired\"6\n" +
-	"\rStatusRequest\x12%\n" +
-	"\x0einclude_realms\x18\x01 \x01(\bR\rincludeRealms\"\xd7\x02\n" +
-	"\vRealmStatus\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12:\n" +
-	"\bprovider\x18\x02 \x01(\x0e2\x1e.basil.broker.v1.RealmProviderR\bprovider\x12.\n" +
-	"\x04mode\x18\x03 \x01(\x0e2\x1a.basil.broker.v1.RealmModeR\x04mode\x121\n" +
-	"\x05state\x18\x04 \x01(\x0e2\x1b.basil.broker.v1.RealmStateR\x05state\x12\x1e\n" +
-	"\n" +
-	"generation\x18\x05 \x01(\x04R\n" +
-	"generation\x12#\n" +
-	"\rsession_epoch\x18\x06 \x01(\x04R\fsessionEpoch\x12\x1a\n" +
-	"\bprotocol\x18\a \x01(\rR\bprotocol\x124\n" +
-	"\x06reason\x18\b \x01(\x0e2\x1c.basil.broker.v1.RealmReasonR\x06reason\"\x96\x01\n" +
+	"\x15keys_optional_missing\x18\a \x01(\rR\x13keysOptionalMissing\x12:\n" +
+	"\x19listeners_rewire_required\x18\f \x01(\rR\x17listenersRewireRequiredJ\x04\b\b\x10\fR\frealms_totalR\frealms_readyR\x0frealms_degradedR\rrealms_absent\"\x0f\n" +
+	"\rStatusRequest\"n\n" +
 	"\x0eStatusResponse\x12\x18\n" +
 	"\abackend\x18\x01 \x01(\tR\abackend\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\tR\aversion\x12\x1a\n" +
-	"\bprotocol\x18\x03 \x01(\rR\bprotocol\x124\n" +
-	"\x06realms\x18\x04 \x03(\v2\x1c.basil.broker.v1.RealmStatusR\x06realms\"@\n" +
+	"\bprotocol\x18\x03 \x01(\rR\bprotocolJ\x04\b\x04\x10\x05R\x06realms\"@\n" +
 	"\fWatchRequest\x120\n" +
 	"\x05kinds\x18\x01 \x03(\x0e2\x1a.basil.broker.v1.EventKindR\x05kinds\"\xac\x02\n" +
 	"\x05Event\x12.\n" +
@@ -7841,12 +7255,11 @@ const file_basil_broker_v1_broker_proto_rawDesc = "" +
 	"\x18CATALOG_KIND_UNSPECIFIED\x10\x00\x12\x18\n" +
 	"\x14CATALOG_KIND_SIGNING\x10\x01\x12\x16\n" +
 	"\x12CATALOG_KIND_VALUE\x10\x02\x12\x1b\n" +
-	"\x17CATALOG_KIND_ENCRYPTION\x10\x03\"\x04\b\x04\x10\x1f*H\n" +
+	"\x17CATALOG_KIND_ENCRYPTION\x10\x03\"\x04\b\x04\x10\x1f*J\n" +
 	"\x0fListenerProfile\x12\x0f\n" +
 	"\vUNSPECIFIED\x10\x00\x12\b\n" +
-	"\x04HOST\x10\x01\x12\r\n" +
-	"\tCONTAINER\x10\x02\x12\v\n" +
-	"\aCOURIER\x10\x03*\x9f\x01\n" +
+	"\x04HOST\x10\x01\x12\v\n" +
+	"\aCOURIER\x10\x03\"\x04\b\x02\x10\x02*\tCONTAINER*\x9f\x01\n" +
 	"\x12ListenerChangeKind\x12$\n" +
 	" LISTENER_CHANGE_KIND_UNSPECIFIED\x10\x00\x12\x1c\n" +
 	"\x18LISTENER_CHANGE_KIND_ADD\x10\x01\x12\x1f\n" +
@@ -7855,52 +7268,20 @@ const file_basil_broker_v1_broker_proto_rawDesc = "" +
 	"\x0fExplainDecision\x12 \n" +
 	"\x1cEXPLAIN_DECISION_UNSPECIFIED\x10\x00\x12\x1a\n" +
 	"\x16EXPLAIN_DECISION_ALLOW\x10\x01\x12\x19\n" +
-	"\x15EXPLAIN_DECISION_DENY\x10\x02\"\x04\b\x03\x10\x1f*\xb3\x01\n" +
+	"\x15EXPLAIN_DECISION_DENY\x10\x02\"\x04\b\x03\x10\x1f*\xb5\x01\n" +
 	"\x16ConnectionListenerType\x12(\n" +
 	"$CONNECTION_LISTENER_TYPE_UNSPECIFIED\x10\x00\x12!\n" +
-	"\x1dCONNECTION_LISTENER_TYPE_HOST\x10\x01\x12&\n" +
-	"\"CONNECTION_LISTENER_TYPE_CONTAINER\x10\x02\x12$\n" +
-	" CONNECTION_LISTENER_TYPE_COURIER\x10\x03*\x9e\x01\n" +
+	"\x1dCONNECTION_LISTENER_TYPE_HOST\x10\x01\x12$\n" +
+	" CONNECTION_LISTENER_TYPE_COURIER\x10\x03\"\x04\b\x02\x10\x02*\"CONNECTION_LISTENER_TYPE_CONTAINER*\xa0\x01\n" +
 	"\x10ConnectionDomain\x12!\n" +
 	"\x1dCONNECTION_DOMAIN_UNSPECIFIED\x10\x00\x12\"\n" +
 	"\x1eCONNECTION_DOMAIN_HOST_PROCESS\x10\x01\x12\"\n" +
-	"\x1eCONNECTION_DOMAIN_SYSTEMD_UNIT\x10\x02\x12\x1f\n" +
-	"\x1bCONNECTION_DOMAIN_CONTAINER\x10\x03*\xa4\x01\n" +
+	"\x1eCONNECTION_DOMAIN_SYSTEMD_UNIT\x10\x02\"\x04\b\x03\x10\x03*\x1bCONNECTION_DOMAIN_CONTAINER*\xa4\x01\n" +
 	"\x0fReadinessReason\x12 \n" +
 	"\x1cREADINESS_REASON_UNSPECIFIED\x10\x00\x12\x1a\n" +
 	"\x16READINESS_REASON_READY\x10\x01\x12(\n" +
 	"$READINESS_REASON_BACKEND_UNREACHABLE\x10\x02\x12)\n" +
-	"%READINESS_REASON_REQUIRED_KEY_MISSING\x10\x03*e\n" +
-	"\rRealmProvider\x12\x1e\n" +
-	"\x1aREALM_PROVIDER_UNSPECIFIED\x10\x00\x12\x19\n" +
-	"\x15REALM_PROVIDER_DOCKER\x10\x01\x12\x19\n" +
-	"\x15REALM_PROVIDER_PODMAN\x10\x02*c\n" +
-	"\tRealmMode\x12\x1a\n" +
-	"\x16REALM_MODE_UNSPECIFIED\x10\x00\x12\x1b\n" +
-	"\x17REALM_MODE_ROOTFUL_HOST\x10\x01\x12\x1d\n" +
-	"\x19REALM_MODE_ROOTLESS_OWNER\x10\x02*\x9f\x02\n" +
-	"\n" +
-	"RealmState\x12\x1b\n" +
-	"\x17REALM_STATE_UNSPECIFIED\x10\x00\x12\x16\n" +
-	"\x12REALM_STATE_ABSENT\x10\x01\x12\x1a\n" +
-	"\x16REALM_STATE_CONNECTING\x10\x02\x12\x1e\n" +
-	"\x1aREALM_STATE_AUTHENTICATING\x10\x03\x12\x1b\n" +
-	"\x17REALM_STATE_HANDSHAKING\x10\x04\x12\x1f\n" +
-	"\x1bREALM_STATE_HEALTH_CHECKING\x10\x05\x12\x15\n" +
-	"\x11REALM_STATE_READY\x10\x06\x12\x18\n" +
-	"\x14REALM_STATE_DEGRADED\x10\a\x12\x17\n" +
-	"\x13REALM_STATE_STAGING\x10\b\x12\x18\n" +
-	"\x14REALM_STATE_DRAINING\x10\t*\xa7\x02\n" +
-	"\vRealmReason\x12\x1c\n" +
-	"\x18REALM_REASON_UNSPECIFIED\x10\x00\x12\x15\n" +
-	"\x11REALM_REASON_NONE\x10\x01\x12\x1e\n" +
-	"\x1aREALM_REASON_SOCKET_ABSENT\x10\x02\x12\x1b\n" +
-	"\x17REALM_REASON_CONNECTING\x10\x03\x12&\n" +
-	"\"REALM_REASON_AUTHENTICATION_FAILED\x10\x04\x12!\n" +
-	"\x1dREALM_REASON_ADMISSION_FAILED\x10\x05\x12 \n" +
-	"\x1cREALM_REASON_PROTOCOL_FAILED\x10\x06\x12\x1e\n" +
-	"\x1aREALM_REASON_HEALTH_FAILED\x10\a\x12\x19\n" +
-	"\x15REALM_REASON_DRAINING\x10\b*\x80\x01\n" +
+	"%READINESS_REASON_REQUIRED_KEY_MISSING\x10\x03*\x80\x01\n" +
 	"\tEventKind\x12\x1a\n" +
 	"\x16EVENT_KIND_UNSPECIFIED\x10\x00\x12\x1a\n" +
 	"\x16EVENT_KIND_KEY_ROTATED\x10\x01\x12\x1d\n" +
@@ -7966,8 +7347,8 @@ func file_basil_broker_v1_broker_proto_rawDescGZIP() []byte {
 	return file_basil_broker_v1_broker_proto_rawDescData
 }
 
-var file_basil_broker_v1_broker_proto_enumTypes = make([]protoimpl.EnumInfo, 20)
-var file_basil_broker_v1_broker_proto_msgTypes = make([]protoimpl.MessageInfo, 91)
+var file_basil_broker_v1_broker_proto_enumTypes = make([]protoimpl.EnumInfo, 16)
+var file_basil_broker_v1_broker_proto_msgTypes = make([]protoimpl.MessageInfo, 88)
 var file_basil_broker_v1_broker_proto_goTypes = []any{
 	(KeyType)(0),                              // 0: basil.broker.v1.KeyType
 	(SigningAlgorithm)(0),                     // 1: basil.broker.v1.SigningAlgorithm
@@ -7984,104 +7365,97 @@ var file_basil_broker_v1_broker_proto_goTypes = []any{
 	(ConnectionListenerType)(0),               // 12: basil.broker.v1.ConnectionListenerType
 	(ConnectionDomain)(0),                     // 13: basil.broker.v1.ConnectionDomain
 	(ReadinessReason)(0),                      // 14: basil.broker.v1.ReadinessReason
-	(RealmProvider)(0),                        // 15: basil.broker.v1.RealmProvider
-	(RealmMode)(0),                            // 16: basil.broker.v1.RealmMode
-	(RealmState)(0),                           // 17: basil.broker.v1.RealmState
-	(RealmReason)(0),                          // 18: basil.broker.v1.RealmReason
-	(EventKind)(0),                            // 19: basil.broker.v1.EventKind
-	(*KeyMaterial)(nil),                       // 20: basil.broker.v1.KeyMaterial
-	(*CiphertextEnvelope)(nil),                // 21: basil.broker.v1.CiphertextEnvelope
-	(*KemEnvelope)(nil),                       // 22: basil.broker.v1.KemEnvelope
-	(*CatalogEntry)(nil),                      // 23: basil.broker.v1.CatalogEntry
-	(*SealedRequest)(nil),                     // 24: basil.broker.v1.SealedRequest
-	(*SealedResponse)(nil),                    // 25: basil.broker.v1.SealedResponse
-	(*GetInvocationChallengeRequest)(nil),     // 26: basil.broker.v1.GetInvocationChallengeRequest
-	(*GetInvocationChallengeResponse)(nil),    // 27: basil.broker.v1.GetInvocationChallengeResponse
-	(*GetInvocationCapabilitiesRequest)(nil),  // 28: basil.broker.v1.GetInvocationCapabilitiesRequest
-	(*GetInvocationCapabilitiesResponse)(nil), // 29: basil.broker.v1.GetInvocationCapabilitiesResponse
-	(*NewKeyRequest)(nil),                     // 30: basil.broker.v1.NewKeyRequest
-	(*NewKeyResponse)(nil),                    // 31: basil.broker.v1.NewKeyResponse
-	(*ImportRequest)(nil),                     // 32: basil.broker.v1.ImportRequest
-	(*ImportEntry)(nil),                       // 33: basil.broker.v1.ImportEntry
-	(*ImportSetRequest)(nil),                  // 34: basil.broker.v1.ImportSetRequest
-	(*ImportedKey)(nil),                       // 35: basil.broker.v1.ImportedKey
-	(*ImportSetResponse)(nil),                 // 36: basil.broker.v1.ImportSetResponse
-	(*SignRequest)(nil),                       // 37: basil.broker.v1.SignRequest
-	(*SignResponse)(nil),                      // 38: basil.broker.v1.SignResponse
-	(*VerifyRequest)(nil),                     // 39: basil.broker.v1.VerifyRequest
-	(*VerifyResponse)(nil),                    // 40: basil.broker.v1.VerifyResponse
-	(*GetPublicKeyRequest)(nil),               // 41: basil.broker.v1.GetPublicKeyRequest
-	(*GetPublicKeyResponse)(nil),              // 42: basil.broker.v1.GetPublicKeyResponse
-	(*EncryptRequest)(nil),                    // 43: basil.broker.v1.EncryptRequest
-	(*EncryptResponse)(nil),                   // 44: basil.broker.v1.EncryptResponse
-	(*DecryptRequest)(nil),                    // 45: basil.broker.v1.DecryptRequest
-	(*DecryptResponse)(nil),                   // 46: basil.broker.v1.DecryptResponse
-	(*WrapEnvelopeRequest)(nil),               // 47: basil.broker.v1.WrapEnvelopeRequest
-	(*WrapEnvelopeResponse)(nil),              // 48: basil.broker.v1.WrapEnvelopeResponse
-	(*UnwrapEnvelopeRequest)(nil),             // 49: basil.broker.v1.UnwrapEnvelopeRequest
-	(*UnwrapEnvelopeResponse)(nil),            // 50: basil.broker.v1.UnwrapEnvelopeResponse
-	(*UnsealCoseRequest)(nil),                 // 51: basil.broker.v1.UnsealCoseRequest
-	(*UnsealCoseResponse)(nil),                // 52: basil.broker.v1.UnsealCoseResponse
-	(*GetSecretRequest)(nil),                  // 53: basil.broker.v1.GetSecretRequest
-	(*GetSecretResponse)(nil),                 // 54: basil.broker.v1.GetSecretResponse
-	(*SetSecretRequest)(nil),                  // 55: basil.broker.v1.SetSecretRequest
-	(*SetSecretResponse)(nil),                 // 56: basil.broker.v1.SetSecretResponse
-	(*RotateSecretRequest)(nil),               // 57: basil.broker.v1.RotateSecretRequest
-	(*RotateSecretResponse)(nil),              // 58: basil.broker.v1.RotateSecretResponse
-	(*ListCatalogRequest)(nil),                // 59: basil.broker.v1.ListCatalogRequest
-	(*MintJwtRequest)(nil),                    // 60: basil.broker.v1.MintJwtRequest
-	(*MintNatsUserRequest)(nil),               // 61: basil.broker.v1.MintNatsUserRequest
-	(*MintNatsAccountRequest)(nil),            // 62: basil.broker.v1.MintNatsAccountRequest
-	(*MintNatsOperatorRequest)(nil),           // 63: basil.broker.v1.MintNatsOperatorRequest
-	(*MintNatsSignerRequest)(nil),             // 64: basil.broker.v1.MintNatsSignerRequest
-	(*MintNatsServerRequest)(nil),             // 65: basil.broker.v1.MintNatsServerRequest
-	(*MintNatsCurveRequest)(nil),              // 66: basil.broker.v1.MintNatsCurveRequest
-	(*EncryptNatsCurveRequest)(nil),           // 67: basil.broker.v1.EncryptNatsCurveRequest
-	(*EncryptNatsCurveResponse)(nil),          // 68: basil.broker.v1.EncryptNatsCurveResponse
-	(*DecryptNatsCurveRequest)(nil),           // 69: basil.broker.v1.DecryptNatsCurveRequest
-	(*DecryptNatsCurveResponse)(nil),          // 70: basil.broker.v1.DecryptNatsCurveResponse
-	(*SignNatsJwtRequest)(nil),                // 71: basil.broker.v1.SignNatsJwtRequest
-	(*AllowedNatsSigner)(nil),                 // 72: basil.broker.v1.AllowedNatsSigner
-	(*ValidateNatsJwtRequest)(nil),            // 73: basil.broker.v1.ValidateNatsJwtRequest
-	(*ValidateNatsJwtResponse)(nil),           // 74: basil.broker.v1.ValidateNatsJwtResponse
-	(*CredentialResponse)(nil),                // 75: basil.broker.v1.CredentialResponse
-	(*IssueCertificateRequest)(nil),           // 76: basil.broker.v1.IssueCertificateRequest
-	(*IssueCertificateResponse)(nil),          // 77: basil.broker.v1.IssueCertificateResponse
-	(*ReloadRequest)(nil),                     // 78: basil.broker.v1.ReloadRequest
-	(*ReloadResponse)(nil),                    // 79: basil.broker.v1.ReloadResponse
-	(*ReloadRejection)(nil),                   // 80: basil.broker.v1.ReloadRejection
-	(*ListenerImpactInfo)(nil),                // 81: basil.broker.v1.ListenerImpactInfo
-	(*RewireDiagnostic)(nil),                  // 82: basil.broker.v1.RewireDiagnostic
-	(*ExplainRequest)(nil),                    // 83: basil.broker.v1.ExplainRequest
-	(*MatchedRule)(nil),                       // 84: basil.broker.v1.MatchedRule
-	(*ExplainResponse)(nil),                   // 85: basil.broker.v1.ExplainResponse
-	(*RevokeRequest)(nil),                     // 86: basil.broker.v1.RevokeRequest
-	(*RevokeResponse)(nil),                    // 87: basil.broker.v1.RevokeResponse
-	(*ListConnectionsRequest)(nil),            // 88: basil.broker.v1.ListConnectionsRequest
-	(*ConnectionSystemdIdentity)(nil),         // 89: basil.broker.v1.ConnectionSystemdIdentity
-	(*ConnectionComposeIdentity)(nil),         // 90: basil.broker.v1.ConnectionComposeIdentity
-	(*ConnectionInfo)(nil),                    // 91: basil.broker.v1.ConnectionInfo
-	(*ListConnectionsResponse)(nil),           // 92: basil.broker.v1.ListConnectionsResponse
-	(*ConnectionSystemdSelector)(nil),         // 93: basil.broker.v1.ConnectionSystemdSelector
-	(*ConnectionComposeSelector)(nil),         // 94: basil.broker.v1.ConnectionComposeSelector
-	(*ConnectionSelector)(nil),                // 95: basil.broker.v1.ConnectionSelector
-	(*DropConnectionsRequest)(nil),            // 96: basil.broker.v1.DropConnectionsRequest
-	(*DropConnectionsResponse)(nil),           // 97: basil.broker.v1.DropConnectionsResponse
-	(*HealthRequest)(nil),                     // 98: basil.broker.v1.HealthRequest
-	(*HealthResponse)(nil),                    // 99: basil.broker.v1.HealthResponse
-	(*ReadinessRequest)(nil),                  // 100: basil.broker.v1.ReadinessRequest
-	(*ReadinessResponse)(nil),                 // 101: basil.broker.v1.ReadinessResponse
-	(*StatusRequest)(nil),                     // 102: basil.broker.v1.StatusRequest
-	(*RealmStatus)(nil),                       // 103: basil.broker.v1.RealmStatus
-	(*StatusResponse)(nil),                    // 104: basil.broker.v1.StatusResponse
-	(*WatchRequest)(nil),                      // 105: basil.broker.v1.WatchRequest
-	(*Event)(nil),                             // 106: basil.broker.v1.Event
-	(*KeyRotated)(nil),                        // 107: basil.broker.v1.KeyRotated
-	(*BundleChanged)(nil),                     // 108: basil.broker.v1.BundleChanged
-	(*Revoked)(nil),                           // 109: basil.broker.v1.Revoked
-	(*BrokerErrorInfo)(nil),                   // 110: basil.broker.v1.BrokerErrorInfo
-	(*durationpb.Duration)(nil),               // 111: google.protobuf.Duration
-	(*timestamppb.Timestamp)(nil),             // 112: google.protobuf.Timestamp
+	(EventKind)(0),                            // 15: basil.broker.v1.EventKind
+	(*KeyMaterial)(nil),                       // 16: basil.broker.v1.KeyMaterial
+	(*CiphertextEnvelope)(nil),                // 17: basil.broker.v1.CiphertextEnvelope
+	(*KemEnvelope)(nil),                       // 18: basil.broker.v1.KemEnvelope
+	(*CatalogEntry)(nil),                      // 19: basil.broker.v1.CatalogEntry
+	(*SealedRequest)(nil),                     // 20: basil.broker.v1.SealedRequest
+	(*SealedResponse)(nil),                    // 21: basil.broker.v1.SealedResponse
+	(*GetInvocationChallengeRequest)(nil),     // 22: basil.broker.v1.GetInvocationChallengeRequest
+	(*GetInvocationChallengeResponse)(nil),    // 23: basil.broker.v1.GetInvocationChallengeResponse
+	(*GetInvocationCapabilitiesRequest)(nil),  // 24: basil.broker.v1.GetInvocationCapabilitiesRequest
+	(*GetInvocationCapabilitiesResponse)(nil), // 25: basil.broker.v1.GetInvocationCapabilitiesResponse
+	(*NewKeyRequest)(nil),                     // 26: basil.broker.v1.NewKeyRequest
+	(*NewKeyResponse)(nil),                    // 27: basil.broker.v1.NewKeyResponse
+	(*ImportRequest)(nil),                     // 28: basil.broker.v1.ImportRequest
+	(*ImportEntry)(nil),                       // 29: basil.broker.v1.ImportEntry
+	(*ImportSetRequest)(nil),                  // 30: basil.broker.v1.ImportSetRequest
+	(*ImportedKey)(nil),                       // 31: basil.broker.v1.ImportedKey
+	(*ImportSetResponse)(nil),                 // 32: basil.broker.v1.ImportSetResponse
+	(*SignRequest)(nil),                       // 33: basil.broker.v1.SignRequest
+	(*SignResponse)(nil),                      // 34: basil.broker.v1.SignResponse
+	(*VerifyRequest)(nil),                     // 35: basil.broker.v1.VerifyRequest
+	(*VerifyResponse)(nil),                    // 36: basil.broker.v1.VerifyResponse
+	(*GetPublicKeyRequest)(nil),               // 37: basil.broker.v1.GetPublicKeyRequest
+	(*GetPublicKeyResponse)(nil),              // 38: basil.broker.v1.GetPublicKeyResponse
+	(*EncryptRequest)(nil),                    // 39: basil.broker.v1.EncryptRequest
+	(*EncryptResponse)(nil),                   // 40: basil.broker.v1.EncryptResponse
+	(*DecryptRequest)(nil),                    // 41: basil.broker.v1.DecryptRequest
+	(*DecryptResponse)(nil),                   // 42: basil.broker.v1.DecryptResponse
+	(*WrapEnvelopeRequest)(nil),               // 43: basil.broker.v1.WrapEnvelopeRequest
+	(*WrapEnvelopeResponse)(nil),              // 44: basil.broker.v1.WrapEnvelopeResponse
+	(*UnwrapEnvelopeRequest)(nil),             // 45: basil.broker.v1.UnwrapEnvelopeRequest
+	(*UnwrapEnvelopeResponse)(nil),            // 46: basil.broker.v1.UnwrapEnvelopeResponse
+	(*UnsealCoseRequest)(nil),                 // 47: basil.broker.v1.UnsealCoseRequest
+	(*UnsealCoseResponse)(nil),                // 48: basil.broker.v1.UnsealCoseResponse
+	(*GetSecretRequest)(nil),                  // 49: basil.broker.v1.GetSecretRequest
+	(*GetSecretResponse)(nil),                 // 50: basil.broker.v1.GetSecretResponse
+	(*SetSecretRequest)(nil),                  // 51: basil.broker.v1.SetSecretRequest
+	(*SetSecretResponse)(nil),                 // 52: basil.broker.v1.SetSecretResponse
+	(*RotateSecretRequest)(nil),               // 53: basil.broker.v1.RotateSecretRequest
+	(*RotateSecretResponse)(nil),              // 54: basil.broker.v1.RotateSecretResponse
+	(*ListCatalogRequest)(nil),                // 55: basil.broker.v1.ListCatalogRequest
+	(*MintJwtRequest)(nil),                    // 56: basil.broker.v1.MintJwtRequest
+	(*MintNatsUserRequest)(nil),               // 57: basil.broker.v1.MintNatsUserRequest
+	(*MintNatsAccountRequest)(nil),            // 58: basil.broker.v1.MintNatsAccountRequest
+	(*MintNatsOperatorRequest)(nil),           // 59: basil.broker.v1.MintNatsOperatorRequest
+	(*MintNatsSignerRequest)(nil),             // 60: basil.broker.v1.MintNatsSignerRequest
+	(*MintNatsServerRequest)(nil),             // 61: basil.broker.v1.MintNatsServerRequest
+	(*MintNatsCurveRequest)(nil),              // 62: basil.broker.v1.MintNatsCurveRequest
+	(*EncryptNatsCurveRequest)(nil),           // 63: basil.broker.v1.EncryptNatsCurveRequest
+	(*EncryptNatsCurveResponse)(nil),          // 64: basil.broker.v1.EncryptNatsCurveResponse
+	(*DecryptNatsCurveRequest)(nil),           // 65: basil.broker.v1.DecryptNatsCurveRequest
+	(*DecryptNatsCurveResponse)(nil),          // 66: basil.broker.v1.DecryptNatsCurveResponse
+	(*SignNatsJwtRequest)(nil),                // 67: basil.broker.v1.SignNatsJwtRequest
+	(*AllowedNatsSigner)(nil),                 // 68: basil.broker.v1.AllowedNatsSigner
+	(*ValidateNatsJwtRequest)(nil),            // 69: basil.broker.v1.ValidateNatsJwtRequest
+	(*ValidateNatsJwtResponse)(nil),           // 70: basil.broker.v1.ValidateNatsJwtResponse
+	(*CredentialResponse)(nil),                // 71: basil.broker.v1.CredentialResponse
+	(*IssueCertificateRequest)(nil),           // 72: basil.broker.v1.IssueCertificateRequest
+	(*IssueCertificateResponse)(nil),          // 73: basil.broker.v1.IssueCertificateResponse
+	(*ReloadRequest)(nil),                     // 74: basil.broker.v1.ReloadRequest
+	(*ReloadResponse)(nil),                    // 75: basil.broker.v1.ReloadResponse
+	(*ReloadRejection)(nil),                   // 76: basil.broker.v1.ReloadRejection
+	(*ListenerImpactInfo)(nil),                // 77: basil.broker.v1.ListenerImpactInfo
+	(*RewireDiagnostic)(nil),                  // 78: basil.broker.v1.RewireDiagnostic
+	(*ExplainRequest)(nil),                    // 79: basil.broker.v1.ExplainRequest
+	(*MatchedRule)(nil),                       // 80: basil.broker.v1.MatchedRule
+	(*ExplainResponse)(nil),                   // 81: basil.broker.v1.ExplainResponse
+	(*RevokeRequest)(nil),                     // 82: basil.broker.v1.RevokeRequest
+	(*RevokeResponse)(nil),                    // 83: basil.broker.v1.RevokeResponse
+	(*ListConnectionsRequest)(nil),            // 84: basil.broker.v1.ListConnectionsRequest
+	(*ConnectionSystemdIdentity)(nil),         // 85: basil.broker.v1.ConnectionSystemdIdentity
+	(*ConnectionInfo)(nil),                    // 86: basil.broker.v1.ConnectionInfo
+	(*ListConnectionsResponse)(nil),           // 87: basil.broker.v1.ListConnectionsResponse
+	(*ConnectionSystemdSelector)(nil),         // 88: basil.broker.v1.ConnectionSystemdSelector
+	(*ConnectionSelector)(nil),                // 89: basil.broker.v1.ConnectionSelector
+	(*DropConnectionsRequest)(nil),            // 90: basil.broker.v1.DropConnectionsRequest
+	(*DropConnectionsResponse)(nil),           // 91: basil.broker.v1.DropConnectionsResponse
+	(*HealthRequest)(nil),                     // 92: basil.broker.v1.HealthRequest
+	(*HealthResponse)(nil),                    // 93: basil.broker.v1.HealthResponse
+	(*ReadinessRequest)(nil),                  // 94: basil.broker.v1.ReadinessRequest
+	(*ReadinessResponse)(nil),                 // 95: basil.broker.v1.ReadinessResponse
+	(*StatusRequest)(nil),                     // 96: basil.broker.v1.StatusRequest
+	(*StatusResponse)(nil),                    // 97: basil.broker.v1.StatusResponse
+	(*WatchRequest)(nil),                      // 98: basil.broker.v1.WatchRequest
+	(*Event)(nil),                             // 99: basil.broker.v1.Event
+	(*KeyRotated)(nil),                        // 100: basil.broker.v1.KeyRotated
+	(*BundleChanged)(nil),                     // 101: basil.broker.v1.BundleChanged
+	(*Revoked)(nil),                           // 102: basil.broker.v1.Revoked
+	(*BrokerErrorInfo)(nil),                   // 103: basil.broker.v1.BrokerErrorInfo
+	(*durationpb.Duration)(nil),               // 104: google.protobuf.Duration
+	(*timestamppb.Timestamp)(nil),             // 105: google.protobuf.Timestamp
 }
 var file_basil_broker_v1_broker_proto_depIdxs = []int32{
 	5,   // 0: basil.broker.v1.CiphertextEnvelope.alg:type_name -> basil.broker.v1.AeadAlgorithm
@@ -8092,148 +7466,141 @@ var file_basil_broker_v1_broker_proto_depIdxs = []int32{
 	9,   // 5: basil.broker.v1.GetInvocationCapabilitiesResponse.listener_profile:type_name -> basil.broker.v1.ListenerProfile
 	0,   // 6: basil.broker.v1.NewKeyRequest.key_type:type_name -> basil.broker.v1.KeyType
 	0,   // 7: basil.broker.v1.ImportRequest.key_type:type_name -> basil.broker.v1.KeyType
-	20,  // 8: basil.broker.v1.ImportRequest.material:type_name -> basil.broker.v1.KeyMaterial
+	16,  // 8: basil.broker.v1.ImportRequest.material:type_name -> basil.broker.v1.KeyMaterial
 	0,   // 9: basil.broker.v1.ImportEntry.key_type:type_name -> basil.broker.v1.KeyType
-	20,  // 10: basil.broker.v1.ImportEntry.material:type_name -> basil.broker.v1.KeyMaterial
-	33,  // 11: basil.broker.v1.ImportSetRequest.entries:type_name -> basil.broker.v1.ImportEntry
-	35,  // 12: basil.broker.v1.ImportSetResponse.keys:type_name -> basil.broker.v1.ImportedKey
+	16,  // 10: basil.broker.v1.ImportEntry.material:type_name -> basil.broker.v1.KeyMaterial
+	29,  // 11: basil.broker.v1.ImportSetRequest.entries:type_name -> basil.broker.v1.ImportEntry
+	31,  // 12: basil.broker.v1.ImportSetResponse.keys:type_name -> basil.broker.v1.ImportedKey
 	1,   // 13: basil.broker.v1.SignRequest.algorithm:type_name -> basil.broker.v1.SigningAlgorithm
 	1,   // 14: basil.broker.v1.VerifyRequest.algorithm:type_name -> basil.broker.v1.SigningAlgorithm
 	0,   // 15: basil.broker.v1.GetPublicKeyResponse.key_type:type_name -> basil.broker.v1.KeyType
 	5,   // 16: basil.broker.v1.EncryptRequest.algorithm:type_name -> basil.broker.v1.AeadAlgorithm
-	21,  // 17: basil.broker.v1.EncryptResponse.envelope:type_name -> basil.broker.v1.CiphertextEnvelope
-	21,  // 18: basil.broker.v1.DecryptRequest.envelope:type_name -> basil.broker.v1.CiphertextEnvelope
+	17,  // 17: basil.broker.v1.EncryptResponse.envelope:type_name -> basil.broker.v1.CiphertextEnvelope
+	17,  // 18: basil.broker.v1.DecryptRequest.envelope:type_name -> basil.broker.v1.CiphertextEnvelope
 	6,   // 19: basil.broker.v1.WrapEnvelopeRequest.kem_algorithm:type_name -> basil.broker.v1.KemAlgorithm
 	7,   // 20: basil.broker.v1.WrapEnvelopeRequest.envelope_algorithm:type_name -> basil.broker.v1.EnvelopeAlgorithm
-	22,  // 21: basil.broker.v1.WrapEnvelopeResponse.envelope:type_name -> basil.broker.v1.KemEnvelope
-	22,  // 22: basil.broker.v1.UnwrapEnvelopeRequest.envelope:type_name -> basil.broker.v1.KemEnvelope
-	111, // 23: basil.broker.v1.MintJwtRequest.ttl:type_name -> google.protobuf.Duration
-	111, // 24: basil.broker.v1.MintNatsUserRequest.ttl:type_name -> google.protobuf.Duration
-	111, // 25: basil.broker.v1.MintNatsAccountRequest.ttl:type_name -> google.protobuf.Duration
-	111, // 26: basil.broker.v1.MintNatsOperatorRequest.ttl:type_name -> google.protobuf.Duration
-	111, // 27: basil.broker.v1.MintNatsSignerRequest.ttl:type_name -> google.protobuf.Duration
-	111, // 28: basil.broker.v1.MintNatsServerRequest.ttl:type_name -> google.protobuf.Duration
-	111, // 29: basil.broker.v1.MintNatsCurveRequest.ttl:type_name -> google.protobuf.Duration
+	18,  // 21: basil.broker.v1.WrapEnvelopeResponse.envelope:type_name -> basil.broker.v1.KemEnvelope
+	18,  // 22: basil.broker.v1.UnwrapEnvelopeRequest.envelope:type_name -> basil.broker.v1.KemEnvelope
+	104, // 23: basil.broker.v1.MintJwtRequest.ttl:type_name -> google.protobuf.Duration
+	104, // 24: basil.broker.v1.MintNatsUserRequest.ttl:type_name -> google.protobuf.Duration
+	104, // 25: basil.broker.v1.MintNatsAccountRequest.ttl:type_name -> google.protobuf.Duration
+	104, // 26: basil.broker.v1.MintNatsOperatorRequest.ttl:type_name -> google.protobuf.Duration
+	104, // 27: basil.broker.v1.MintNatsSignerRequest.ttl:type_name -> google.protobuf.Duration
+	104, // 28: basil.broker.v1.MintNatsServerRequest.ttl:type_name -> google.protobuf.Duration
+	104, // 29: basil.broker.v1.MintNatsCurveRequest.ttl:type_name -> google.protobuf.Duration
 	2,   // 30: basil.broker.v1.SignNatsJwtRequest.expected_type:type_name -> basil.broker.v1.NatsJwtType
-	111, // 31: basil.broker.v1.SignNatsJwtRequest.ttl:type_name -> google.protobuf.Duration
-	112, // 32: basil.broker.v1.SignNatsJwtRequest.expires_at:type_name -> google.protobuf.Timestamp
-	112, // 33: basil.broker.v1.SignNatsJwtRequest.issued_at:type_name -> google.protobuf.Timestamp
+	104, // 31: basil.broker.v1.SignNatsJwtRequest.ttl:type_name -> google.protobuf.Duration
+	105, // 32: basil.broker.v1.SignNatsJwtRequest.expires_at:type_name -> google.protobuf.Timestamp
+	105, // 33: basil.broker.v1.SignNatsJwtRequest.issued_at:type_name -> google.protobuf.Timestamp
 	3,   // 34: basil.broker.v1.SignNatsJwtRequest.jti_mode:type_name -> basil.broker.v1.NatsJtiMode
-	72,  // 35: basil.broker.v1.ValidateNatsJwtRequest.allowed_signers:type_name -> basil.broker.v1.AllowedNatsSigner
+	68,  // 35: basil.broker.v1.ValidateNatsJwtRequest.allowed_signers:type_name -> basil.broker.v1.AllowedNatsSigner
 	2,   // 36: basil.broker.v1.ValidateNatsJwtRequest.expected_type:type_name -> basil.broker.v1.NatsJwtType
 	4,   // 37: basil.broker.v1.ValidateNatsJwtResponse.reason:type_name -> basil.broker.v1.NatsJwtValidationReason
 	2,   // 38: basil.broker.v1.ValidateNatsJwtResponse.jwt_type:type_name -> basil.broker.v1.NatsJwtType
-	112, // 39: basil.broker.v1.CredentialResponse.expires_at:type_name -> google.protobuf.Timestamp
-	111, // 40: basil.broker.v1.IssueCertificateRequest.ttl:type_name -> google.protobuf.Duration
-	80,  // 41: basil.broker.v1.ReloadResponse.rejection:type_name -> basil.broker.v1.ReloadRejection
-	81,  // 42: basil.broker.v1.ReloadResponse.listener_impacts:type_name -> basil.broker.v1.ListenerImpactInfo
-	82,  // 43: basil.broker.v1.ReloadResponse.rewire_required:type_name -> basil.broker.v1.RewireDiagnostic
+	105, // 39: basil.broker.v1.CredentialResponse.expires_at:type_name -> google.protobuf.Timestamp
+	104, // 40: basil.broker.v1.IssueCertificateRequest.ttl:type_name -> google.protobuf.Duration
+	76,  // 41: basil.broker.v1.ReloadResponse.rejection:type_name -> basil.broker.v1.ReloadRejection
+	77,  // 42: basil.broker.v1.ReloadResponse.listener_impacts:type_name -> basil.broker.v1.ListenerImpactInfo
+	78,  // 43: basil.broker.v1.ReloadResponse.rewire_required:type_name -> basil.broker.v1.RewireDiagnostic
 	10,  // 44: basil.broker.v1.ListenerImpactInfo.kind:type_name -> basil.broker.v1.ListenerChangeKind
 	11,  // 45: basil.broker.v1.ExplainResponse.decision:type_name -> basil.broker.v1.ExplainDecision
-	84,  // 46: basil.broker.v1.ExplainResponse.matched_rule:type_name -> basil.broker.v1.MatchedRule
+	80,  // 46: basil.broker.v1.ExplainResponse.matched_rule:type_name -> basil.broker.v1.MatchedRule
 	12,  // 47: basil.broker.v1.ConnectionInfo.listener_type:type_name -> basil.broker.v1.ConnectionListenerType
 	13,  // 48: basil.broker.v1.ConnectionInfo.domain:type_name -> basil.broker.v1.ConnectionDomain
-	89,  // 49: basil.broker.v1.ConnectionInfo.systemd:type_name -> basil.broker.v1.ConnectionSystemdIdentity
-	90,  // 50: basil.broker.v1.ConnectionInfo.compose:type_name -> basil.broker.v1.ConnectionComposeIdentity
-	91,  // 51: basil.broker.v1.ListConnectionsResponse.connections:type_name -> basil.broker.v1.ConnectionInfo
-	93,  // 52: basil.broker.v1.ConnectionSelector.systemd:type_name -> basil.broker.v1.ConnectionSystemdSelector
-	94,  // 53: basil.broker.v1.ConnectionSelector.compose:type_name -> basil.broker.v1.ConnectionComposeSelector
-	95,  // 54: basil.broker.v1.DropConnectionsRequest.selectors:type_name -> basil.broker.v1.ConnectionSelector
-	14,  // 55: basil.broker.v1.ReadinessResponse.reason:type_name -> basil.broker.v1.ReadinessReason
-	15,  // 56: basil.broker.v1.RealmStatus.provider:type_name -> basil.broker.v1.RealmProvider
-	16,  // 57: basil.broker.v1.RealmStatus.mode:type_name -> basil.broker.v1.RealmMode
-	17,  // 58: basil.broker.v1.RealmStatus.state:type_name -> basil.broker.v1.RealmState
-	18,  // 59: basil.broker.v1.RealmStatus.reason:type_name -> basil.broker.v1.RealmReason
-	103, // 60: basil.broker.v1.StatusResponse.realms:type_name -> basil.broker.v1.RealmStatus
-	19,  // 61: basil.broker.v1.WatchRequest.kinds:type_name -> basil.broker.v1.EventKind
-	19,  // 62: basil.broker.v1.Event.kind:type_name -> basil.broker.v1.EventKind
-	112, // 63: basil.broker.v1.Event.at:type_name -> google.protobuf.Timestamp
-	107, // 64: basil.broker.v1.Event.key_rotated:type_name -> basil.broker.v1.KeyRotated
-	108, // 65: basil.broker.v1.Event.bundle_changed:type_name -> basil.broker.v1.BundleChanged
-	109, // 66: basil.broker.v1.Event.revoked:type_name -> basil.broker.v1.Revoked
-	24,  // 67: basil.broker.v1.InvocationService.Invoke:input_type -> basil.broker.v1.SealedRequest
-	26,  // 68: basil.broker.v1.InvocationService.GetInvocationChallenge:input_type -> basil.broker.v1.GetInvocationChallengeRequest
-	28,  // 69: basil.broker.v1.InvocationService.GetInvocationCapabilities:input_type -> basil.broker.v1.GetInvocationCapabilitiesRequest
-	30,  // 70: basil.broker.v1.SigningService.NewKey:input_type -> basil.broker.v1.NewKeyRequest
-	32,  // 71: basil.broker.v1.SigningService.Import:input_type -> basil.broker.v1.ImportRequest
-	34,  // 72: basil.broker.v1.SigningService.ImportSet:input_type -> basil.broker.v1.ImportSetRequest
-	37,  // 73: basil.broker.v1.SigningService.Sign:input_type -> basil.broker.v1.SignRequest
-	39,  // 74: basil.broker.v1.SigningService.Verify:input_type -> basil.broker.v1.VerifyRequest
-	41,  // 75: basil.broker.v1.SigningService.GetPublicKey:input_type -> basil.broker.v1.GetPublicKeyRequest
-	43,  // 76: basil.broker.v1.AeadService.Encrypt:input_type -> basil.broker.v1.EncryptRequest
-	45,  // 77: basil.broker.v1.AeadService.Decrypt:input_type -> basil.broker.v1.DecryptRequest
-	47,  // 78: basil.broker.v1.AeadService.WrapEnvelope:input_type -> basil.broker.v1.WrapEnvelopeRequest
-	49,  // 79: basil.broker.v1.AeadService.UnwrapEnvelope:input_type -> basil.broker.v1.UnwrapEnvelopeRequest
-	51,  // 80: basil.broker.v1.AeadService.UnsealCose:input_type -> basil.broker.v1.UnsealCoseRequest
-	53,  // 81: basil.broker.v1.SecretService.GetSecret:input_type -> basil.broker.v1.GetSecretRequest
-	55,  // 82: basil.broker.v1.SecretService.SetSecret:input_type -> basil.broker.v1.SetSecretRequest
-	57,  // 83: basil.broker.v1.SecretService.RotateSecret:input_type -> basil.broker.v1.RotateSecretRequest
-	59,  // 84: basil.broker.v1.SecretService.ListCatalog:input_type -> basil.broker.v1.ListCatalogRequest
-	60,  // 85: basil.broker.v1.MintingService.MintJwt:input_type -> basil.broker.v1.MintJwtRequest
-	76,  // 86: basil.broker.v1.MintingService.IssueCertificate:input_type -> basil.broker.v1.IssueCertificateRequest
-	61,  // 87: basil.broker.v1.NatsService.MintNatsUser:input_type -> basil.broker.v1.MintNatsUserRequest
-	62,  // 88: basil.broker.v1.NatsService.MintNatsAccount:input_type -> basil.broker.v1.MintNatsAccountRequest
-	63,  // 89: basil.broker.v1.NatsService.MintNatsOperator:input_type -> basil.broker.v1.MintNatsOperatorRequest
-	64,  // 90: basil.broker.v1.NatsService.MintNatsSigner:input_type -> basil.broker.v1.MintNatsSignerRequest
-	65,  // 91: basil.broker.v1.NatsService.MintNatsServer:input_type -> basil.broker.v1.MintNatsServerRequest
-	66,  // 92: basil.broker.v1.NatsService.MintNatsCurve:input_type -> basil.broker.v1.MintNatsCurveRequest
-	67,  // 93: basil.broker.v1.NatsService.EncryptNatsCurve:input_type -> basil.broker.v1.EncryptNatsCurveRequest
-	69,  // 94: basil.broker.v1.NatsService.DecryptNatsCurve:input_type -> basil.broker.v1.DecryptNatsCurveRequest
-	71,  // 95: basil.broker.v1.NatsService.SignNatsJwt:input_type -> basil.broker.v1.SignNatsJwtRequest
-	73,  // 96: basil.broker.v1.NatsService.ValidateNatsJwt:input_type -> basil.broker.v1.ValidateNatsJwtRequest
-	102, // 97: basil.broker.v1.AdminService.Status:input_type -> basil.broker.v1.StatusRequest
-	98,  // 98: basil.broker.v1.AdminService.Health:input_type -> basil.broker.v1.HealthRequest
-	100, // 99: basil.broker.v1.AdminService.Readiness:input_type -> basil.broker.v1.ReadinessRequest
-	105, // 100: basil.broker.v1.AdminService.Watch:input_type -> basil.broker.v1.WatchRequest
-	78,  // 101: basil.broker.v1.AdminService.Reload:input_type -> basil.broker.v1.ReloadRequest
-	83,  // 102: basil.broker.v1.AdminService.Explain:input_type -> basil.broker.v1.ExplainRequest
-	86,  // 103: basil.broker.v1.AdminService.Revoke:input_type -> basil.broker.v1.RevokeRequest
-	88,  // 104: basil.broker.v1.AdminService.ListConnections:input_type -> basil.broker.v1.ListConnectionsRequest
-	96,  // 105: basil.broker.v1.AdminService.DropConnections:input_type -> basil.broker.v1.DropConnectionsRequest
-	25,  // 106: basil.broker.v1.InvocationService.Invoke:output_type -> basil.broker.v1.SealedResponse
-	27,  // 107: basil.broker.v1.InvocationService.GetInvocationChallenge:output_type -> basil.broker.v1.GetInvocationChallengeResponse
-	29,  // 108: basil.broker.v1.InvocationService.GetInvocationCapabilities:output_type -> basil.broker.v1.GetInvocationCapabilitiesResponse
-	31,  // 109: basil.broker.v1.SigningService.NewKey:output_type -> basil.broker.v1.NewKeyResponse
-	31,  // 110: basil.broker.v1.SigningService.Import:output_type -> basil.broker.v1.NewKeyResponse
-	36,  // 111: basil.broker.v1.SigningService.ImportSet:output_type -> basil.broker.v1.ImportSetResponse
-	38,  // 112: basil.broker.v1.SigningService.Sign:output_type -> basil.broker.v1.SignResponse
-	40,  // 113: basil.broker.v1.SigningService.Verify:output_type -> basil.broker.v1.VerifyResponse
-	42,  // 114: basil.broker.v1.SigningService.GetPublicKey:output_type -> basil.broker.v1.GetPublicKeyResponse
-	44,  // 115: basil.broker.v1.AeadService.Encrypt:output_type -> basil.broker.v1.EncryptResponse
-	46,  // 116: basil.broker.v1.AeadService.Decrypt:output_type -> basil.broker.v1.DecryptResponse
-	48,  // 117: basil.broker.v1.AeadService.WrapEnvelope:output_type -> basil.broker.v1.WrapEnvelopeResponse
-	50,  // 118: basil.broker.v1.AeadService.UnwrapEnvelope:output_type -> basil.broker.v1.UnwrapEnvelopeResponse
-	52,  // 119: basil.broker.v1.AeadService.UnsealCose:output_type -> basil.broker.v1.UnsealCoseResponse
-	54,  // 120: basil.broker.v1.SecretService.GetSecret:output_type -> basil.broker.v1.GetSecretResponse
-	56,  // 121: basil.broker.v1.SecretService.SetSecret:output_type -> basil.broker.v1.SetSecretResponse
-	58,  // 122: basil.broker.v1.SecretService.RotateSecret:output_type -> basil.broker.v1.RotateSecretResponse
-	23,  // 123: basil.broker.v1.SecretService.ListCatalog:output_type -> basil.broker.v1.CatalogEntry
-	75,  // 124: basil.broker.v1.MintingService.MintJwt:output_type -> basil.broker.v1.CredentialResponse
-	77,  // 125: basil.broker.v1.MintingService.IssueCertificate:output_type -> basil.broker.v1.IssueCertificateResponse
-	75,  // 126: basil.broker.v1.NatsService.MintNatsUser:output_type -> basil.broker.v1.CredentialResponse
-	75,  // 127: basil.broker.v1.NatsService.MintNatsAccount:output_type -> basil.broker.v1.CredentialResponse
-	75,  // 128: basil.broker.v1.NatsService.MintNatsOperator:output_type -> basil.broker.v1.CredentialResponse
-	75,  // 129: basil.broker.v1.NatsService.MintNatsSigner:output_type -> basil.broker.v1.CredentialResponse
-	75,  // 130: basil.broker.v1.NatsService.MintNatsServer:output_type -> basil.broker.v1.CredentialResponse
-	75,  // 131: basil.broker.v1.NatsService.MintNatsCurve:output_type -> basil.broker.v1.CredentialResponse
-	68,  // 132: basil.broker.v1.NatsService.EncryptNatsCurve:output_type -> basil.broker.v1.EncryptNatsCurveResponse
-	70,  // 133: basil.broker.v1.NatsService.DecryptNatsCurve:output_type -> basil.broker.v1.DecryptNatsCurveResponse
-	75,  // 134: basil.broker.v1.NatsService.SignNatsJwt:output_type -> basil.broker.v1.CredentialResponse
-	74,  // 135: basil.broker.v1.NatsService.ValidateNatsJwt:output_type -> basil.broker.v1.ValidateNatsJwtResponse
-	104, // 136: basil.broker.v1.AdminService.Status:output_type -> basil.broker.v1.StatusResponse
-	99,  // 137: basil.broker.v1.AdminService.Health:output_type -> basil.broker.v1.HealthResponse
-	101, // 138: basil.broker.v1.AdminService.Readiness:output_type -> basil.broker.v1.ReadinessResponse
-	106, // 139: basil.broker.v1.AdminService.Watch:output_type -> basil.broker.v1.Event
-	79,  // 140: basil.broker.v1.AdminService.Reload:output_type -> basil.broker.v1.ReloadResponse
-	85,  // 141: basil.broker.v1.AdminService.Explain:output_type -> basil.broker.v1.ExplainResponse
-	87,  // 142: basil.broker.v1.AdminService.Revoke:output_type -> basil.broker.v1.RevokeResponse
-	92,  // 143: basil.broker.v1.AdminService.ListConnections:output_type -> basil.broker.v1.ListConnectionsResponse
-	97,  // 144: basil.broker.v1.AdminService.DropConnections:output_type -> basil.broker.v1.DropConnectionsResponse
-	106, // [106:145] is the sub-list for method output_type
-	67,  // [67:106] is the sub-list for method input_type
-	67,  // [67:67] is the sub-list for extension type_name
-	67,  // [67:67] is the sub-list for extension extendee
-	0,   // [0:67] is the sub-list for field type_name
+	85,  // 49: basil.broker.v1.ConnectionInfo.systemd:type_name -> basil.broker.v1.ConnectionSystemdIdentity
+	86,  // 50: basil.broker.v1.ListConnectionsResponse.connections:type_name -> basil.broker.v1.ConnectionInfo
+	88,  // 51: basil.broker.v1.ConnectionSelector.systemd:type_name -> basil.broker.v1.ConnectionSystemdSelector
+	89,  // 52: basil.broker.v1.DropConnectionsRequest.selectors:type_name -> basil.broker.v1.ConnectionSelector
+	14,  // 53: basil.broker.v1.ReadinessResponse.reason:type_name -> basil.broker.v1.ReadinessReason
+	15,  // 54: basil.broker.v1.WatchRequest.kinds:type_name -> basil.broker.v1.EventKind
+	15,  // 55: basil.broker.v1.Event.kind:type_name -> basil.broker.v1.EventKind
+	105, // 56: basil.broker.v1.Event.at:type_name -> google.protobuf.Timestamp
+	100, // 57: basil.broker.v1.Event.key_rotated:type_name -> basil.broker.v1.KeyRotated
+	101, // 58: basil.broker.v1.Event.bundle_changed:type_name -> basil.broker.v1.BundleChanged
+	102, // 59: basil.broker.v1.Event.revoked:type_name -> basil.broker.v1.Revoked
+	20,  // 60: basil.broker.v1.InvocationService.Invoke:input_type -> basil.broker.v1.SealedRequest
+	22,  // 61: basil.broker.v1.InvocationService.GetInvocationChallenge:input_type -> basil.broker.v1.GetInvocationChallengeRequest
+	24,  // 62: basil.broker.v1.InvocationService.GetInvocationCapabilities:input_type -> basil.broker.v1.GetInvocationCapabilitiesRequest
+	26,  // 63: basil.broker.v1.SigningService.NewKey:input_type -> basil.broker.v1.NewKeyRequest
+	28,  // 64: basil.broker.v1.SigningService.Import:input_type -> basil.broker.v1.ImportRequest
+	30,  // 65: basil.broker.v1.SigningService.ImportSet:input_type -> basil.broker.v1.ImportSetRequest
+	33,  // 66: basil.broker.v1.SigningService.Sign:input_type -> basil.broker.v1.SignRequest
+	35,  // 67: basil.broker.v1.SigningService.Verify:input_type -> basil.broker.v1.VerifyRequest
+	37,  // 68: basil.broker.v1.SigningService.GetPublicKey:input_type -> basil.broker.v1.GetPublicKeyRequest
+	39,  // 69: basil.broker.v1.AeadService.Encrypt:input_type -> basil.broker.v1.EncryptRequest
+	41,  // 70: basil.broker.v1.AeadService.Decrypt:input_type -> basil.broker.v1.DecryptRequest
+	43,  // 71: basil.broker.v1.AeadService.WrapEnvelope:input_type -> basil.broker.v1.WrapEnvelopeRequest
+	45,  // 72: basil.broker.v1.AeadService.UnwrapEnvelope:input_type -> basil.broker.v1.UnwrapEnvelopeRequest
+	47,  // 73: basil.broker.v1.AeadService.UnsealCose:input_type -> basil.broker.v1.UnsealCoseRequest
+	49,  // 74: basil.broker.v1.SecretService.GetSecret:input_type -> basil.broker.v1.GetSecretRequest
+	51,  // 75: basil.broker.v1.SecretService.SetSecret:input_type -> basil.broker.v1.SetSecretRequest
+	53,  // 76: basil.broker.v1.SecretService.RotateSecret:input_type -> basil.broker.v1.RotateSecretRequest
+	55,  // 77: basil.broker.v1.SecretService.ListCatalog:input_type -> basil.broker.v1.ListCatalogRequest
+	56,  // 78: basil.broker.v1.MintingService.MintJwt:input_type -> basil.broker.v1.MintJwtRequest
+	72,  // 79: basil.broker.v1.MintingService.IssueCertificate:input_type -> basil.broker.v1.IssueCertificateRequest
+	57,  // 80: basil.broker.v1.NatsService.MintNatsUser:input_type -> basil.broker.v1.MintNatsUserRequest
+	58,  // 81: basil.broker.v1.NatsService.MintNatsAccount:input_type -> basil.broker.v1.MintNatsAccountRequest
+	59,  // 82: basil.broker.v1.NatsService.MintNatsOperator:input_type -> basil.broker.v1.MintNatsOperatorRequest
+	60,  // 83: basil.broker.v1.NatsService.MintNatsSigner:input_type -> basil.broker.v1.MintNatsSignerRequest
+	61,  // 84: basil.broker.v1.NatsService.MintNatsServer:input_type -> basil.broker.v1.MintNatsServerRequest
+	62,  // 85: basil.broker.v1.NatsService.MintNatsCurve:input_type -> basil.broker.v1.MintNatsCurveRequest
+	63,  // 86: basil.broker.v1.NatsService.EncryptNatsCurve:input_type -> basil.broker.v1.EncryptNatsCurveRequest
+	65,  // 87: basil.broker.v1.NatsService.DecryptNatsCurve:input_type -> basil.broker.v1.DecryptNatsCurveRequest
+	67,  // 88: basil.broker.v1.NatsService.SignNatsJwt:input_type -> basil.broker.v1.SignNatsJwtRequest
+	69,  // 89: basil.broker.v1.NatsService.ValidateNatsJwt:input_type -> basil.broker.v1.ValidateNatsJwtRequest
+	96,  // 90: basil.broker.v1.AdminService.Status:input_type -> basil.broker.v1.StatusRequest
+	92,  // 91: basil.broker.v1.AdminService.Health:input_type -> basil.broker.v1.HealthRequest
+	94,  // 92: basil.broker.v1.AdminService.Readiness:input_type -> basil.broker.v1.ReadinessRequest
+	98,  // 93: basil.broker.v1.AdminService.Watch:input_type -> basil.broker.v1.WatchRequest
+	74,  // 94: basil.broker.v1.AdminService.Reload:input_type -> basil.broker.v1.ReloadRequest
+	79,  // 95: basil.broker.v1.AdminService.Explain:input_type -> basil.broker.v1.ExplainRequest
+	82,  // 96: basil.broker.v1.AdminService.Revoke:input_type -> basil.broker.v1.RevokeRequest
+	84,  // 97: basil.broker.v1.AdminService.ListConnections:input_type -> basil.broker.v1.ListConnectionsRequest
+	90,  // 98: basil.broker.v1.AdminService.DropConnections:input_type -> basil.broker.v1.DropConnectionsRequest
+	21,  // 99: basil.broker.v1.InvocationService.Invoke:output_type -> basil.broker.v1.SealedResponse
+	23,  // 100: basil.broker.v1.InvocationService.GetInvocationChallenge:output_type -> basil.broker.v1.GetInvocationChallengeResponse
+	25,  // 101: basil.broker.v1.InvocationService.GetInvocationCapabilities:output_type -> basil.broker.v1.GetInvocationCapabilitiesResponse
+	27,  // 102: basil.broker.v1.SigningService.NewKey:output_type -> basil.broker.v1.NewKeyResponse
+	27,  // 103: basil.broker.v1.SigningService.Import:output_type -> basil.broker.v1.NewKeyResponse
+	32,  // 104: basil.broker.v1.SigningService.ImportSet:output_type -> basil.broker.v1.ImportSetResponse
+	34,  // 105: basil.broker.v1.SigningService.Sign:output_type -> basil.broker.v1.SignResponse
+	36,  // 106: basil.broker.v1.SigningService.Verify:output_type -> basil.broker.v1.VerifyResponse
+	38,  // 107: basil.broker.v1.SigningService.GetPublicKey:output_type -> basil.broker.v1.GetPublicKeyResponse
+	40,  // 108: basil.broker.v1.AeadService.Encrypt:output_type -> basil.broker.v1.EncryptResponse
+	42,  // 109: basil.broker.v1.AeadService.Decrypt:output_type -> basil.broker.v1.DecryptResponse
+	44,  // 110: basil.broker.v1.AeadService.WrapEnvelope:output_type -> basil.broker.v1.WrapEnvelopeResponse
+	46,  // 111: basil.broker.v1.AeadService.UnwrapEnvelope:output_type -> basil.broker.v1.UnwrapEnvelopeResponse
+	48,  // 112: basil.broker.v1.AeadService.UnsealCose:output_type -> basil.broker.v1.UnsealCoseResponse
+	50,  // 113: basil.broker.v1.SecretService.GetSecret:output_type -> basil.broker.v1.GetSecretResponse
+	52,  // 114: basil.broker.v1.SecretService.SetSecret:output_type -> basil.broker.v1.SetSecretResponse
+	54,  // 115: basil.broker.v1.SecretService.RotateSecret:output_type -> basil.broker.v1.RotateSecretResponse
+	19,  // 116: basil.broker.v1.SecretService.ListCatalog:output_type -> basil.broker.v1.CatalogEntry
+	71,  // 117: basil.broker.v1.MintingService.MintJwt:output_type -> basil.broker.v1.CredentialResponse
+	73,  // 118: basil.broker.v1.MintingService.IssueCertificate:output_type -> basil.broker.v1.IssueCertificateResponse
+	71,  // 119: basil.broker.v1.NatsService.MintNatsUser:output_type -> basil.broker.v1.CredentialResponse
+	71,  // 120: basil.broker.v1.NatsService.MintNatsAccount:output_type -> basil.broker.v1.CredentialResponse
+	71,  // 121: basil.broker.v1.NatsService.MintNatsOperator:output_type -> basil.broker.v1.CredentialResponse
+	71,  // 122: basil.broker.v1.NatsService.MintNatsSigner:output_type -> basil.broker.v1.CredentialResponse
+	71,  // 123: basil.broker.v1.NatsService.MintNatsServer:output_type -> basil.broker.v1.CredentialResponse
+	71,  // 124: basil.broker.v1.NatsService.MintNatsCurve:output_type -> basil.broker.v1.CredentialResponse
+	64,  // 125: basil.broker.v1.NatsService.EncryptNatsCurve:output_type -> basil.broker.v1.EncryptNatsCurveResponse
+	66,  // 126: basil.broker.v1.NatsService.DecryptNatsCurve:output_type -> basil.broker.v1.DecryptNatsCurveResponse
+	71,  // 127: basil.broker.v1.NatsService.SignNatsJwt:output_type -> basil.broker.v1.CredentialResponse
+	70,  // 128: basil.broker.v1.NatsService.ValidateNatsJwt:output_type -> basil.broker.v1.ValidateNatsJwtResponse
+	97,  // 129: basil.broker.v1.AdminService.Status:output_type -> basil.broker.v1.StatusResponse
+	93,  // 130: basil.broker.v1.AdminService.Health:output_type -> basil.broker.v1.HealthResponse
+	95,  // 131: basil.broker.v1.AdminService.Readiness:output_type -> basil.broker.v1.ReadinessResponse
+	99,  // 132: basil.broker.v1.AdminService.Watch:output_type -> basil.broker.v1.Event
+	75,  // 133: basil.broker.v1.AdminService.Reload:output_type -> basil.broker.v1.ReloadResponse
+	81,  // 134: basil.broker.v1.AdminService.Explain:output_type -> basil.broker.v1.ExplainResponse
+	83,  // 135: basil.broker.v1.AdminService.Revoke:output_type -> basil.broker.v1.RevokeResponse
+	87,  // 136: basil.broker.v1.AdminService.ListConnections:output_type -> basil.broker.v1.ListConnectionsResponse
+	91,  // 137: basil.broker.v1.AdminService.DropConnections:output_type -> basil.broker.v1.DropConnectionsResponse
+	99,  // [99:138] is the sub-list for method output_type
+	60,  // [60:99] is the sub-list for method input_type
+	60,  // [60:60] is the sub-list for extension type_name
+	60,  // [60:60] is the sub-list for extension extendee
+	0,   // [0:60] is the sub-list for field type_name
 }
 
 func init() { file_basil_broker_v1_broker_proto_init() }
@@ -8267,16 +7634,13 @@ func file_basil_broker_v1_broker_proto_init() {
 	file_basil_broker_v1_broker_proto_msgTypes[61].OneofWrappers = []any{}
 	file_basil_broker_v1_broker_proto_msgTypes[69].OneofWrappers = []any{}
 	file_basil_broker_v1_broker_proto_msgTypes[70].OneofWrappers = []any{}
-	file_basil_broker_v1_broker_proto_msgTypes[71].OneofWrappers = []any{}
-	file_basil_broker_v1_broker_proto_msgTypes[73].OneofWrappers = []any{}
-	file_basil_broker_v1_broker_proto_msgTypes[74].OneofWrappers = []any{}
-	file_basil_broker_v1_broker_proto_msgTypes[75].OneofWrappers = []any{
+	file_basil_broker_v1_broker_proto_msgTypes[72].OneofWrappers = []any{}
+	file_basil_broker_v1_broker_proto_msgTypes[73].OneofWrappers = []any{
 		(*ConnectionSelector_Id)(nil),
 		(*ConnectionSelector_Uid)(nil),
 		(*ConnectionSelector_Systemd)(nil),
-		(*ConnectionSelector_Compose)(nil),
 	}
-	file_basil_broker_v1_broker_proto_msgTypes[86].OneofWrappers = []any{
+	file_basil_broker_v1_broker_proto_msgTypes[83].OneofWrappers = []any{
 		(*Event_KeyRotated)(nil),
 		(*Event_BundleChanged)(nil),
 		(*Event_Revoked)(nil),
@@ -8286,8 +7650,8 @@ func file_basil_broker_v1_broker_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_basil_broker_v1_broker_proto_rawDesc), len(file_basil_broker_v1_broker_proto_rawDesc)),
-			NumEnums:      20,
-			NumMessages:   91,
+			NumEnums:      16,
+			NumMessages:   88,
 			NumExtensions: 0,
 			NumServices:   7,
 		},
