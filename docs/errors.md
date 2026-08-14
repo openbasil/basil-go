@@ -60,17 +60,17 @@ go-spiffe client).
 
 The broker maps every fault to a canonical code plus a stable `Reason` token:
 
-| Reason                | Code                  | Meaning                                                        |
-| --------------------- | --------------------- | -------------------------------------------------------------- |
-| `INVALID_REQUEST`     | `InvalidArgument`     | Malformed/invalid input or a request that cannot be satisfied. |
-| `DECRYPT_FAILED`      | `InvalidArgument`     | AEAD/decrypt failed (wrong key version, AAD, or ciphertext).   |
-| `UNAUTHORIZED`        | `PermissionDenied`    | Policy denied this caller for this key + operation.            |
-| `PAYLOAD_TOO_LARGE`   | `ResourceExhausted`   | Input exceeds the broker's size limit.                         |
-| `UNSUPPORTED`         | `Unimplemented`       | Operation not supported by the backend/key.                    |
+| Reason                  | Code                | Meaning                                                        |
+| ----------------------- | ------------------- | -------------------------------------------------------------- |
+| `INVALID_REQUEST`       | `InvalidArgument`   | Malformed/invalid input or a request that cannot be satisfied. |
+| `DECRYPT_FAILED`        | `InvalidArgument`   | AEAD/decrypt failed (wrong key version, AAD, or ciphertext).   |
+| `UNAUTHORIZED`          | `PermissionDenied`  | Policy denied this caller for this key + operation.            |
+| `PAYLOAD_TOO_LARGE`     | `ResourceExhausted` | Input exceeds the broker's size limit.                         |
+| `UNSUPPORTED`           | `Unimplemented`     | Operation not supported by the backend/key.                    |
 | `UNSUPPORTED_ALGORITHM` | `Unimplemented`     | Requested algorithm not supported by the key.                  |
-| `BACKEND_UNAVAILABLE` | `Unavailable`         | The backend (OpenBao/Vault) is unreachable, **retryable**.     |
-| `BACKEND_ERROR`       | `Internal`            | The backend returned an error.                                 |
-| `INTERNAL`            | `Internal`            | Unexpected broker-internal fault.                              |
+| `BACKEND_UNAVAILABLE`   | `Unavailable`       | The backend (OpenBao/Vault) is unreachable, **retryable**.     |
+| `BACKEND_ERROR`         | `Internal`          | The backend returned an error.                                 |
+| `INTERNAL`              | `Internal`          | Unexpected broker-internal fault.                              |
 
 A transport failure that never reached the broker (socket missing, connection
 refused) surfaces as `codes.Unavailable` with an empty `Reason`/`Op`, since no
